@@ -1,0 +1,219 @@
+@{
+    ViewBag.Title = "Quản Lý Dịp Sử Dụng";
+    ViewBag.ActiveMenu = "DipSuDung";
+    ViewBag.Breadcrumb = "Danh mục sản phẩm";
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
+    <!-- Header Section -->
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <!-- Key Metrics Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md mb-space-lg">
+        <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Tổng số dịp chủ đề</span>
+                <span class="w-8 h-8 rounded-full bg-secondary-container text-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">loyalty</span>
+                </span>
+            </div>
+            <div class="mt-4 flex flex-col">
+                <span class="font-headline-md text-headline-md text-on-surface font-semibold">12 Dịp</span>
+                <div class="flex items-center gap-1.5 mt-1 text-tertiary font-label-md text-label-md">
+                    <span class="material-symbols-outlined text-[15px]">eco</span>
+                    <span>+2 Dịp mùa lễ hội mới</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Đang hiển thị</span>
+                <span class="w-8 h-8 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                </span>
+            </div>
+            <div class="mt-4 flex flex-col">
+                <span class="font-headline-md text-headline-md text-on-surface font-semibold">10 Kích hoạt</span>
+                <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Xuất hiện tại Storefront</span>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Mẫu hoa liên kết</span>
+                <span class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">local_florist</span>
+                </span>
+            </div>
+            <div class="mt-4 flex flex-col">
+                <span class="font-headline-md text-headline-md text-on-surface font-semibold">64 Mẫu sản phẩm</span>
+                <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Bình quân 5.3 mẫu / dịp</span>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden rounded-xl bg-surface-container-high p-space-md shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Top Đặt Hàng</span>
+                <span class="w-8 h-8 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">favorite</span>
+                </span>
+            </div>
+            <div class="mt-3 flex flex-col">
+                <span class="font-title-md text-title-md text-primary font-bold">Sinh Nhật &amp; Tình Yêu</span>
+                <span class="font-label-md text-label-md text-on-surface font-semibold mt-1">58.4% doanh thu</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Component -->
+    @await Html.PartialAsync("_AdminFilterBar")
+
+    <!-- Full Width Table Container -->
+    <div class="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden flex flex-col">
+        <!-- Table Header Bar -->
+        <div class="p-space-md bg-surface-container-lowest flex items-center justify-between gap-space-sm border-b border-surface-container">
+            <div class="flex items-center gap-space-sm">
+                <span class="font-headline-sm text-headline-sm text-on-surface">Danh Mục Dịp Sử Dụng</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">12 Chủ đề</span>
+            </div>
+            <button type="button" onclick="openAddModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                <span>Thêm Dịp Sử Dụng Mới</span>
+            </button>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left font-body-sm text-body-sm">
+                <thead>
+                    <tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+                        <th class="py-3.5 px-4">Mã</th>
+                        <th class="py-3.5 px-4">Tên Dịp Sử Dụng</th>
+                        <th class="py-3.5 px-4">Mô tả chủ đề</th>
+                        <th class="py-3.5 px-4 text-center">Trạng thái</th>
+                        <th class="py-3.5 px-4 text-right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="text-on-surface divide-y divide-surface-container">
+                    <tr class="hover:bg-surface-container-low/60 transition-colors">
+                        <td class="py-4 px-4 font-mono font-bold text-primary">DIP-01</td>
+                        <td class="py-4 px-4 font-title-sm text-title-sm text-on-surface">Sinh Nhật</td>
+                        <td class="py-4 px-4 text-on-surface-variant">Hoa chúc mừng sinh nhật người thân, bạn bè, đối tác</td>
+                        <td class="py-4 px-4 text-center">
+                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
+                        </td>
+                        <td class="py-4 px-4 text-right">
+                            <button type="button" onclick="openEditModal('DIP-01', 'Sinh Nhật', 'Hoa chúc mừng sinh nhật người thân, bạn bè, đối tác', '1')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-low/60 transition-colors">
+                        <td class="py-4 px-4 font-mono font-bold text-primary">DIP-02</td>
+                        <td class="py-4 px-4 font-title-sm text-title-sm text-on-surface">Kỷ Niệm &amp; Tình Yêu</td>
+                        <td class="py-4 px-4 text-on-surface-variant">Hoa lãng mạn ngày Valentine, kỷ niệm ngày cưới, lời tỏ tình</td>
+                        <td class="py-4 px-4 text-center">
+                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
+                        </td>
+                        <td class="py-4 px-4 text-right">
+                            <button type="button" onclick="openEditModal('DIP-02', 'Kỷ Niệm & Tình Yêu', 'Hoa lãng mạn ngày Valentine, kỷ niệm ngày cưới, lời tỏ tình', '1')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-low/60 transition-colors">
+                        <td class="py-4 px-4 font-mono font-bold text-primary">DIP-03</td>
+                        <td class="py-4 px-4 font-title-sm text-title-sm text-on-surface">Khai Trương</td>
+                        <td class="py-4 px-4 text-on-surface-variant">Kệ hoa &amp; lẵng hoa chúc mừng khai trương cửa hàng, chi nhánh mới</td>
+                        <td class="py-4 px-4 text-center">
+                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
+                        </td>
+                        <td class="py-4 px-4 text-right">
+                            <button type="button" onclick="openEditModal('DIP-03', 'Khai Trương', 'Kệ hoa & lẵng hoa chúc mừng khai trương cửa hàng, chi nhánh mới', '1')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @await Html.PartialAsync("_AdminPagination")
+    </div>
+</div>
+
+<!-- Popup Modal: Thêm / Chỉnh Sửa Dịp Sử Dụng -->
+<div id="dipSuDungModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
+    <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden flex flex-col">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-space-lg py-space-md bg-surface-container-low border-b border-surface-container-high">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">loyalty</span>
+                <h3 id="modalDipSuDungTitle" class="font-headline-sm text-headline-sm text-on-surface font-semibold">Thêm Dịp Sử Dụng Mới</h3>
+            </div>
+            <button type="button" onclick="closeDipSuDungModal()" class="text-secondary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <form id="dipSuDungForm" onsubmit="handleDipSuDungSubmit(event)" class="p-space-lg space-y-space-md font-body-md text-body-md">
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Tên dịp sử dụng *</label>
+                <input type="text" id="inputTenDip" placeholder="VD: Tốt nghiệp, Chúc mừng 20/10..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required />
+            </div>
+
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Mô tả chủ đề dịp</label>
+                <textarea id="inputMoTaDip" rows="3" placeholder="Nhập mô tả ý nghĩa và đối tượng dành cho dịp này..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40"></textarea>
+            </div>
+
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Trạng thái hiển thị</label>
+                <select id="selectTrangThaiDip" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40">
+                    <option value="1">Hiển thị (Kích hoạt trên website)</option>
+                    <option value="0">Tạm ẩn</option>
+                </select>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-end gap-space-sm pt-space-md border-t border-surface-container-high">
+                <button type="button" onclick="closeDipSuDungModal()" class="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-all">
+                    Hủy bỏ
+                </button>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-md flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    <span>Lưu dịp sử dụng</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openAddModal() {
+        document.getElementById('modalDipSuDungTitle').innerText = 'Thêm Dịp Sử Dụng Mới';
+        document.getElementById('inputTenDip').value = '';
+        document.getElementById('inputMoTaDip').value = '';
+        document.getElementById('selectTrangThaiDip').value = '1';
+        document.getElementById('dipSuDungModal').classList.remove('hidden');
+    }
+
+    function openEditModal(code, name, desc, status) {
+        document.getElementById('modalDipSuDungTitle').innerText = 'Chỉnh Sửa Dịp Sử Dụng #' + code;
+        document.getElementById('inputTenDip').value = name;
+        document.getElementById('inputMoTaDip').value = desc;
+        document.getElementById('selectTrangThaiDip').value = status;
+        document.getElementById('dipSuDungModal').classList.remove('hidden');
+    }
+
+    function closeDipSuDungModal() {
+        document.getElementById('dipSuDungModal').classList.add('hidden');
+    }
+
+    function handleDipSuDungSubmit(e) {
+        e.preventDefault();
+        alert('Lưu dịp sử dụng thành công!');
+        closeDipSuDungModal();
+    }
+</script>

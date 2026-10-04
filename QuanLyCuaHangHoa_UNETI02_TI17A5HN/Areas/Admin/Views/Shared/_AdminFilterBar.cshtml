@@ -1,0 +1,40 @@
+@* 
+    Reusable Admin Search, Filter & Sort Component
+*@
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm mb-space-lg flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+    <!-- Search Bar -->
+    <div class="flex items-center gap-space-xs bg-surface-container px-space-md py-2 rounded-xl flex-1 max-w-lg">
+        <span class="material-symbols-outlined text-[20px] text-on-surface-variant">search</span>
+        <input type="text" placeholder="Tìm kiếm theo từ khóa, tên, mã số..." class="bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none w-full" />
+    </div>
+
+    <!-- Filter & Sort Options -->
+    <div class="flex flex-wrap items-center gap-space-sm">
+        <!-- Filter Select -->
+        <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
+            <span class="material-symbols-outlined text-[18px]">filter_list</span>
+            <select class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+                <option value="">Tất cả trạng thái</option>
+                <option value="1">Đang hoạt động</option>
+                <option value="0">Tạm ngưng / Ẩn</option>
+            </select>
+        </div>
+
+        <!-- Sort Select -->
+        <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
+            <span class="material-symbols-outlined text-[18px]">sort</span>
+            <select class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+                <option value="name_asc">Tên (A-Z)</option>
+                <option value="name_desc">Tên (Z-A)</option>
+                <option value="date_new">Mới nhất</option>
+                <option value="date_old">Cũ nhất</option>
+            </select>
+        </div>
+
+        <!-- Refresh Button -->
+        <button type="button" onclick="location.reload()" class="flex items-center gap-space-xs bg-surface-container text-on-surface-variant px-3 py-2 rounded-xl font-title-sm text-title-sm hover:bg-surface-container-high transition-all">
+            <span class="material-symbols-outlined text-[18px]">refresh</span>
+            <span class="hidden sm:inline">Làm mới</span>
+        </button>
+    </div>
+</div>

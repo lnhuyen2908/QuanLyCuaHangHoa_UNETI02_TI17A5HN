@@ -1,0 +1,546 @@
+@{
+    ViewData["Title"] = "Giỏ hoa của bạn - Web quản lý hoa tươi";
+}
+
+<!-- Subtle Ambient Glow -->
+<div class="relative w-full max-w-7xl mx-auto px-margin-mobile md:px-margin lg:px-margin-desktop py-space-lg lg:py-space-xl">
+    <div class="absolute top-10 left-1/4 w-96 h-96 bg-primary-fixed-dim/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
+    <div class="absolute top-1/2 right-10 w-80 h-80 bg-secondary-fixed/40 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+    <!-- Editorial Header & Step Indicator -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md pb-space-lg">
+        <div class="space-y-space-xs">
+            <div class="flex items-center gap-space-xs text-primary font-label-md uppercase tracking-widest">
+                <span class="material-symbols-outlined text-[16px]">local_florist</span>
+                <span class="">Boutique Floral Cart</span>
+            </div>
+            <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Giỏ Hoa Tuyển Chọn</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant">Trang bị chăm chút từng nhành hoa và thông điệp yêu thương trước khi chuyển giao bàn tay nghệ nhân.</p>
+        </div>
+        <!-- Checkout Step Progress -->
+        <div class="flex items-center gap-space-sm font-label-md uppercase tracking-wider text-on-surface-variant self-start md:self-auto bg-surface-container-low px-space-md py-2 rounded-full shadow-sm">
+            <div class="flex items-center gap-1.5 text-primary font-title-sm">
+                <span class="w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center text-[10px]">1</span>
+                <span class="">Giỏ Hàng</span>
+            </div>
+            <span class="text-outline-variant font-light">/</span>
+            <div class="flex items-center gap-1.5 opacity-60">
+                <span class="w-5 h-5 rounded-full bg-surface-variant text-on-surface flex items-center justify-center text-[10px]">2</span>
+                <span class="">Địa Chỉ &amp; Lời Chúc</span>
+            </div>
+            <span class="text-outline-variant font-light">/</span>
+            <div class="flex items-center gap-1.5 opacity-60">
+                <span class="w-5 h-5 rounded-full bg-surface-variant text-on-surface flex items-center justify-center text-[10px]">3</span>
+                <span class="">Hoàn Tất</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Grid Layout (65% / 35%) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-start">
+        <!-- Left Column: Cart Items & Upsells (approx 65% / 8 cols) -->
+        <div class="lg:col-span-8 flex flex-col space-y-space-lg">
+            <!-- Free Shipping Progress Tracker Banner -->
+            <div class="bg-surface-container-lowest p-space-md sm:p-space-lg rounded-xl shadow-sm space-y-space-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+                    <div class="flex items-center gap-space-xs text-primary font-title-sm text-title-sm">
+                        <span class="material-symbols-outlined text-[20px]">redeem</span>
+                        <span class="">Đặc quyền vận chuyển cao cấp</span>
+                    </div>
+                    <span class="font-label-md text-label-md text-secondary">Mục tiêu: Đơn từ 3.000.000₫</span>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                    Bạn đã đạt <span class="font-title-sm text-primary">3.200.000₫</span>! Bạn được <span class="font-title-sm text-tertiary">MIỄN PHÍ VẬN CHUYỂN BẢO QUẢN LẠNH</span> toàn thành phố và tặng kèm <span class="font-title-sm text-primary">Thiệp Mỹ Thuật Dập Kim</span> cao cấp.
+                </p>
+                <!-- Animated Progress Bar -->
+                <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden">
+                    <div class="bg-primary h-2.5 rounded-full transition-all duration-700 ease-out" style="width: 100%"></div>
+                </div>
+                <div class="flex items-center justify-between font-label-md text-label-md text-on-surface-variant pt-1">
+                    <span class="flex items-center gap-1 text-tertiary">
+                        <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                        Đã mở khóa Quà tặng &amp; Freeship
+                    </span>
+                    <span class="text-primary font-medium">100% hoàn thành</span>
+                </div>
+            </div>
+
+            <!-- Cart Items List Container -->
+            <div class="bg-surface-container-lowest rounded-xl p-space-md sm:p-space-lg shadow-sm space-y-space-lg">
+                <div class="flex items-center justify-between pb-space-sm border-b border-surface-container">
+                    <span class="font-title-md text-title-md text-on-surface">Tác phẩm hoa đã chọn (02)</span>
+                    <span class="font-label-md text-label-md text-secondary tracking-widest uppercase">Web quản lý hoa tươi Signature</span>
+                </div>
+
+                <!-- Item 1: Bó hoa "Rosée Éternelle" -->
+                <div class="cart-item group relative flex flex-col md:flex-row gap-space-md p-space-md bg-surface-container-low rounded-xl transition-all duration-300 hover:shadow-md" data-price="1950000" id="cart-item-1">
+                    <!-- Flower Thumbnail -->
+                    <div class="w-full md:w-44 h-48 md:h-auto rounded-lg overflow-hidden flex-shrink-0 relative">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Rosée Éternelle • Bó hoa tươi nghệ thuật" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtEHcKMpyPHGVX7n4NSK2rZNn9hLmBdaPko3FTHPlPqJEpw_6kP0TlFd-PK_Bbk8MtlYpFlb-4whgGszH6HDec1gYu1mvUmg161tyL8Z9onrSfaOAxc86qssjNDV_VuVgwegYAPNuxpgtaJf40ZoGzHBQRSYyRt5mZOCDTLY8KAN6aeNzKmCq1eIddmp5d742pmwxvcFmxzmq_OSLgQ6njMSexlWsUY7sw1y2y5ZQ1pZGncw0znDuOfg">
+                        <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm text-primary font-label-md text-[10px] tracking-widest uppercase shadow-sm">
+                            Thiết kế chính
+                        </span>
+                    </div>
+                    <!-- Flower Details & Bespoke Form -->
+                    <div class="flex-1 flex flex-col justify-between space-y-space-sm min-w-0">
+                        <div class="space-y-space-xs">
+                            <div class="flex items-start justify-between gap-space-sm">
+                                <div>
+                                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider block">Bó hoa tươi nghệ thuật</span>
+                                    <h3 class="font-headline-sm text-headline-sm text-on-surface">Rosée Éternelle</h3>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-headline-sm text-headline-sm text-primary font-semibold block" id="item-price-1">1.950.000₫</span>
+                                    <span class="font-body-sm text-body-sm text-secondary line-through">2.150.000₫</span>
+                                </div>
+                            </div>
+                            <!-- Flower Specs Pills -->
+                            <div class="flex flex-wrap gap-1.5 pt-1">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md">
+                                    <span class="material-symbols-outlined text-[13px] text-primary">filter_vintage</span>
+                                    Cỡ Deluxe (25 cành hoa tuyển chọn)
+                                </span>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md">
+                                    <span class="material-symbols-outlined text-[13px] text-primary">texture</span>
+                                    Giấy gói Kraft xám ấm &amp; Petal Rose
+                                </span>
+                            </div>
+                            <!-- Bespoke Stationery Card Note Attached -->
+                            <div class="mt-space-sm p-3 rounded-lg bg-surface-container-lowest shadow-sm flex items-start gap-space-xs">
+                                <span class="material-symbols-outlined text-primary text-[18px] mt-0.5 flex-shrink-0">edit_note</span>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-title-sm text-title-sm text-on-surface">Thiệp viết tay đính kèm:</span>
+                                        <button class="font-label-md text-label-md text-primary hover:underline" onclick="editCardMessage(1)" type="button">Chỉnh sửa</button>
+                                    </div>
+                                    <p class="font-body-sm text-body-sm text-on-surface-variant italic mt-0.5 line-clamp-1" id="card-msg-1">"Chúc mừng sinh nhật em yêu - Mãi rực rỡ và bình yên như những đóa hồng ban mai."</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Quantity Controls & Actions -->
+                        <div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs">
+                            <div class="flex items-center bg-surface-container-lowest rounded-full p-1 shadow-sm">
+                                <button aria-label="Giảm số lượng" class="w-7 h-7 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" onclick="updateQty(1, -1)" type="button">
+                                    <span class="material-symbols-outlined text-[16px]">remove</span>
+                                </button>
+                                <span class="w-8 text-center font-title-sm text-title-sm text-on-surface" id="qty-1">1</span>
+                                <button aria-label="Tăng số lượng" class="w-7 h-7 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" onclick="updateQty(1, 1)" type="button">
+                                    <span class="material-symbols-outlined text-[16px]">add</span>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-space-sm text-on-surface-variant font-label-md text-label-md">
+                                <button class="hover:text-primary flex items-center gap-1 transition-colors" type="button">
+                                    <span class="material-symbols-outlined text-[16px]">bookmark_border</span>
+                                    <span class="">Lưu lại sau</span>
+                                </button>
+                                <span class="text-outline-variant">•</span>
+                                <button class="hover:text-error flex items-center gap-1 transition-colors" onclick="removeItem('cart-item-1', 1950000)" type="button">
+                                    <span class="material-symbols-outlined text-[16px]">delete_outline</span>
+                                    <span class="">Xóa</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2: Giỏ hoa mây mộc "Vũ Điệu Ánh Dương" -->
+                <div class="cart-item group relative flex flex-col md:flex-row gap-space-md p-space-md bg-surface-container-low rounded-xl transition-all duration-300 hover:shadow-md" data-price="1250000" id="cart-item-2">
+                    <!-- Flower Thumbnail -->
+                    <div class="w-full md:w-44 h-48 md:h-auto rounded-lg overflow-hidden flex-shrink-0 relative">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Vũ Điệu Ánh Dương • Giỏ hoa bàn tiệc cao cấp" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlY7CeociItNgMqxvEBCXiYUqEj0cu3Tn5Gz14tkVMl_dMtGgMdmCjhmfq-zHQLwpSaN9Ey_lRnigrOL7URsBSeaqtKTRDDar_ZA1KoQv5T1PaE1b8Ix6CScG6t3lW1GeseCgmEVvv-wOaKb_Iwcmoq_UrmVTkhb4oD2FMvRtFMHbHmwjqwMzhOvPYv3WWn3U4UeNsdVykeQKzFGpe3e0Qsx_Uz1eWm8XGU7cX9EyW0W_oxEHBydFNDw">
+                        <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm text-tertiary font-label-md text-[10px] tracking-widest uppercase shadow-sm">
+                            Giỏ Mây Mộc
+                        </span>
+                    </div>
+                    <!-- Flower Details & Bespoke Form -->
+                    <div class="flex-1 flex flex-col justify-between space-y-space-sm min-w-0">
+                        <div class="space-y-space-xs">
+                            <div class="flex items-start justify-between gap-space-sm">
+                                <div>
+                                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider block">Giỏ hoa bàn tiệc cao cấp</span>
+                                    <h3 class="font-headline-sm text-headline-sm text-on-surface">Vũ Điệu Ánh Dương</h3>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-headline-sm text-headline-sm text-primary font-semibold block" id="item-price-2">1.250.000₫</span>
+                                </div>
+                            </div>
+                            <!-- Flower Specs Pills -->
+                            <div class="flex flex-wrap gap-1.5 pt-1">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md">
+                                    <span class="material-symbols-outlined text-[13px] text-tertiary">aspect_ratio</span>
+                                    Kích cỡ: Tiêu chuẩn để bàn tiệc
+                                </span>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md">
+                                    <span class="material-symbols-outlined text-[13px] text-tertiary">wb_sunny</span>
+                                    Tone vàng kem hoàng kim &amp; cam san hô
+                                </span>
+                            </div>
+                            <!-- Default note reminder -->
+                            <div class="mt-space-sm p-3 rounded-lg bg-surface-container-lowest shadow-sm flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-outline text-[18px]">drafts</span>
+                                    <span class="font-body-sm text-body-sm text-on-surface-variant">Chưa chọn nội dung thiệp cho tác phẩm này</span>
+                                </div>
+                                <button class="font-label-md text-label-md text-primary hover:underline" onclick="editCardMessage(2)" type="button">+ Thêm thiệp (0₫)</button>
+                            </div>
+                        </div>
+                        <!-- Quantity Controls & Actions -->
+                        <div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs">
+                            <div class="flex items-center bg-surface-container-lowest rounded-full p-1 shadow-sm">
+                                <button aria-label="Giảm số lượng" class="w-7 h-7 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" onclick="updateQty(2, -1)" type="button">
+                                    <span class="material-symbols-outlined text-[16px]">remove</span>
+                                </button>
+                                <span class="w-8 text-center font-title-sm text-title-sm text-on-surface" id="qty-2">1</span>
+                                <button aria-label="Tăng số lượng" class="w-7 h-7 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" onclick="updateQty(2, 1)" type="button">
+                                    <span class="material-symbols-outlined text-[16px]">add</span>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-space-sm text-on-surface-variant font-label-md text-label-md">
+                                <button class="hover:text-primary flex items-center gap-1 transition-colors" type="button">
+                                    <span class="material-symbols-outlined text-[16px]">bookmark_border</span>
+                                    <span class="">Lưu lại sau</span>
+                                </button>
+                                <span class="text-outline-variant">•</span>
+                                <button class="hover:text-error flex items-center gap-1 transition-colors" onclick="removeItem('cart-item-2', 1250000)" type="button">
+                                    <span class="material-symbols-outlined text-[16px]">delete_outline</span>
+                                    <span class="">Xóa</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Action Buttons: Continue Browsing & Clear Cart -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pt-space-md">
+                    <a class="inline-flex items-center gap-2 font-title-sm text-title-sm text-secondary hover:text-primary transition-colors py-2" asp-controller="Home" asp-action="Products">
+                        <span class="material-symbols-outlined text-[18px]">west</span>
+                        <span class="">Tiếp tục ngắm hoa (Xem danh mục)</span>
+                    </a>
+                    <button class="text-on-surface-variant hover:text-error font-body-sm text-body-sm transition-colors flex items-center gap-1 self-start sm:self-auto" onclick="clearCart()" type="button">
+                        <span class="material-symbols-outlined text-[16px]">remove_shopping_cart</span>
+                        <span class="">Xóa toàn bộ giỏ hàng</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Add-on Upsells: Bespoke Floral Extras -->
+            <div class="bg-surface-container-lowest rounded-xl p-space-md sm:p-space-lg shadow-sm space-y-space-md">
+                <div class="space-y-space-xs">
+                    <div class="flex items-center gap-space-xs text-primary font-label-md text-label-md uppercase tracking-wider">
+                        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                        <span class="">Gợi Ý Nâng Cấp Tinh Tế</span>
+                    </div>
+                    <h3 class="font-headline-sm text-headline-sm text-on-surface">Thêm phần trọn vẹn cho món quà của bạn</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Những phụ kiện thủ công độc bản được chế tác riêng biệt từ xưởng thủ công Web quản lý hoa tươi.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-space-md pt-space-xs">
+                    <!-- Addon 1 -->
+                    <div class="bg-surface-container-low p-space-md rounded-xl flex flex-col justify-between space-y-space-sm hover:shadow-md transition-shadow">
+                        <div class="space-y-space-xs">
+                            <div class="h-28 rounded-lg overflow-hidden">
+                                <img class="w-full h-full object-cover" alt="Thiệp hoa sáp thơm viết tay" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNNfPl6iF4Ar6ZBvnTBMwqcbPABGvnp2kk3NgqyXzay1wCx-uh_eLg7gHS9iR_VrN8gVgo-akooBwoYpxkvSGONoI6dAxOJlVreA6VuC3R2zuQ4RutaL16eCE_IVs0OsCdF3Ghk_GQpXg05-2nXiVDx3RwxEdVMboV5BmM2WGARugOicj_79-cxGC9ryjB72u2P_E0tsOtxJyeUKIGgsXAEjVAtUYgLS1vgCQWX3Of4mJCPPREh2tsbQ">
+                            </div>
+                            <h4 class="font-title-sm text-title-sm text-on-surface pt-1">Thiệp hoa sáp thơm viết tay</h4>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant">Giấy mỹ thuật Cotton dập nổi, ướp hương hoa cam thảo mộc.</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-space-xs">
+                            <span class="font-title-sm text-title-sm text-primary">+35.000₫</span>
+                            <button class="addon-btn px-3 py-1.5 rounded-full bg-surface-container-lowest text-primary hover:bg-primary hover:text-on-primary font-label-md text-label-md transition-colors shadow-sm" onclick="toggleAddon(this, 35000, 'Thiệp hoa sáp thơm')" type="button">
+                                + Thêm
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Addon 2 -->
+                    <div class="bg-surface-container-low p-space-md rounded-xl flex flex-col justify-between space-y-space-sm hover:shadow-md transition-shadow">
+                        <div class="space-y-space-xs">
+                            <div class="h-28 rounded-lg overflow-hidden">
+                                <img class="w-full h-full object-cover" alt="Ruy-băng lụa dập kim" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMH1ATbw0HLi48TOMsu8fWtgccQ7LserwLKLkxQuxo3_NYQzVooTXAZf7ybM7I8UgYjZRjQ4Hv9TnH4YcoH4W23AQ5RrzLbsQjl1xB17qTVI3nZ520kAn-UmSrjcHn-1mJIxZA-hUJh5p0lsWMaXotETMb1jE1xlto6nj1nSLpqmwtgIT-DkhJX8bUfpu7FJCKN5Eiwu2z0AY9G4CIdP_cS5ppMvCSodTl-IGdff8g-mqZzYOPl0x47g">
+                            </div>
+                            <h4 class="font-title-sm text-title-sm text-on-surface pt-1">Ruy-băng lụa dập kim</h4>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant">Lụa tơ tằm dệt mép tưa mộc mạc, ép kim biểu tượng Atelier.</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-space-xs">
+                            <span class="font-title-sm text-title-sm text-primary">+45.000₫</span>
+                            <button class="addon-btn px-3 py-1.5 rounded-full bg-surface-container-lowest text-primary hover:bg-primary hover:text-on-primary font-label-md text-label-md transition-colors shadow-sm" onclick="toggleAddon(this, 45000, 'Ruy-băng lụa dập kim')" type="button">
+                                + Thêm
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Addon 3 -->
+                    <div class="bg-surface-container-low p-space-md rounded-xl flex flex-col justify-between space-y-space-sm hover:shadow-md transition-shadow">
+                        <div class="space-y-space-xs">
+                            <div class="h-28 rounded-lg overflow-hidden">
+                                <img class="w-full h-full object-cover" alt="Gói dưỡng hoa Chrysal (Hà Lan)" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3TQGi2beq7lD8k1zqszzlhrPmu_PANcgP5FdY3GI1-U-2mxKxJf1HI4TAt7X6xWP0w_wZ0sg8odXDjE0ug83_JAEA5T2NlDtMLyZ7jWU2B8Xr8g4CXzatzvRTYrwuli2-C_AefDI8mwcjab2wve1jWxjHNl2oHKLXw5GsKt6QyPsmePAKDmouN5Bhb2-HGb-1dD7P4gvjdTXZy5MKYWy4qi2gik-pnMx9s1_mQ_9VTBPbkcvnZBoLWQ">
+                            </div>
+                            <h4 class="font-title-sm text-title-sm text-on-surface pt-1">Gói dưỡng hoa Chrysal (Hà Lan)</h4>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant">Công thức dinh dưỡng sinh học giúp cành giữ độ tươi thắm đến 14 ngày.</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-space-xs">
+                            <span class="font-title-sm text-title-sm text-primary">+25.000₫</span>
+                            <button class="addon-btn px-3 py-1.5 rounded-full bg-surface-container-lowest text-primary hover:bg-primary hover:text-on-primary font-label-md text-label-md transition-colors shadow-sm" onclick="toggleAddon(this, 25000, 'Gói dưỡng hoa Chrysal')" type="button">
+                                + Thêm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Order Summary & Sticky Checkout (approx 35% / 4 cols) -->
+        <div class="lg:col-span-4 flex flex-col space-y-space-md sticky top-28">
+            <div class="bg-surface-container-lowest rounded-xl p-space-md sm:p-space-lg shadow-sm space-y-space-md">
+                <div class="flex items-center justify-between pb-space-xs">
+                    <h2 class="font-headline-sm text-headline-sm text-on-surface">Tóm Tắt Đơn Hoa</h2>
+                    <span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+                </div>
+                <!-- Promo Code Form -->
+                <div class="space-y-space-xs">
+                    <label class="font-label-md text-label-md text-secondary uppercase tracking-wider block" for="promo-input">
+                        Mã Ưu Đãi / Voucher Atelier
+                    </label>
+                    <div class="flex items-center gap-2">
+                        <div class="relative flex-1">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-outline">sell</span>
+                            <input class="w-full pl-9 pr-3 py-2 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface uppercase tracking-wider focus:outline-none focus:ring-1 focus:ring-primary shadow-sm" id="promo-input" placeholder="Nhập mã ưu đãi..." type="text" value="FLORISSAVIP">
+                        </div>
+                        <button class="px-space-md py-2 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg hover:bg-primary-container transition-colors shadow-sm" id="apply-voucher-btn" onclick="applyVoucher()" type="button">
+                            Áp dụng
+                        </button>
+                    </div>
+                    <!-- Applied Voucher Notification Tag -->
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-secondary-container text-on-secondary-container text-body-sm font-body-sm" id="voucher-badge">
+                        <div class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+                            <span class="">Voucher <strong>FLORISSAVIP</strong></span>
+                        </div>
+                        <span class="font-title-sm text-primary">-50.000₫</span>
+                    </div>
+                </div>
+                <div class="h-px bg-surface-container"></div>
+                <!-- Price Calculation Rows -->
+                <div class="space-y-space-sm font-body-sm text-body-sm text-on-surface-variant">
+                    <div class="flex items-center justify-between">
+                        <span class="">Tạm tính hoa tươi (<span id="cart-item-count" class="">2</span> tác phẩm)</span>
+                        <span class="font-title-sm text-on-surface" id="subtotal-display">3.200.000₫</span>
+                    </div>
+                    <!-- Dynamic add-ons subtotal row -->
+                    <div class="hidden flex items-center justify-between" id="addons-summary-row">
+                        <span class="">Phụ kiện &amp; Thiệp thủ công</span>
+                        <span class="font-title-sm text-on-surface" id="addons-display">0₫</span>
+                    </div>
+                    <div class="flex items-center justify-between text-primary">
+                        <span class="">Ưu đãi thành viên Web quản lý hoa tươi</span>
+                        <span class="font-title-sm" id="discount-display">-50.000₫</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1">
+                            <span class="">Vận chuyển xe lạnh chuyên dụng</span>
+                            <span class="material-symbols-outlined text-[14px] text-outline cursor-help" title="Hoa được chuyển bằng xe chuyên dụng giữ nhiệt độ mát 18°C suốt hành trình">info</span>
+                        </div>
+                        <span class="font-title-sm text-tertiary">Miễn phí</span>
+                    </div>
+                    <div class="flex items-center justify-between text-on-surface-variant/80">
+                        <span class="">Quà tặng đính kèm</span>
+                        <span class="font-label-md text-label-md text-tertiary">01 Thiệp Cotton &amp; Gói dưỡng hoa (0₫)</span>
+                    </div>
+                </div>
+                <div class="h-px bg-surface-container"></div>
+                <!-- Total Due -->
+                <div class="flex items-baseline justify-between pt-1">
+                    <div>
+                        <span class="font-title-md text-title-md text-on-surface block">Tổng Thanh Toán Dự Kiến</span>
+                        <span class="font-label-md text-label-md text-secondary">Đã bao gồm VAT &amp; bảo hiểm hoa</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-display-lg text-[28px] text-primary font-semibold block tracking-tight" id="final-total-display">3.150.000₫</span>
+                    </div>
+                </div>
+                <!-- Main CTA: Proceed to Checkout -->
+                <a class="w-full py-3.5 px-space-lg rounded-full bg-primary text-on-primary font-label-lg text-label-lg hover:bg-primary-container transition-all flex items-center justify-center gap-space-xs shadow-md hover:shadow-lg group" asp-controller="Home" asp-action="Checkout">
+                    <span class="">Tiến Hành Đặt Hoa &amp; Chọn Giờ Giao</span>
+                    <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </a>
+                <!-- Secure Payment Note -->
+                <div class="flex items-center justify-center gap-space-xs text-secondary font-label-md text-[11px] text-center">
+                    <span class="material-symbols-outlined text-[14px] text-tertiary">lock</span>
+                    <span class="">Thanh toán bảo mật chuẩn SSL • Chấp nhận Thẻ / Chuyển khoản / COD</span>
+                </div>
+            </div>
+
+            <!-- Atelier Guarantees Card -->
+            <div class="bg-surface-container-low rounded-xl p-space-md space-y-space-sm">
+                <span class="font-label-md text-label-md text-primary uppercase tracking-widest block">Cam kết độc bản từ Web quản lý hoa tươi</span>
+                <div class="space-y-space-sm font-body-sm text-body-sm text-on-surface-variant">
+                    <div class="flex items-start gap-space-xs">
+                        <span class="material-symbols-outlined text-primary text-[18px] mt-0.5 flex-shrink-0">browse_activity</span>
+                        <p class=""><strong class="font-medium text-on-surface">Giao hỏa tốc trong 2 giờ</strong> đảm bảo hoa giữ nguyên độ bung nở và ẩm mượt.</p>
+                    </div>
+                    <div class="flex items-start gap-space-xs">
+                        <span class="material-symbols-outlined text-primary text-[18px] mt-0.5 flex-shrink-0">photo_camera</span>
+                        <p class=""><strong class="font-medium text-on-surface">Gửi ảnh thực tế qua Zalo:</strong> Nghệ nhân chụp ảnh tác phẩm hoàn thiện gửi quý khách duyệt trước khi xuất xưởng.</p>
+                    </div>
+                    <div class="flex items-start gap-space-xs">
+                        <span class="material-symbols-outlined text-primary text-[18px] mt-0.5 flex-shrink-0">workspace_premium</span>
+                        <p class=""><strong class="font-medium text-on-surface">Đổi mới 100%:</strong> Bù đắp sản phẩm mới nếu hoa bị dập nát, héo úa hoặc không đúng thiết kế ban đầu.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Florist Consultation Contact Box -->
+            <div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
+                <div class="flex items-center gap-space-xs">
+                    <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-[20px]">support_agent</span>
+                    </div>
+                    <div>
+                        <span class="font-title-sm text-title-sm text-on-surface block">Cần chỉnh tone hoa riêng?</span>
+                        <span class="font-body-sm text-body-sm text-secondary">Trực tiếp trò chuyện với Florist</span>
+                    </div>
+                </div>
+                <a class="px-3 py-1.5 rounded-full bg-surface-container font-label-md text-label-md text-primary hover:bg-primary hover:text-on-primary transition-colors" asp-controller="Home" asp-action="Contact">
+                    Chat Zalo
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let cartState = {
+            items: {
+                1: { price: 1950000, qty: 1 },
+                2: { price: 1250000, qty: 1 }
+            },
+            addonsTotal: 0,
+            discount: 50000
+        };
+
+        function formatVND(amount) {
+            return new Intl.NumberFormat('vi-VN').format(amount) + '₫';
+        }
+
+        function recalculateTotals() {
+            let subtotal = 0;
+            let itemCount = 0;
+
+            for (let id in cartState.items) {
+                subtotal += cartState.items[id].price * cartState.items[id].qty;
+                itemCount += cartState.items[id].qty;
+            }
+
+            const subtotalEl = document.getElementById('subtotal-display');
+            const finalTotalEl = document.getElementById('final-total-display');
+            const countEl = document.getElementById('cart-item-count');
+            const addonsEl = document.getElementById('addons-display');
+            const addonsRow = document.getElementById('addons-summary-row');
+
+            if (subtotalEl) subtotalEl.textContent = formatVND(subtotal);
+            if (countEl) countEl.textContent = itemCount;
+
+            if (cartState.addonsTotal > 0) {
+                if (addonsRow) addonsRow.classList.remove('hidden');
+                if (addonsEl) addonsEl.textContent = formatVND(cartState.addonsTotal);
+            } else {
+                if (addonsRow) addonsRow.classList.add('hidden');
+            }
+
+            const finalAmount = Math.max(0, subtotal + cartState.addonsTotal - cartState.discount);
+            if (finalTotalEl) finalTotalEl.textContent = formatVND(finalAmount);
+        }
+
+        function updateQty(itemId, delta) {
+            if (!cartState.items[itemId]) return;
+            const currentQty = cartState.items[itemId].qty;
+            const newQty = currentQty + delta;
+
+            if (newQty < 1) {
+                if (confirm('Quý khách có muốn gỡ tác phẩm hoa này khỏi giỏ hàng?')) {
+                    removeItem('cart-item-' + itemId, cartState.items[itemId].price);
+                }
+                return;
+            }
+
+            cartState.items[itemId].qty = newQty;
+            const qtyEl = document.getElementById('qty-' + itemId);
+            if (qtyEl) qtyEl.textContent = newQty;
+
+            const itemPriceEl = document.getElementById('item-price-' + itemId);
+            if (itemPriceEl) {
+                itemPriceEl.textContent = formatVND(cartState.items[itemId].price * newQty);
+            }
+
+            recalculateTotals();
+        }
+
+        function removeItem(elementId, price) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(10px)';
+                el.style.transition = 'all 0.3s ease';
+                setTimeout(() => {
+                    el.remove();
+                    const idMatch = elementId.replace('cart-item-', '');
+                    delete cartState.items[idMatch];
+                    recalculateTotals();
+                }, 300);
+            }
+        }
+
+        function toggleAddon(btn, price, name) {
+            const isAdded = btn.getAttribute('data-added') === 'true';
+
+            if (!isAdded) {
+                btn.setAttribute('data-added', 'true');
+                btn.textContent = '✓ Đã thêm';
+                btn.classList.add('bg-primary', 'text-on-primary');
+                btn.classList.remove('bg-surface-container-lowest', 'text-primary');
+                cartState.addonsTotal += price;
+            } else {
+                btn.setAttribute('data-added', 'false');
+                btn.textContent = '+ Thêm';
+                btn.classList.remove('bg-primary', 'text-on-primary');
+                btn.classList.add('bg-surface-container-lowest', 'text-primary');
+                cartState.addonsTotal -= price;
+            }
+            recalculateTotals();
+        }
+
+        function applyVoucher() {
+            const input = document.getElementById('promo-input');
+            const badge = document.getElementById('voucher-badge');
+            const discountEl = document.getElementById('discount-display');
+
+            if (input && input.value.trim().toUpperCase() === 'FLORISSAVIP') {
+                cartState.discount = 50000;
+                if (badge) badge.classList.remove('hidden');
+                if (discountEl) discountEl.textContent = '-50.000₫';
+                alert('Áp dụng mã FLORISSAVIP thành công! Bạn nhận được đặc quyền giảm 50.000₫.');
+            } else {
+                alert('Mã ưu đãi không hợp lệ hoặc đã hết hạn.');
+            }
+            recalculateTotals();
+        }
+
+        function editCardMessage(id) {
+            const currentEl = document.getElementById('card-msg-' + id);
+            const prevText = currentEl ? currentEl.textContent.replace(/^"|"$/g, '') : '';
+            const newMsg = prompt('Nhập lời chúc muốn viết tay lên thiệp gửi người thương:', prevText);
+            if (newMsg !== null && newMsg.trim() !== '') {
+                if (currentEl) {
+                    currentEl.textContent = `"${newMsg.trim()}"`;
+                }
+            }
+        }
+
+        function clearCart() {
+            if (confirm('Quý khách có chắc chắn muốn xóa tất cả hoa trong giỏ hàng?')) {
+                const items = document.querySelectorAll('.cart-item');
+                items.forEach(el => el.remove());
+                cartState.items = {};
+                recalculateTotals();
+            }
+        }
+    </script>
+}

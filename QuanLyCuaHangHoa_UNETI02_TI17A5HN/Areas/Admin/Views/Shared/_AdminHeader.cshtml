@@ -1,0 +1,36 @@
+<header class="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-xl">
+    <!-- Breadcrumb Header -->
+    <div class="flex items-center gap-space-sm">
+        <span class="font-title-sm text-title-sm text-secondary uppercase tracking-wider">NHÓM 2 CMS</span>
+        <span class="text-outline-variant">/</span>
+        <span class="font-title-sm text-title-sm text-on-surface font-semibold">@(ViewBag.Breadcrumb ?? ViewBag.Title ?? "Quản lý hệ thống")</span>
+    </div>
+
+    <!-- Search & Right Tools -->
+    <div class="flex items-center gap-space-md">
+        <!-- Global Search Bar -->
+        <div class="flex items-center gap-space-xs bg-surface-container px-space-md py-1.5 rounded-full">
+            <span class="material-symbols-outlined text-[18px] text-on-surface-variant">search</span>
+            <input type="text" placeholder="Tra cứu mã đơn, tên hoa hoặc khách hàng..." class="bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none w-64" />
+        </div>
+
+        <!-- Runtime Badge -->
+        <div class="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed whitespace-nowrap">
+            <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+            <span class="font-label-md text-label-md font-semibold">ASP.NET Core 10 Active</span>
+        </div>
+
+        <!-- Notifications Bell -->
+        <button type="button" class="relative p-2 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+            <span class="material-symbols-outlined text-[22px]">notifications</span>
+            <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-primary rounded-full"></span>
+        </button>
+
+        <!-- User Profile Quick Info -->
+        <a href="/Admin/TaiKhoan/Profile" class="flex items-center gap-space-xs">
+            <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs shadow-sm">
+                N2
+            </div>
+        </a>
+    </div>
+</header>

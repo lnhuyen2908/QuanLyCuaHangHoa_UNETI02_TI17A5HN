@@ -1,0 +1,253 @@
+@{
+    ViewBag.Title = "Quản Lý Loại Hoa";
+    ViewBag.ActiveMenu = "LoaiHoa";
+    ViewBag.Breadcrumb = "Quản lý hoa tươi";
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full">
+    <!-- Editorial Breadcrumb & Header Section -->
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <!-- Key Botanical Metrics (Stats Row) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-space-md mb-space-lg">
+        <!-- Card 1 -->
+        <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-sm transition-all hover:shadow-md">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Hệ Thống Phân Loại</span>
+                    <div class="flex items-baseline gap-2 mt-2">
+                        <span class="font-display-lg text-display-lg text-on-surface leading-none">14</span>
+                        <span class="font-title-sm text-title-sm text-primary font-medium">Nhóm loài hoa</span>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-secondary mt-2">Tổng hợp dữ liệu danh mục toàn hệ thống</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-secondary-container/60 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[24px]">local_florist</span>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 flex items-center justify-between font-label-md text-label-md text-secondary border-t border-surface-container">
+                <span>Tiêu chuẩn Nhóm 2 Atelier</span>
+                <span class="text-tertiary font-semibold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> 100% Phân hạng
+                </span>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-sm transition-all hover:shadow-md">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Tình Trạng Cung Ứng</span>
+                    <div class="flex items-baseline gap-2 mt-2">
+                        <span class="font-display-lg text-display-lg text-tertiary leading-none">12</span>
+                        <span class="font-title-sm text-title-sm text-tertiary font-medium">Đang kinh doanh</span>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-secondary mt-2">Trạng thái hoạt động, nhập hoa liên tục</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-tertiary-fixed/40 flex items-center justify-center text-tertiary">
+                    <span class="material-symbols-outlined text-[24px]">spa</span>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 flex items-center justify-between font-label-md text-label-md text-secondary border-t border-surface-container">
+                <span>Tạm ngưng nhập mùa</span>
+                <span class="text-secondary font-semibold">2 dòng hoa</span>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-sm transition-all hover:shadow-md">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Quy Mô Giống Hoa</span>
+                    <div class="flex items-baseline gap-2 mt-2">
+                        <span class="font-display-lg text-display-lg text-primary leading-none">48</span>
+                        <span class="font-title-sm text-title-sm text-primary font-medium">Giống liên kết</span>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-secondary mt-2">Tổng số mặt hàng hoa tươi sẵn có trong kho</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-primary-fixed/50 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 flex items-center justify-between font-label-md text-label-md text-secondary border-t border-surface-container">
+                <span>Trung bình / Nhóm</span>
+                <span class="text-on-surface font-semibold">3.4 giống hoa</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Component -->
+    @await Html.PartialAsync("_AdminFilterBar")
+
+    <!-- Full Width Table Container -->
+    <div class="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden flex flex-col">
+        <!-- Table Top Bar -->
+        <div class="p-space-md bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-sm border-b border-surface-container">
+            <div class="flex items-center gap-space-sm w-full sm:w-auto">
+                <span class="font-headline-sm text-headline-sm text-on-surface">Danh Mục Dòng Hoa</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">14 loài hệ thống</span>
+            </div>
+            <button type="button" onclick="openAddModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                <span>Thêm Loại Hoa Mới</span>
+            </button>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-surface-container-low font-label-md text-label-md text-secondary uppercase tracking-wider">
+                        <th class="py-3.5 px-space-md">Mã loại</th>
+                        <th class="py-3.5 px-space-md">Dòng hoa</th>
+                        <th class="py-3.5 px-space-md text-center">Số giống</th>
+                        <th class="py-3.5 px-space-md">Đặc tính &amp; Bảo quản</th>
+                        <th class="py-3.5 px-space-md">Trạng thái</th>
+                        <th class="py-3.5 px-space-md text-right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="font-body-md text-body-md text-on-surface divide-y divide-surface-container">
+                    <tr class="hover:bg-surface-container-low/60 transition-colors">
+                        <td class="py-space-md px-space-md font-mono text-body-sm text-primary font-semibold">LOAI-01</td>
+                        <td class="py-space-md px-space-md">
+                            <div class="font-title-sm text-title-sm text-on-surface">Hoa hồng</div>
+                            <div class="font-body-sm text-body-sm text-secondary italic">Garden Roses (Rosa spp.)</div>
+                        </td>
+                        <td class="py-space-md px-space-md text-center">
+                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-full bg-surface-container text-on-surface font-title-sm text-title-sm">12</span>
+                        </td>
+                        <td class="py-space-md px-space-md">
+                            <div class="font-body-sm text-body-sm text-on-surface-variant">Cánh dày, hương thơm nồng nàn; giữ mát 16°C</div>
+                        </td>
+                        <td class="py-space-md px-space-md">
+                            @await Html.PartialAsync("_AdminStatusBadge", "Đang dùng")
+                        </td>
+                        <td class="py-space-md px-space-md text-right">
+                            <button type="button" onclick="openEditModal('LOAI-01', 'Hoa hồng', 'Garden Roses (Rosa spp.) - Cánh dày, hương thơm nồng nàn; giữ mát 16°C', '1')" class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all" title="Chỉnh sửa">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-low/60 transition-colors">
+                        <td class="py-space-md px-space-md font-mono text-body-sm text-primary font-semibold">LOAI-02</td>
+                        <td class="py-space-md px-space-md">
+                            <div class="font-title-sm text-title-sm text-on-surface">Tulip Hà Lan</div>
+                            <div class="font-body-sm text-body-sm text-secondary italic">Tulipa gesneriana</div>
+                        </td>
+                        <td class="py-space-md px-space-md text-center">
+                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-full bg-surface-container text-on-surface font-title-sm text-title-sm">8</span>
+                        </td>
+                        <td class="py-space-md px-space-md">
+                            <div class="font-body-sm text-body-sm text-on-surface-variant">Cánh kép thân nước mềm; giữ mát 14°C</div>
+                        </td>
+                        <td class="py-space-md px-space-md">
+                            @await Html.PartialAsync("_AdminStatusBadge", "Đang dùng")
+                        </td>
+                        <td class="py-space-md px-space-md text-right">
+                            <button type="button" onclick="openEditModal('LOAI-02', 'Tulip Hà Lan', 'Tulipa gesneriana - Cánh kép thân nước mềm; giữ mát 14°C', '1')" class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all" title="Chỉnh sửa">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-low/60 transition-colors">
+                        <td class="py-space-md px-space-md font-mono text-body-sm text-primary font-semibold">LOAI-03</td>
+                        <td class="py-space-md px-space-md">
+                            <div class="font-title-sm text-title-sm text-on-surface">Hoa Baby</div>
+                            <div class="font-body-sm text-body-sm text-secondary italic">Gypsophila paniculata</div>
+                        </td>
+                        <td class="py-space-md px-space-md text-center">
+                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-full bg-surface-container text-on-surface font-title-sm text-title-sm">5</span>
+                        </td>
+                        <td class="py-space-md px-space-md">
+                            <div class="font-body-sm text-body-sm text-on-surface-variant">Cành hoa trắng bông lớn New Zealand</div>
+                        </td>
+                        <td class="py-space-md px-space-md">
+                            @await Html.PartialAsync("_AdminStatusBadge", "Đang dùng")
+                        </td>
+                        <td class="py-space-md px-space-md text-right">
+                            <button type="button" onclick="openEditModal('LOAI-03', 'Hoa Baby', 'Gypsophila paniculata - Cành hoa trắng bông lớn New Zealand', '1')" class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all" title="Chỉnh sửa">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @await Html.PartialAsync("_AdminPagination")
+    </div>
+</div>
+
+<!-- Popup Modal: Thêm / Chỉnh Sửa Loại Hoa -->
+<div id="loaiHoaModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
+    <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden flex flex-col">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-space-lg py-space-md bg-surface-container-low border-b border-surface-container-high">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">local_florist</span>
+                <h3 id="modalLoaiHoaTitle" class="font-headline-sm text-headline-sm text-on-surface font-semibold">Thêm Loại Hoa Mới</h3>
+            </div>
+            <button type="button" onclick="closeLoaiHoaModal()" class="text-secondary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <form id="loaiHoaForm" onsubmit="handleLoaiHoaSubmit(event)" class="p-space-lg space-y-space-md font-body-md text-body-md">
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Tên loài hoa *</label>
+                <input type="text" id="inputTenLoai" placeholder="VD: Cát tường, Thược dược..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required />
+            </div>
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Mô tả / Đặc tính bảo quản</label>
+                <textarea id="inputMoTaLoai" rows="3" placeholder="Nhập ghi chú điều kiện bảo quản kho mát, độ bền..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40"></textarea>
+            </div>
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Trạng thái</label>
+                <select id="inputTrangThaiLoai" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40">
+                    <option value="1">Hoạt động (Cho phép sử dụng)</option>
+                    <option value="0">Ngừng hoạt động</option>
+                </select>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-end gap-space-sm pt-space-md border-t border-surface-container-high">
+                <button type="button" onclick="closeLoaiHoaModal()" class="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-all">
+                    Hủy bỏ
+                </button>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-md flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    <span>Lưu loại hoa</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openAddModal() {
+        document.getElementById('modalLoaiHoaTitle').innerText = 'Thêm Loại Hoa Mới';
+        document.getElementById('inputTenLoai').value = '';
+        document.getElementById('inputMoTaLoai').value = '';
+        document.getElementById('inputTrangThaiLoai').value = '1';
+        document.getElementById('loaiHoaModal').classList.remove('hidden');
+    }
+
+    function openEditModal(code, name, desc, status) {
+        document.getElementById('modalLoaiHoaTitle').innerText = 'Chỉnh Sửa Loại Hoa #' + code;
+        document.getElementById('inputTenLoai').value = name;
+        document.getElementById('inputMoTaLoai').value = desc;
+        document.getElementById('inputTrangThaiLoai').value = status;
+        document.getElementById('loaiHoaModal').classList.remove('hidden');
+    }
+
+    function closeLoaiHoaModal() {
+        document.getElementById('loaiHoaModal').classList.add('hidden');
+    }
+
+    function handleLoaiHoaSubmit(e) {
+        e.preventDefault();
+        alert('Lưu dữ liệu loại hoa thành công!');
+        closeLoaiHoaModal();
+    }
+</script>

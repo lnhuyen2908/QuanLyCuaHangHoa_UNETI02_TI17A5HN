@@ -1,0 +1,142 @@
+@{
+    string activeMenu = ViewBag.ActiveMenu as string ?? "";
+}
+
+<aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low z-50 flex flex-col justify-between py-space-lg px-space-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+    <div class="space-y-space-lg overflow-y-auto">
+        <!-- Rebranded Logo Header -->
+        <div class="flex items-center gap-space-sm px-space-sm">
+            <div class="w-9 h-9 rounded-xl bg-primary text-on-primary flex items-center justify-center font-headline-md font-bold shadow-sm">
+                N2
+            </div>
+            <div class="flex flex-col">
+                <span class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold">NHÓM 2</span>
+                <span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Quản Trị Atelier</span>
+            </div>
+        </div>
+
+        <nav class="space-y-1">
+            <!-- Dashboard -->
+            <a href="/Admin/Home" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "Dashboard" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
+                <span class="material-symbols-outlined text-[20px]">grid_view</span>
+                <span>Dashboard</span>
+            </a>
+
+            <div class="my-space-sm border-t border-surface-container"></div>
+
+            <!-- Module 3: Đơn đặt hoa -->
+            <a href="/Admin/DonDatHoa" class="flex items-center justify-between px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "DonDatHoa" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
+                <div class="flex items-center gap-space-sm">
+                    <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+                    <span>Đơn đặt hoa</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full @(activeMenu == "DonDatHoa" ? "bg-on-primary/20 text-on-primary" : "bg-primary/10 text-primary") text-[11px] font-bold">12</span>
+            </a>
+
+            <!-- Module 3: Thiết kế riêng -->
+            <a href="/Admin/YeuCauThietKe" class="flex items-center justify-between px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "YeuCauThietKe" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
+                <div class="flex items-center gap-space-sm">
+                    <span class="material-symbols-outlined text-[20px]">draw</span>
+                    <span>Thiết kế riêng</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full @(activeMenu == "YeuCauThietKe" ? "bg-on-primary/20 text-on-primary" : "bg-primary-fixed text-on-primary-fixed-variant") text-[11px] font-bold">Bespoke</span>
+            </a>
+
+            <div class="my-space-sm border-t border-surface-container"></div>
+
+            <!-- Module 1 & 2: Quản lý hoa tươi -->
+            <div class="space-y-1">
+                <div class="flex items-center justify-between px-space-md py-2 rounded-lg font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all cursor-pointer">
+                    <div class="flex items-center gap-space-sm">
+                        <span class="material-symbols-outlined text-[20px]">local_florist</span>
+                        <span>Quản lý hoa</span>
+                    </div>
+                    <span class="material-symbols-outlined text-[16px] text-secondary">expand_more</span>
+                </div>
+                <div class="pl-8 space-y-1">
+                    <a href="/Admin/LoaiHoa" class="flex items-center gap-2 py-1.5 px-space-sm rounded-lg text-body-sm transition-colors @(activeMenu == "LoaiHoa" ? "text-primary font-semibold bg-surface-container" : "text-secondary hover:text-on-surface hover:bg-surface-container")">
+                        <span class="w-1.5 h-1.5 rounded-full @(activeMenu == "LoaiHoa" ? "bg-primary" : "bg-outline-variant")"></span>
+                        <span>Loại hoa</span>
+                    </a>
+                    <a href="/Admin/HoaTuoi" class="flex items-center gap-2 py-1.5 px-space-sm rounded-lg text-body-sm transition-colors @(activeMenu == "HoaTuoi" ? "text-primary font-semibold bg-surface-container" : "text-secondary hover:text-on-surface hover:bg-surface-container")">
+                        <span class="w-1.5 h-1.5 rounded-full @(activeMenu == "HoaTuoi" ? "bg-primary" : "bg-outline-variant")"></span>
+                        <span>Hoa tươi</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Module 2: Mẫu sản phẩm -->
+            <div class="space-y-1">
+                <div class="flex items-center justify-between px-space-md py-2 rounded-lg font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all cursor-pointer">
+                    <div class="flex items-center gap-space-sm">
+                        <span class="material-symbols-outlined text-[20px]">filter_vintage</span>
+                        <span>Mẫu sản phẩm</span>
+                    </div>
+                    <span class="material-symbols-outlined text-[16px] text-secondary">expand_more</span>
+                </div>
+                <div class="pl-8 space-y-1">
+                    <a href="/Admin/MauSanPham" class="flex items-center gap-2 py-1.5 px-space-sm rounded-lg text-body-sm transition-colors @(activeMenu == "MauSanPham" ? "text-primary font-semibold bg-surface-container" : "text-secondary hover:text-on-surface hover:bg-surface-container")">
+                        <span class="w-1.5 h-1.5 rounded-full @(activeMenu == "MauSanPham" ? "bg-primary" : "bg-outline-variant")"></span>
+                        <span>Danh sách mẫu</span>
+                    </a>
+                    <a href="/Admin/MauSanPham/Create" class="flex items-center gap-2 py-1.5 px-space-sm rounded-lg text-body-sm transition-colors @(activeMenu == "MauSanPhamCreate" ? "text-primary font-semibold bg-surface-container" : "text-secondary hover:text-on-surface hover:bg-surface-container")">
+                        <span class="w-1.5 h-1.5 rounded-full @(activeMenu == "MauSanPhamCreate" ? "bg-primary" : "bg-outline-variant")"></span>
+                        <span>Thêm mẫu mới</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Module 1: Dịp sử dụng -->
+            <a href="/Admin/DipSuDung" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "DipSuDung" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
+                <span class="material-symbols-outlined text-[20px]">sell</span>
+                <span>Dịp sử dụng</span>
+            </a>
+
+            <!-- Module 3: Khách hàng -->
+            <a href="/Admin/KhachHang" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "KhachHang" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
+                <span class="material-symbols-outlined text-[20px]">group</span>
+                <span>Khách hàng</span>
+            </a>
+
+            <!-- Module 4: Giao & Nhận -->
+            <a href="/Admin/GiaoNhan" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "GiaoNhan" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
+                <span class="material-symbols-outlined text-[20px]">local_shipping</span>
+                <span>Giao &amp; Nhận</span>
+            </a>
+
+            <!-- Module 4: Đánh giá -->
+            <a href="/Admin/DanhGia" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "DanhGia" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
+                <span class="material-symbols-outlined text-[20px]">star</span>
+                <span>Đánh giá</span>
+            </a>
+
+            <div class="my-space-sm border-t border-surface-container"></div>
+
+            <!-- Module 1: Tài khoản & Phân quyền -->
+            <a href="/Admin/TaiKhoan" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "TaiKhoan" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
+                <span class="material-symbols-outlined text-[20px]">manage_accounts</span>
+                <span>Tài khoản</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- User Profile Footer Card -->
+    <div class="space-y-space-sm pt-space-md px-space-sm">
+        <a href="/" class="flex items-center gap-space-sm px-space-md py-2 rounded-lg font-body-sm text-body-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+            <span class="material-symbols-outlined text-[18px]">storefront</span>
+            <span>Về trang bán lẻ</span>
+        </a>
+        <div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container">
+            <div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xs">
+                N2
+            </div>
+            <div class="flex flex-col min-w-0 flex-1">
+                <a href="/Admin/TaiKhoan/Profile" class="font-title-sm text-title-sm text-on-surface truncate hover:text-primary">Admin Nhóm 2</a>
+                <span class="font-label-md text-label-md text-secondary truncate">Quản Trị Viên</span>
+            </div>
+            <a href="/User/Login" aria-label="Đăng xuất" class="text-on-surface-variant hover:text-error transition-colors">
+                <span class="material-symbols-outlined text-[20px]">logout</span>
+            </a>
+        </div>
+    </div>
+</aside>

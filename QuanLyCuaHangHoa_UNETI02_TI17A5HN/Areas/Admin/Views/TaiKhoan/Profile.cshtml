@@ -1,0 +1,91 @@
+@{
+    ViewBag.Title = "Hồ Sơ Quản Trị Viên";
+    ViewBag.ActiveMenu = "TaiKhoan";
+    ViewBag.Breadcrumb = "Cài đặt tài khoản";
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
+    <!-- Header Section -->
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <!-- Main Grid: Florist Identity & Settings -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-start">
+        <!-- Left Column: Identity Summary Card -->
+        <div class="lg:col-span-4 flex flex-col gap-space-lg">
+            <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col items-center text-center">
+                <div class="w-24 h-24 rounded-full bg-primary text-on-primary flex items-center justify-center font-headline-lg font-bold shadow-md mb-4">
+                    N2
+                </div>
+                <h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Admin Nhóm 2</h2>
+                <p class="font-title-sm text-title-sm text-primary italic">Master Admin &amp; General Manager</p>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-label-md font-semibold mt-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Tài khoản xác thực Cấp 3
+                </span>
+                
+                <div class="w-full mt-6 pt-4 border-t border-surface-container flex flex-col gap-2 text-left font-body-sm text-body-sm">
+                    <div class="flex justify-between">
+                        <span class="text-secondary">Username:</span>
+                        <span class="font-mono text-on-surface font-bold">admin</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-secondary">Email:</span>
+                        <span class="text-on-surface font-medium">admin@nhom2.vn</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-secondary">Quyền hạn:</span>
+                        <span class="text-primary font-bold">Full Admin (RBAC Level 4)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Settings Form -->
+        <div class="lg:col-span-8 bg-surface-container-lowest p-space-lg rounded-xl shadow-sm space-y-space-md">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-surface-container pb-space-xs">Cập Nhật Thông Tin Cá Nhân</h3>
+
+            <form class="space-y-space-md">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1">Tên đăng nhập</label>
+                        <input type="text" value="admin" readonly class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-secondary font-mono font-bold" />
+                    </div>
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1">Họ và tên *</label>
+                        <input type="text" value="Admin Nhóm 2" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-title-sm text-title-sm focus:outline-none" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1">Email liên hệ *</label>
+                        <input type="email" value="admin@nhom2.vn" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none" />
+                    </div>
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1">Số điện thoại</label>
+                        <input type="text" value="0908 123 456" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none" />
+                    </div>
+                </div>
+
+                <div class="pt-space-md border-t border-surface-container">
+                    <h4 class="font-title-md text-title-md text-on-surface mb-space-md">Đổi Mật Khẩu Khóa Bảo Mật</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+                        <div>
+                            <label class="block font-title-sm text-title-sm text-on-surface mb-1">Mật khẩu hiện tại</label>
+                            <input type="password" placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none" />
+                        </div>
+                        <div>
+                            <label class="block font-title-sm text-title-sm text-on-surface mb-1">Mật khẩu mới</label>
+                            <input type="password" placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-space-md flex justify-end">
+                    <button type="submit" class="px-space-xl py-3 rounded-xl bg-primary text-on-primary font-title-sm hover:bg-primary-container transition-all shadow-sm">
+                        Lưu thông tin cài đặt
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

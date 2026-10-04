@@ -1,0 +1,146 @@
+@{
+    ViewBag.Title = "Quản Lý Đánh Giá";
+    ViewBag.ActiveMenu = "DanhGia";
+    ViewBag.Breadcrumb = "Chăm sóc khách hàng";
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
+    <!-- Header Section -->
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <!-- CSAT & Star Breakdown Bento Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+        <!-- Average CSAT Card -->
+        <div class="lg:col-span-4 bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline font-semibold">Điểm trải nghiệm trung bình</span>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-md text-label-md font-bold">
+                        <span class="material-symbols-outlined text-[14px]">trending_up</span>+0.3 tháng này
+                    </span>
+                </div>
+                <div class="flex items-baseline gap-3 pt-2">
+                    <span class="font-display-lg text-display-lg text-primary font-bold">4.9</span>
+                    <span class="font-headline-md text-headline-md text-outline">/ 5.0</span>
+                </div>
+                <div class="flex items-center gap-1 text-amber-500">
+                    <span class="material-symbols-outlined text-[22px]">star</span>
+                    <span class="material-symbols-outlined text-[22px]">star</span>
+                    <span class="material-symbols-outlined text-[22px]">star</span>
+                    <span class="material-symbols-outlined text-[22px]">star</span>
+                    <span class="material-symbols-outlined text-[22px]">star</span>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-surface-container flex items-center justify-between">
+                <div class="text-left">
+                    <p class="font-headline-sm text-headline-sm text-on-surface font-semibold">1,420</p>
+                    <p class="font-label-md text-label-md text-outline uppercase tracking-wider">Lượt đánh giá</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-headline-sm text-headline-sm text-tertiary font-semibold">98.2%</p>
+                    <p class="font-label-md text-label-md text-outline uppercase tracking-wider">Hài lòng tuyệt đối</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Star Distribution Card -->
+        <div class="lg:col-span-4 bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline font-semibold">Phân bố số sao</span>
+                    <span class="font-body-sm text-body-sm text-outline">1,420 phản hồi</span>
+                </div>
+                <div class="space-y-2 pt-1">
+                    <div class="flex items-center gap-2 font-body-sm text-body-sm">
+                        <span class="w-10 text-on-surface font-medium shrink-0">5 sao</span>
+                        <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
+                            <div class="h-full bg-primary rounded-full" style="width: 90%;"></div>
+                        </div>
+                        <span class="w-14 text-right text-on-surface-variant font-medium">90.1%</span>
+                    </div>
+                    <div class="flex items-center gap-2 font-body-sm text-body-sm">
+                        <span class="w-10 text-on-surface font-medium shrink-0">4 sao</span>
+                        <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
+                            <div class="h-full bg-primary-container rounded-full" style="width: 7.2%;"></div>
+                        </div>
+                        <span class="w-14 text-right text-on-surface-variant font-medium">7.2%</span>
+                    </div>
+                    <div class="flex items-center gap-2 font-body-sm text-body-sm">
+                        <span class="w-10 text-on-surface font-medium shrink-0">3 sao</span>
+                        <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
+                            <div class="h-full bg-secondary rounded-full" style="width: 1.7%;"></div>
+                        </div>
+                        <span class="w-14 text-right text-on-surface-variant font-medium">1.7%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Standards Card -->
+        <div class="lg:col-span-4 bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div class="space-y-4">
+                <span class="font-label-md text-label-md uppercase tracking-wider text-outline font-semibold">Chỉ số tiêu chuẩn dịch vụ</span>
+                <div class="space-y-3">
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between text-on-surface font-title-sm text-title-sm">
+                            <span>Độ tươi hoa &gt; 5 ngày</span>
+                            <span class="font-bold text-tertiary">99.4%</span>
+                        </div>
+                        <div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+                            <div class="h-full bg-tertiary rounded-full" style="width: 99.4%;"></div>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between text-on-surface font-title-sm text-title-sm">
+                            <span>Giao hoa đúng giờ hẹn</span>
+                            <span class="font-bold text-primary">98.7%</span>
+                        </div>
+                        <div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
+                            <div class="h-full bg-primary rounded-full" style="width: 98.7%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Component -->
+    @await Html.PartialAsync("_AdminFilterBar")
+
+    <!-- Reviews List -->
+    <div class="space-y-space-md">
+        <article class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm space-y-4">
+            <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-title-md text-title-md font-bold shrink-0">PU</div>
+                    <div class="space-y-1">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="font-title-md text-title-md text-on-surface font-semibold">Lê Phương Uyên</span>
+                            <span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-md text-label-md font-bold">VIP Diamond</span>
+                        </div>
+                        <div class="flex items-center gap-2 font-body-sm text-body-sm text-outline">
+                            <span>Mã đơn: <strong class="text-primary font-medium">#ORD-9021</strong></span>
+                            <span>•</span>
+                            <span>24/10/2026</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1 text-amber-500 shrink-0">
+                    <span class="material-symbols-outlined text-[20px]">star</span>
+                    <span class="material-symbols-outlined text-[20px]">star</span>
+                    <span class="material-symbols-outlined text-[20px]">star</span>
+                    <span class="material-symbols-outlined text-[20px]">star</span>
+                    <span class="material-symbols-outlined text-[20px]">star</span>
+                </div>
+            </div>
+            <p class="font-body-md text-body-md text-on-surface">"Hoa hồng Ohara hương thơm thanh khiết nức nở, cành dày dặn không dập nát một cánh nào. Cách bó giấy lụa mờ rất trang nhã. Bạn người nhận khen nức nở. Rất hài lòng với dịch vụ cắm hoa của Nhóm 2 Atelier!"</p>
+            <div class="p-4 rounded-xl bg-surface-container-low border-l-2 border-primary space-y-1">
+                <div class="flex items-center justify-between">
+                    <span class="font-title-sm text-title-sm text-primary font-semibold">Phản hồi từ Nhóm 2 Atelier Admin:</span>
+                    <span class="font-label-md text-label-md text-outline">24/10/2026 - Bởi Admin</span>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">"Nhóm 2 Atelier chân thành cảm ơn chị Uyên đã tin tưởng lựa chọn sản phẩm của shop. Chúc chị luôn rạng rỡ bên những đóa hoa tươi!"</p>
+            </div>
+        </article>
+    </div>
+</div>

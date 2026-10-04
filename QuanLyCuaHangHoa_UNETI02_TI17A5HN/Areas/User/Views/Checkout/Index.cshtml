@@ -1,0 +1,606 @@
+@{
+    ViewData["Title"] = "Thanh toán & Đặt hoa - Web quản lý hoa tươi";
+}
+
+<!-- BREADCRUMB & PROGRESS STEPPER -->
+<section class="border-b border-outline-variant/40 bg-surface-container-lowest/60">
+    <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin lg:px-margin-desktop py-6">
+        <!-- Stepper 3 Bước -->
+        <div class="max-w-3xl mx-auto py-2">
+            <div class="grid grid-cols-3 relative">
+                <!-- Connector Lines -->
+                <div class="absolute top-4 left-[16.66%] right-[16.66%] h-[2px] -z-0 bg-outline-variant/40">
+                    <div class="h-full bg-primary" style="width: 50%;"></div>
+                </div>
+                <!-- Step 1: Hoàn thành -->
+                <div class="flex flex-col items-center relative z-10">
+                    <a class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-sm" asp-controller="Home" asp-action="Cart">
+                        <span class="material-symbols-outlined text-[18px]">check</span>
+                    </a>
+                    <span class="mt-2 text-title-sm text-primary font-medium">1. Giỏ hàng</span>
+                    <span class="text-[12px] text-secondary font-label-md">Đã chọn 2 tác phẩm</span>
+                </div>
+                <!-- Step 2: Đang thực hiện -->
+                <div class="flex flex-col items-center relative z-10">
+                    <div class="w-8 h-8 rounded-full bg-primary text-on-primary ring-4 ring-primary-fixed flex items-center justify-center font-bold text-sm shadow-md">
+                        2
+                    </div>
+                    <span class="mt-2 text-title-sm text-primary font-semibold">2. Giao nhận &amp; Lời chúc</span>
+                    <span class="text-[12px] text-primary/80 font-label-md font-medium">Đang tiến hành</span>
+                </div>
+                <!-- Step 3: Chờ hoàn tất -->
+                <div class="flex flex-col items-center relative z-10">
+                    <div class="w-8 h-8 rounded-full bg-surface-container border border-outline-variant text-secondary flex items-center justify-center font-medium text-sm">
+                        3
+                    </div>
+                    <span class="mt-2 text-title-sm text-secondary">3. Xác nhận &amp; Đơn hoa</span>
+                    <span class="text-[12px] text-outline font-label-md">Chờ xử lý</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MAIN CHECKOUT 2-COLUMN SECTION -->
+<section class="max-w-7xl mx-auto px-margin-mobile md:px-margin lg:px-margin-desktop py-8 md:py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- CỘT TRÁI (LEFT COLUMN - 7 COLS): Giao nhận & Dịch vụ cá nhân hóa -->
+        <div class="lg:col-span-7 space-y-8">
+            <!-- KHỐI 1: Thông tin người đặt hoa -->
+            <div class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 md:p-8 shadow-sm">
+                <div class="flex items-center justify-between pb-4 border-b border-outline-variant/30 mb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">1</span>
+                        <div>
+                            <h2 class="font-headline-sm text-headline-sm text-on-surface">Thông tin người đặt hoa</h2>
+                            <p class="font-body-sm text-secondary">Thông báo tình trạng xử lý đơn sẽ gửi về đây</p>
+                        </div>
+                    </div>
+                    <span class="font-label-md text-xs px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">Bắt buộc</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1.5" for="sender_name">Họ và tên người đặt *</label>
+                        <input class="w-full px-4 py-2.5 rounded-xl border border-outline-variant/80 bg-surface-bright focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-on-surface transition-all font-body-md" id="sender_name" placeholder="Ví dụ: Trần Minh Tâm" type="text" value="Lê Nguyễn Hoàng Anh">
+                    </div>
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1.5" for="sender_phone">Số điện thoại *</label>
+                        <input class="w-full px-4 py-2.5 rounded-xl border border-outline-variant/80 bg-surface-bright focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-on-surface transition-all font-body-md" id="sender_phone" placeholder="Số điện thoại nhận SMS cập nhật" type="tel" value="0918 345 678">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1.5" for="sender_email">Email nhận hóa đơn VAT điện tử</label>
+                        <input class="w-full px-4 py-2.5 rounded-xl border border-outline-variant/80 bg-surface-bright focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-on-surface transition-all font-body-md" id="sender_email" placeholder="name@company.com" type="email" value="hoanganh.lenguyen@gmail.com">
+                    </div>
+                </div>
+                <!-- Toggle Người gửi bí mật -->
+                <div class="mt-5 p-4 rounded-xl bg-surface-container-low border border-outline-variant/40 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">1</span>
+                        <div>
+                            <span class="font-title-sm text-title-sm text-on-surface block">Giao ẩn danh / Người gửi bí mật</span>
+                            <span class="font-body-sm text-secondary text-xs">Web quản lý hoa tươi sẽ không ghi thông tin người gửi trên thiệp và đơn vận chuyển</span>
+                        </div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input class="sr-only peer" type="checkbox" value="">
+                        <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- KHỐI 2: Thông tin người nhận hoa & Địa chỉ giao -->
+            <div class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 md:p-8 shadow-sm">
+                <div class="flex items-center justify-between pb-4 border-b border-outline-variant/30 mb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">2</span>
+                        <div>
+                            <h2 class="font-headline-sm text-headline-sm text-on-surface">Thông tin người nhận hoa</h2>
+                            <p class="font-body-sm text-secondary">Địa chỉ trao gửi tác phẩm nghệ thuật tận tay</p>
+                        </div>
+                    </div>
+                    <!-- Checkbox: Người nhận chính là tôi -->
+                    <label class="inline-flex items-center gap-2 cursor-pointer font-title-sm text-xs text-primary hover:text-primary-container">
+                        <input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/40" type="checkbox">
+                        <span class="">Người nhận chính là tôi</span>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1.5" for="recipient_name">Họ và tên người nhận *</label>
+                        <input class="w-full px-4 py-2.5 rounded-xl border border-outline-variant/80 bg-surface-bright focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-on-surface transition-all font-body-md" id="recipient_name" placeholder="Tên người nhận hoa" type="text" value="Vũ Phương Thảo">
+                    </div>
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1.5" for="recipient_phone">Số điện thoại người nhận *</label>
+                        <input class="w-full px-4 py-2.5 rounded-xl border border-outline-variant/80 bg-surface-bright focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-on-surface transition-all font-body-md" id="recipient_phone" placeholder="Shipper sẽ gọi trước khi giao 15p" type="tel" value="0934 892 115">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1.5" for="recipient_address">Địa chỉ chi tiết (Số nhà, tòa nhà, tên đường) *</label>
+                        <input class="w-full px-4 py-2.5 rounded-xl border border-outline-variant/80 bg-surface-bright focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-on-surface transition-all font-body-md" id="recipient_address" placeholder="Ví dụ: Tầng 8, Tòa nhà Vincom, 72 Lê Thánh Tôn" type="text" value="Căn hộ 14.02, Tháp B, Saigon Centre, 65 Lê Lợi">
+                    </div>
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1.5">Tỉnh / Thành phố *</label>
+                        <select class="w-full px-4 py-2.5 rounded-xl border border-outline-variant/80 bg-surface-bright focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-on-surface transition-all font-body-md">
+                            <option selected="">TP. Hồ Chí Minh</option>
+                            <option>Hà Nội</option>
+                            <option>Đà Nẵng</option>
+                            <option>Hải Phòng</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1.5">Quận / Huyện *</label>
+                        <select class="w-full px-4 py-2.5 rounded-xl border border-outline-variant/80 bg-surface-bright focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-on-surface transition-all font-body-md">
+                            <option selected="">Quận 1</option>
+                            <option>Quận 3</option>
+                            <option>Quận 2 (TP. Thủ Đức)</option>
+                            <option>Quận Bình Thạnh</option>
+                            <option>Quận Phú Nhuận</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KHỐI 3: Thời gian giao hoa mong muốn -->
+            <div class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 md:p-8 shadow-sm">
+                <div class="flex items-center gap-3 pb-4 border-b border-outline-variant/30 mb-6">
+                    <span class="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">3</span>
+                    <div>
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface">Thời gian giao hoa mong muốn</h2>
+                        <p class="font-body-sm text-secondary">Đảm bảo hoa luôn nở rộ tươi mới đúng thời khắc ý nghĩa</p>
+                    </div>
+                </div>
+                <!-- Chọn ngày -->
+                <div class="mb-5">
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-2.5">Ngày nhận hoa *</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="border-2 border-primary bg-primary/5 rounded-xl p-3.5 text-center cursor-pointer block transition-all shadow-sm">
+                            <input checked="" class="sr-only" name="delivery_date" type="radio">
+                            <span class="font-label-md text-xs text-primary font-semibold uppercase block">Hôm nay</span>
+                            <span class="font-title-sm text-on-surface block mt-0.5">24 Tháng 03</span>
+                        </label>
+                        <label class="border border-outline-variant/80 hover:border-primary/60 bg-surface-bright rounded-xl p-3.5 text-center cursor-pointer block transition-all">
+                            <input class="sr-only" name="delivery_date" type="radio">
+                            <span class="font-label-md text-xs text-secondary block uppercase">Ngày mai</span>
+                            <span class="font-title-sm text-on-surface block mt-0.5">25 Tháng 03</span>
+                        </label>
+                        <label class="border border-outline-variant/80 hover:border-primary/60 bg-surface-bright rounded-xl p-3.5 text-center cursor-pointer block transition-all flex flex-col justify-center items-center">
+                            <input class="sr-only" name="delivery_date" type="radio">
+                            <div class="flex items-center gap-1 text-secondary">
+                                <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                                <span class="font-label-md text-xs uppercase">Chọn ngày khác</span>
+                            </div>
+                            <span class="font-body-sm text-xs text-secondary mt-0.5">Theo lịch hẹn</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Chọn khung giờ -->
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-2.5">Khung giờ giao hoa chính xác *</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="border border-outline-variant/80 rounded-xl p-3.5 flex items-center justify-between cursor-pointer hover:border-primary/60 bg-surface-bright transition-all">
+                            <div class="flex items-center gap-2.5">
+                                <input class="text-primary focus:ring-primary/40" name="delivery_time" type="radio">
+                                <div>
+                                    <span class="font-title-sm text-sm text-on-surface block">Giao hỏa tốc 2H</span>
+                                    <span class="font-body-sm text-xs text-tertiary">Ưu tiên nghệ nhân cắm ngay</span>
+                                </div>
+                            </div>
+                            <span class="material-symbols-outlined text-primary text-[20px]">bolt</span>
+                        </label>
+                        <label class="border-2 border-primary bg-primary/5 rounded-xl p-3.5 flex items-center justify-between cursor-pointer transition-all shadow-sm">
+                            <div class="flex items-center gap-2.5">
+                                <input checked="" class="text-primary focus:ring-primary/40" name="delivery_time" type="radio">
+                                <div>
+                                    <span class="font-title-sm text-sm text-on-surface block">Sáng (08:00 - 10:00)</span>
+                                    <span class="font-body-sm text-xs text-secondary">Thích hợp hoa sinh nhật sáng</span>
+                                </div>
+                            </div>
+                            <span class="material-symbols-outlined text-primary text-[20px]">wb_sunny</span>
+                        </label>
+                        <label class="border border-outline-variant/80 rounded-xl p-3.5 flex items-center justify-between cursor-pointer hover:border-primary/60 bg-surface-bright transition-all">
+                            <div class="flex items-center gap-2.5">
+                                <input class="text-primary focus:ring-primary/40" name="delivery_time" type="radio">
+                                <div>
+                                    <span class="font-title-sm text-sm text-on-surface block">Chiều (14:00 - 16:00)</span>
+                                    <span class="font-body-sm text-xs text-secondary">Giao văn phòng &amp; đối tác</span>
+                                </div>
+                            </div>
+                            <span class="material-symbols-outlined text-secondary text-[20px]">schedule</span>
+                        </label>
+                        <label class="border border-outline-variant/80 rounded-xl p-3.5 flex items-center justify-between cursor-pointer hover:border-primary/60 bg-surface-bright transition-all">
+                            <div class="flex items-center gap-2.5">
+                                <input class="text-primary focus:ring-primary/40" name="delivery_time" type="radio">
+                                <div>
+                                    <span class="font-title-sm text-sm text-on-surface block">Tối (18:00 - 20:00)</span>
+                                    <span class="font-body-sm text-xs text-secondary">Tiệc tối lãng mạn &amp; gia đình</span>
+                                </div>
+                            </div>
+                            <span class="material-symbols-outlined text-secondary text-[20px]">bedtime</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Cam kết bảo quản đặc thù -->
+                <div class="mt-5 p-4 rounded-xl bg-tertiary/10 border border-tertiary/20 flex items-start gap-3">
+                    <span class="material-symbols-outlined text-tertiary text-[22px] flex-shrink-0 mt-0.5">ac_unit</span>
+                    <div class="text-xs text-on-surface">
+                        <strong class="font-semibold text-tertiary block mb-0.5">Quy chuẩn vận chuyển độc quyền Web quản lý hoa tươi:</strong>
+                        Hoa được chở bằng thùng xe điều hòa chuyên dụng nhiệt độ 18°C-22°C. Cam kết không dập cánh hoa, kèm túi giữ ẩm và gói nước dưỡng hoa chưng bền.
+                    </div>
+                </div>
+            </div>
+
+            <!-- KHỐI 4: Thiệp chúc mừng & Dịch vụ đi kèm -->
+            <div class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 md:p-8 shadow-sm">
+                <div class="flex items-center gap-3 pb-4 border-b border-outline-variant/30 mb-6">
+                    <span class="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">4</span>
+                    <div>
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface">Thiệp chúc mừng &amp; Lời nhắn nghệ thuật</h2>
+                        <p class="font-body-sm text-secondary">Trao gửi tâm tư qua từng con chữ thư pháp trau chuốt</p>
+                    </div>
+                </div>
+                <!-- Mẫu thiệp -->
+                <div class="mb-5">
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-2.5">Chọn mẫu thiệp nghệ thuật *</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <label class="border-2 border-primary bg-primary/5 rounded-xl p-3 cursor-pointer block transition-all shadow-sm">
+                            <input checked="" class="sr-only" name="card_style" type="radio">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="material-symbols-outlined text-primary text-[20px]">mail</span>
+                                <span class="bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase">Miễn phí</span>
+                            </div>
+                            <span class="font-title-sm text-sm text-on-surface block">Thiệp Ép Kim Luxe</span>
+                            <span class="font-body-sm text-xs text-secondary">Giấy mỹ thuật dập nổi</span>
+                        </label>
+                        <label class="border border-outline-variant/80 hover:border-primary/60 bg-surface-bright rounded-xl p-3 cursor-pointer block transition-all">
+                            <input class="sr-only" name="card_style" type="radio">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="material-symbols-outlined text-secondary text-[20px]">history_edu</span>
+                                <span class="bg-secondary-container text-on-secondary-container text-[10px] font-medium px-1.5 py-0.5 rounded-full uppercase">Tùy chọn</span>
+                            </div>
+                            <span class="font-title-sm text-sm text-on-surface block">Thiệp Giấy Dó Thủ Công</span>
+                            <span class="font-body-sm text-xs text-secondary">Sợi vỏ cây tự nhiên</span>
+                        </label>
+                        <label class="border border-outline-variant/80 hover:border-primary/60 bg-surface-bright rounded-xl p-3 cursor-pointer block transition-all">
+                            <input class="sr-only" name="card_style" type="radio">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="material-symbols-outlined text-secondary text-[20px]">mark_email_read</span>
+                                <span class="bg-primary-fixed text-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full">+50.000đ</span>
+                            </div>
+                            <span class="font-title-sm text-sm text-on-surface block">Thư Tay Niêm Phong Sáp</span>
+                            <span class="font-body-sm text-xs text-secondary">Đóng dấu sáp hoàng gia</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Lời chúc -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="font-title-sm text-title-sm text-on-surface" for="card_content">Nội dung thiệp chúc mừng *</label>
+                        <div class="flex items-center gap-1.5 text-xs text-primary font-medium">
+                            <span class="material-symbols-outlined text-[15px]">auto_awesome</span>
+                            <span class="">Gợi ý lời chúc:</span>
+                            <button class="underline hover:text-primary-container" onclick="setCardPreset('Sinh nhật')" type="button">Sinh nhật</button>
+                            <button class="underline hover:text-primary-container" onclick="setCardPreset('Tình yêu')" type="button">Tình yêu</button>
+                            <button class="underline hover:text-primary-container" onclick="setCardPreset('Khai trương')" type="button">Khai trương</button>
+                        </div>
+                    </div>
+                    <textarea class="w-full px-4 py-3 rounded-xl border border-outline-variant/80 bg-surface-bright focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-on-surface font-body-md transition-all resize-none" id="card_content" placeholder="Nhập lời chúc bạn muốn nghệ nhân viết tay gửi tặng người nhận..." rows="3">Chúc mừng sinh nhật Phương Thảo! Chúc em luôn rực rỡ, kiêu hãnh và ngập tràn hạnh phúc như những bông hoa xinh đẹp nhất hôm nay. Yêu em thật nhiều!</textarea>
+                    <div class="flex justify-between items-center mt-1 text-xs text-secondary">
+                        <span class="">Nghệ nhân Web quản lý hoa tươi sẽ nắn nót viết tay bằng bút máy mực sepia</span>
+                        <span id="cardCharCount" class="">138/300 ký tự</span>
+                    </div>
+                </div>
+                <!-- Duyệt ảnh hoa trước khi giao -->
+                <div class="mt-5 p-4 rounded-xl bg-surface-container-low border border-primary/20 flex items-center gap-3">
+
+                    <div class="flex-1">
+                        <span class="font-title-sm text-sm text-primary font-semibold block">Duyệt ảnh tác phẩm thực tế trước khi xuất xưởng</span>
+                        <p class="font-body-sm text-xs text-on-surface-variant mt-0.5">Web quản lý hoa tươi sẽ chụp ảnh 360° tác phẩm hoàn thiện gửi qua Zalo/SMS cho bạn duyệt trước khi shipper nhận hoa 30 phút.</p>
+                    </div>
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">check_circle</span>
+                </div>
+            </div>
+
+            <!-- KHỐI 5: Phương thức thanh toán linh hoạt -->
+            <div class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 md:p-8 shadow-sm">
+                <div class="flex items-center gap-3 pb-4 border-b border-outline-variant/30 mb-6">
+                    <span class="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">5</span>
+                    <div>
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface">Phương thức thanh toán</h2>
+                        <p class="font-body-sm text-secondary">Bảo mật mã hóa đa tầng SSL 256-bit chuẩn Quốc tế</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <!-- Chuyển khoản VietQR -->
+                    <label class="border-2 border-primary bg-primary/5 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all">
+                        <div class="flex items-center gap-3">
+                            <input checked="" class="text-primary focus:ring-primary/40" name="payment_method" type="radio">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary font-bold text-xs border border-outline-variant/40">
+                                    <span class="material-symbols-outlined text-[22px]">qr_code_2</span>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-title-sm text-sm text-on-surface">Chuyển khoản Ngân hàng 24/7 (VietQR)</span>
+                                        <span class="bg-primary text-on-primary font-label-md text-[10px] px-2 py-0.5 rounded-full uppercase">Khuyên dùng</span>
+                                    </div>
+                                    <span class="font-body-sm text-xs text-secondary block mt-0.5">Quét mã QR tự động xác nhận trong 3 giây không cần chờ kế toán</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+                    </label>
+                    <!-- Thẻ Visa / Mastercard -->
+                    <label class="border border-outline-variant/80 hover:border-primary/60 bg-surface-bright rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all">
+                        <div class="flex items-center gap-3">
+                            <input class="text-primary focus:ring-primary/40" name="payment_method" type="radio">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary font-bold text-xs border border-outline-variant/40">
+                                    <span class="material-symbols-outlined text-[22px]">credit_card</span>
+                                </div>
+                                <div>
+                                    <span class="font-title-sm text-sm text-on-surface block">Thẻ tín dụng / Ghi nợ quốc tế (Visa, Mastercard, JCB)</span>
+                                    <span class="font-body-sm text-xs text-secondary">Cổng thanh toán bảo mật OnePay 3D Secure</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-label-md text-[11px] px-1.5 py-0.5 bg-surface-container rounded border border-outline-variant/50 text-secondary font-semibold">VISA</span>
+                            <span class="font-label-md text-[11px] px-1.5 py-0.5 bg-surface-container rounded border border-outline-variant/50 text-secondary font-semibold">MC</span>
+                        </div>
+                    </label>
+                    <!-- ATM Nội địa Napas -->
+                    <label class="border border-outline-variant/80 hover:border-primary/60 bg-surface-bright rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all">
+                        <div class="flex items-center gap-3">
+                            <input class="text-primary focus:ring-primary/40" name="payment_method" type="radio">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary font-bold text-xs border border-outline-variant/40">
+                                    <span class="material-symbols-outlined text-[22px]">account_balance</span>
+                                </div>
+                                <div>
+                                    <span class="font-title-sm text-sm text-on-surface block">Thẻ ATM nội địa / Internet Banking (Napas)</span>
+                                    <span class="font-body-sm text-xs text-secondary">Hỗ trợ hơn 40 ngân hàng tại Việt Nam</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs text-secondary font-label-md">Napas</span>
+                    </label>
+                    <!-- Ví điện tử MoMo / ZaloPay -->
+                    <label class="border border-outline-variant/80 hover:border-primary/60 bg-surface-bright rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all">
+                        <div class="flex items-center gap-3">
+                            <input class="text-primary focus:ring-primary/40" name="payment_method" type="radio">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary font-bold text-xs border border-outline-variant/40">
+                                    <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
+                                </div>
+                                <div>
+                                    <span class="font-title-sm text-sm text-on-surface block">Ví điện tử MoMo / ZaloPay</span>
+                                    <span class="font-body-sm text-xs text-secondary">Thanh toán tức thì qua ứng dụng ví điện tử</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs text-secondary font-label-md">Ví MoMo / ZaloPay</span>
+                    </label>
+                    <!-- COD Thanh toán khi nhận hoa -->
+                    <label class="border border-outline-variant/80 hover:border-primary/60 bg-surface-bright rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all">
+                        <div class="flex items-center gap-3">
+                            <input class="text-primary focus:ring-primary/40" name="payment_method" type="radio">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary font-bold text-xs border border-outline-variant/40">
+                                    <span class="material-symbols-outlined text-[22px]">payments</span>
+                                </div>
+                                <div>
+                                    <span class="font-title-sm text-sm text-on-surface block">Thanh toán tiền mặt khi nhận hoa (COD)</span>
+                                    <span class="font-body-sm text-xs text-secondary">Chỉ áp dụng đơn hàng dưới 2.000.000đ khi giao trực tiếp cho người đặt</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs text-secondary font-label-md">COD</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI (RIGHT COLUMN - 5 COLS): Sticky Order Summary & Tính tiền -->
+        <div class="lg:col-span-5">
+            <div class="sticky top-28 space-y-5">
+                <div class="bg-surface-container-lowest border border-outline-variant/60 rounded-3xl p-6 md:p-7 shadow-lg">
+                    <div class="flex items-center justify-between pb-4 border-b border-outline-variant/30">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-[22px]">shopping_bag</span>
+                            <h3 class="font-headline-sm text-lg font-semibold text-on-surface">Tóm tắt đơn hàng</h3>
+                        </div>
+                        <span class="text-xs font-semibold text-primary px-2.5 py-0.5 rounded-full bg-primary-fixed">2 Tác phẩm</span>
+                    </div>
+                    <!-- Danh sách sản phẩm hoa tươi đã chọn -->
+                    <div class="py-4 space-y-4 border-b border-outline-variant/30">
+                        <!-- Item 1 -->
+                        <div class="flex gap-3.5 items-start">
+                            <div class="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 relative border border-outline-variant/40">
+                                <img alt="Bó hoa Rosée Éternelle" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUQCHqGum-cR7MrVc7wnUdu0sxGFIFxlEX6LVV62Php8qodl3t1FErRjCG6FOlTCerMeS4wYAwFiMa6mVxyBkyQ49B-xBM5L_KRrB-YgcMpACMSLvJ-SksxcZEHtThNo36ZO_x_KKu6QkKucJxm7tDvG2QAXGOFbnrFrYGl_rZvG2ItlDOPsVZ3XpZb7JivOIDXGo4XF77_4RCqo0i7eJAD5sReosEwdq_LEmk3Q2We6s967PXGt9brg">
+                                <span class="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-primary text-on-primary font-label-md text-[10px] flex items-center justify-center font-bold">1</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-title-sm text-sm text-on-surface truncate">Bó hoa Rosée Éternelle</h4>
+                                <p class="font-body-sm text-[12px] text-secondary line-clamp-1 mt-0.5">Hoa hồng Ohara Pháp, Tulip trắng Hà Lan, Mẫu đơn blush</p>
+                                <div class="flex items-center justify-between mt-2">
+                                    <span class="font-label-md text-xs text-outline">Số lượng: 1 bó</span>
+                                    <span class="font-title-sm text-sm font-semibold text-primary">1.450.000đ</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="flex gap-3.5 items-start">
+                            <div class="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 relative border border-outline-variant/40">
+                                <img alt="Hộp hoa Hoàng Gia Serenata" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUQCHqGum-cR7MrVc7wnUdu0sxGFIFxlEX6LVV62Php8qodl3t1FErRjCG6FOlTCerMeS4wYAwFiMa6mVxyBkyQ49B-xBM5L_KRrB-YgcMpACMSLvJ-SksxcZEHtThNo36ZO_x_KKu6QkKucJxm7tDvG2QAXGOFbnrFrYGl_rZvG2ItlDOPsVZ3XpZb7JivOIDXGo4XF77_4RCqo0i7eJAD5sReosEwdq_LEmk3Q2We6s967PXGt9brg">
+                                <span class="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-primary text-on-primary font-label-md text-[10px] flex items-center justify-center font-bold">1</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-title-sm text-sm text-on-surface truncate">Hộp hoa Hoàng Gia Serenata</h4>
+                                <p class="font-body-sm text-[12px] text-secondary line-clamp-1 mt-0.5">Cẩm tú cầu pastel, hồng kem nhập khẩu, hộp nhung cao cấp</p>
+                                <div class="flex items-center justify-between mt-2">
+                                    <span class="font-label-md text-xs text-outline">Số lượng: 1 hộp</span>
+                                    <span class="font-title-sm text-sm font-semibold text-primary">950.000đ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Ô nhập Voucher / Coupon -->
+                    <div class="py-4 border-b border-outline-variant/30">
+                        <label class="block font-title-sm text-xs text-on-surface mb-2" for="voucher_input">Mã ưu đãi / Voucher Atelier Club</label>
+                        <div class="flex items-center gap-2">
+                            <div class="relative flex-1">
+                                <span class="material-symbols-outlined text-[18px] text-primary absolute left-3 top-1/2 -translate-y-1/2">sell</span>
+                                <input class="w-full pl-9 pr-3 py-2 text-sm uppercase tracking-wider rounded-xl border border-primary/50 bg-primary/5 text-primary font-semibold focus:outline-none focus:ring-1 focus:ring-primary" id="voucher_input" type="text" value="ATELIERSPRING">
+                            </div>
+                            <button class="px-4 py-2 bg-primary text-on-primary rounded-xl font-label-md text-xs font-semibold hover:bg-primary-container transition-colors" onclick="applyCheckoutVoucher()" type="button">
+                                Áp dụng
+                            </button>
+                        </div>
+                        <div class="mt-2 flex items-center justify-between text-xs text-tertiary" id="checkoutVoucherBadge">
+                            <span class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[15px]">check_circle</span>
+                                Mã <strong>ATELIERSPRING</strong>: Giảm 100.000đ
+                            </span>
+                            <button class="text-error hover:underline text-[11px]" onclick="removeCheckoutVoucher()" type="button">Gỡ bỏ</button>
+                        </div>
+                    </div>
+                    <!-- Bảng kê chi phí minh bạch -->
+                    <div class="py-4 space-y-2.5 text-sm border-b border-outline-variant/30">
+                        <div class="flex justify-between text-on-surface-variant">
+                            <span class="">Tạm tính sản phẩm (2 món)</span>
+                            <span class="font-medium text-on-surface">2.400.000đ</span>
+                        </div>
+                        <div class="flex justify-between text-on-surface-variant">
+                            <span class="flex items-center gap-1">
+                                Dịch vụ thiệp viết tay &amp; nơ lụa
+                                <span class="material-symbols-outlined text-[14px] text-outline cursor-help" title="Thiệp ép kim thủ công và ruy băng lụa satin">info</span>
+                            </span>
+                            <span class="text-tertiary font-medium">Miễn phí</span>
+                        </div>
+                        <div class="flex justify-between text-on-surface-variant">
+                            <span class="flex items-center gap-1">
+                                Phí vận chuyển điều hòa chuyên dụng
+                            </span>
+                            <div class="text-right">
+                                <span class="line-through text-outline text-xs mr-1">50.000đ</span>
+                                <span class="text-tertiary font-medium">0đ (Freeship &gt; 1.5M)</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-primary" id="discountRow">
+                            <span class="">Ưu đãi Voucher ATELIERSPRING</span>
+                            <span class="font-semibold" id="checkoutDiscountText">-100.000đ</span>
+                        </div>
+                    </div>
+                    <!-- Tổng cộng thanh toán -->
+                    <div class="pt-4 pb-2">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <span class="font-title-sm text-base text-on-surface font-semibold">TỔNG CỘNG THANH TOÁN</span>
+                            <span class="font-headline-sm text-2xl font-bold text-primary" id="checkoutTotalText">2.300.000đ</span>
+                        </div>
+                        <p class="font-body-sm text-[12px] text-right text-secondary">Đã bao gồm thuế giá trị gia tăng VAT 8%</p>
+                    </div>
+                    <!-- Checkbox Điều khoản -->
+                    <div class="mt-4 pt-3 border-t border-outline-variant/20">
+                        <label class="flex items-start gap-2.5 cursor-pointer text-xs text-on-surface-variant">
+                            <input checked="" class="w-4 h-4 mt-0.5 rounded border-outline-variant text-primary focus:ring-primary/40" id="termsCheck" type="checkbox">
+                            <span class="">Tôi đồng ý với <a class="text-primary underline" href="#">Điều khoản dịch vụ</a> và <a class="text-primary underline" href="#">Chính sách bảo đảm hoa tươi 100%</a> trong 5 ngày của Web quản lý hoa tươi.</span>
+                        </label>
+                    </div>
+                    <!-- Nút CTA Thanh Toán -->
+                    <div class="mt-5">
+                        <button class="w-full py-4 px-6 rounded-2xl bg-primary hover:bg-[#723740] active:scale-[0.99] text-on-primary font-title-sm text-base font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group" onclick="submitOrder()" type="button">
+                            <span class="material-symbols-outlined text-[20px]">lock</span>
+                            <span class="">Xác Nhận Đặt Hàng &amp; Thanh Toán (2.300.000đ)</span>
+                            <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </button>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <span class="inline-flex items-center gap-1.5 text-[11px] text-secondary font-label-md">
+                            <span class="material-symbols-outlined text-[14px] text-tertiary">verified_user</span>
+                            Bảo mật mã hóa thanh toán 256-bit SSL Certificate
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Huy hiệu cam kết bảo chứng chất lượng -->
+                <div class="bg-surface-container-low border border-outline-variant/40 rounded-2xl p-7 space-y-4">
+                    <span class="font-label-md text-xs text-primary font-bold uppercase tracking-wider block">Cam kết độc quyền Web quản lý hoa tươi:</span>
+                    <div class="flex items-start gap-2.5 text-xs text-on-surface">
+                        <span class="material-symbols-outlined text-primary text-[18px] flex-shrink-0">replay</span>
+                        <span class=""><strong>Hoàn tiền 100% hoặc đổi hoa mới trong 24h</strong> nếu hoa bị dập nát, gãy cành hoặc không đúng tông màu thiết kế đã duyệt.</span>
+                    </div>
+                    <div class="flex items-start gap-2.5 text-xs text-on-surface">
+                        <span class="material-symbols-outlined text-primary text-[18px] flex-shrink-0">local_florist</span>
+                        <span class=""><strong>Độ tươi nguyên bản tối thiểu 5 - 7 ngày</strong>: 100% hoa loại 1 nhập trực tiếp từ Đà Lạt &amp; Hà Lan/Ecuador.</span>
+                    </div>
+                    <div class="flex items-start gap-2.5 text-xs text-on-surface">
+                        <span class="material-symbols-outlined text-primary text-[18px] flex-shrink-0">support_agent</span>
+                        <span class=""><strong>Hỗ trợ riêng 24/7</strong>: Hotline &amp; Zalo Atelier VIP <strong class="text-primary font-semibold">1900 8866</strong> luôn sẵn sàng.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        const cardTextArea = document.getElementById('card_content');
+        const charCountEl = document.getElementById('cardCharCount');
+
+        if (cardTextArea && charCountEl) {
+            cardTextArea.addEventListener('input', function () {
+                charCountEl.innerText = `${cardTextArea.value.length}/300 ký tự`;
+            });
+        }
+
+        function setCardPreset(type) {
+            if (!cardTextArea) return;
+            if (type === 'Sinh nhật') {
+                cardTextArea.value = 'Chúc mừng sinh nhật Phương Thảo! Chúc em luôn rực rỡ, kiêu hãnh và ngập tràn hạnh phúc như những bông hoa xinh đẹp nhất hôm nay. Yêu em thật nhiều!';
+            } else if (type === 'Tình yêu') {
+                cardTextArea.value = 'Gửi em người con gái anh yêu nhất. Cảm ơn em đã đến và làm cho mỗi ngày của anh trở nên ngập tràn hương sắc tình yêu.';
+            } else if (type === 'Khai trương') {
+                cardTextArea.value = 'Kính chúc Quý công ty Khai trương Hồng Phát, Mã Đáo Thành Công, Vạn Sự Hanh Thông và Kinh Doanh Phát Đạt!';
+            }
+            if (charCountEl) {
+                charCountEl.innerText = `${cardTextArea.value.length}/300 ký tự`;
+            }
+        }
+
+        function applyCheckoutVoucher() {
+            const input = document.getElementById('voucher_input');
+            const badge = document.getElementById('checkoutVoucherBadge');
+            const discountRow = document.getElementById('discountRow');
+            const totalText = document.getElementById('checkoutTotalText');
+
+            if (input && input.value.trim().toUpperCase() === 'ATELIERSPRING') {
+                if (badge) badge.classList.remove('hidden');
+                if (discountRow) discountRow.classList.remove('hidden');
+                if (totalText) totalText.innerText = '2.300.000đ';
+                alert('Áp dụng voucher ATELIERSPRING thành công! Giảm 100.000đ.');
+            } else {
+                alert('Mã ưu đãi không hợp lệ.');
+            }
+        }
+
+        function removeCheckoutVoucher() {
+            const badge = document.getElementById('checkoutVoucherBadge');
+            const discountRow = document.getElementById('discountRow');
+            const totalText = document.getElementById('checkoutTotalText');
+
+            if (badge) badge.classList.add('hidden');
+            if (discountRow) discountRow.classList.add('hidden');
+            if (totalText) totalText.innerText = '2.400.000đ';
+        }
+
+        function submitOrder() {
+            const termsCheck = document.getElementById('termsCheck');
+            if (termsCheck && !termsCheck.checked) {
+                alert('Vui lòng đồng ý với Điều khoản dịch vụ và Chính sách bảo đảm hoa tươi trước khi đặt hàng.');
+                return;
+            }
+            alert('Đặt hàng thành công! Đơn hàng của bạn đã được chuyển đến Bàn cắm hoa. Nhân viên sẽ liên hệ gửi ảnh hoa thực tế qua Zalo trước khi giao.');
+            window.location.href = '@Url.Action("Index", "Home")';
+        }
+    </script>
+}

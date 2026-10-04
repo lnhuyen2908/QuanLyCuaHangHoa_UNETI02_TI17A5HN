@@ -1,0 +1,26 @@
+@* 
+    Reusable Admin Status Badge Component
+    Accepts Model string or ViewData["Status"]
+*@
+@{
+    string status = Model as string ?? ViewData["Status"] as string ?? "Hoạt động";
+    string badgeClass = "bg-tertiary-fixed text-on-tertiary-fixed";
+
+    if (status.Contains("Chờ") || status.Contains("Pending"))
+    {
+        badgeClass = "bg-secondary-container text-on-secondary-container";
+    }
+    else if (status.Contains("Khóa") || status.Contains("Hủy") || status.Contains("Ngừng") || status.Contains("Cảnh báo"))
+    {
+        badgeClass = "bg-error-container text-on-error-container";
+    }
+    else if (status.Contains("Đang") || status.Contains("Preparing") || status.Contains("Processing"))
+    {
+        badgeClass = "bg-primary-fixed text-on-primary-fixed-variant";
+    }
+}
+
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-md text-label-md font-semibold @badgeClass">
+    <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+    <span>@status</span>
+</span>

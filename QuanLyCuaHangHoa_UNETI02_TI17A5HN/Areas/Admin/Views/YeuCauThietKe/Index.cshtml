@@ -1,0 +1,341 @@
+@{
+    ViewBag.Title = "Xử Lý Yêu Cầu Thiết Kế Riêng";
+    ViewBag.ActiveMenu = "YeuCauThietKe";
+    ViewBag.Breadcrumb = "Thiết kế riêng (Bespoke)";
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
+    <!-- Header Section -->
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <!-- Metric Bar -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+        <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Chờ thẩm định &amp; báo giá</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-error animate-ping"></span>
+            </div>
+            <div class="mt-2">
+                <div class="font-headline-md text-headline-md text-error font-semibold">05 yêu cầu</div>
+                <span class="font-body-sm text-body-sm text-on-surface-variant">Cần xử lý trong 30 phút</span>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Đã chốt giá / Chờ cọc</span>
+                <span class="material-symbols-outlined text-[18px] text-tertiary">check_circle</span>
+            </div>
+            <div class="mt-2">
+                <div class="font-headline-md text-headline-md text-tertiary font-semibold">08 yêu cầu</div>
+                <span class="font-body-sm text-body-sm text-on-surface-variant">Đã thỏa thuận giá</span>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Đang tiến hành cắm hoa</span>
+                <span class="material-symbols-outlined text-[18px] text-primary">palette</span>
+            </div>
+            <div class="mt-2">
+                <div class="font-headline-md text-headline-md text-primary font-semibold">06 mẫu độc bản</div>
+                <span class="font-body-sm text-body-sm text-on-surface-variant">Florist đang tạo hình</span>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Tỷ lệ chuyển đổi chốt đơn</span>
+                <span class="material-symbols-outlined text-[18px] text-primary font-bold">trending_up</span>
+            </div>
+            <div class="mt-2">
+                <div class="font-headline-md text-headline-md text-on-surface font-semibold">88.5%</div>
+                <span class="font-body-sm text-body-sm text-tertiary">Tốt hơn trung bình</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Component -->
+    @await Html.PartialAsync("_AdminFilterBar")
+
+    <!-- Requests List Grid (Full width cards list with click to popup modal) -->
+    <div class="space-y-3">
+        <div class="flex items-center justify-between">
+            <h3 class="font-title-md text-title-md text-on-surface font-bold flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[20px]">list_alt</span>
+                <span>Danh sách đơn thiết kế riêng cần xử lý</span>
+            </h3>
+            <span class="font-body-sm text-body-sm text-secondary">Click vào đơn hàng để Duyệt &amp; Chốt giá</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md">
+            <!-- Order 1: CST-108 -->
+            <div onclick="openModal('CST-108', 'Chị Nguyễn Mai Phương', '0918 345 *** • Q.1, TP.HCM', 'Tone hồng pastel kiểu Pháp cho lễ đính hôn, dùng hoa hồng Ohara nhập...', '1.500.000đ - 2.000.000đ', '1850000', 'Bó hoa thiết kế riêng Rosée Éternelle', 'Hồng phấn & Trắng kem', 'Hồng Ohara Pháp, Tulip Hà Lan', 'Chúc mừng lễ đính hôn Phương & Nam - Hạnh phúc viên mãn!', 'Chờ báo giá', 'bg-error-container text-on-error-container')"
+                 class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-primary/30 hover:border-primary hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between space-y-3">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-primary font-bold group-hover:underline">#CST-108</span>
+                        <span class="font-label-md text-label-md bg-error-container text-on-error-container px-2.5 py-0.5 rounded-full font-bold">Chờ báo giá</span>
+                    </div>
+                    <div>
+                        <h4 class="font-title-md text-title-md text-on-surface font-bold group-hover:text-primary transition-colors">Chị Nguyễn Mai Phương</h4>
+                        <p class="font-body-sm text-body-sm text-secondary">0918 345 *** • Q.1, TP.HCM</p>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant italic line-clamp-2">"Tone hồng pastel kiểu Pháp cho lễ đính hôn, dùng hoa hồng Ohara nhập..."</p>
+                </div>
+                <div class="border-t border-surface-container pt-3 flex items-center justify-between">
+                    <div>
+                        <span class="font-label-md text-label-md text-outline block">Ngân sách dự kiến</span>
+                        <span class="font-title-sm text-title-sm text-primary font-bold">1.500.000đ - 2.000.000đ</span>
+                    </div>
+                    <button type="button" class="px-3.5 py-1.5 rounded-lg bg-primary text-on-primary font-label-md text-label-md font-semibold group-hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm">
+                        <span>Duyệt &amp; Chốt giá</span>
+                        <span class="material-symbols-outlined text-[16px]">edit_square</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order 2: CST-107 -->
+            <div onclick="openModal('CST-107', 'Anh Lê Quốc Vũ', '0903 882 *** • Tân Bình, TP.HCM', 'Cắm bình gốm hiện đại tone vàng nghệ & xanh rêu cho sảnh công ty...', '2.500.000đ - 3.000.000đ', '2800000', 'Bình hoa để bàn Sang Trọng Vàng Nghệ', 'Vàng nghệ & Xanh rêu', 'Hoa hướng dương, Lan vũ nữ', 'Chúc mừng công ty khai trương hồng phát!', 'Đã chốt giá', 'bg-secondary-container text-on-secondary-container')"
+                 class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-outline-variant/40 hover:border-primary hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between space-y-3">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-on-surface font-bold group-hover:text-primary group-hover:underline">#CST-107</span>
+                        <span class="font-label-md text-label-md bg-secondary-container text-on-secondary-container px-2.5 py-0.5 rounded-full font-bold">Đã chốt giá</span>
+                    </div>
+                    <div>
+                        <h4 class="font-title-md text-title-md text-on-surface font-bold group-hover:text-primary transition-colors">Anh Lê Quốc Vũ</h4>
+                        <p class="font-body-sm text-body-sm text-secondary">0903 882 *** • Tân Bình, TP.HCM</p>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant italic line-clamp-2">"Cắm bình gốm hiện đại tone vàng nghệ &amp; xanh rêu..."</p>
+                </div>
+                <div class="border-t border-surface-container pt-3 flex items-center justify-between">
+                    <div>
+                        <span class="font-label-md text-label-md text-outline block">Đã báo giá chính thức</span>
+                        <span class="font-title-sm text-title-sm text-tertiary font-bold">2.800.000₫</span>
+                    </div>
+                    <button type="button" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-primary hover:text-on-primary font-label-md text-label-md font-semibold transition-colors flex items-center gap-1">
+                        <span>Xem / Sửa giá</span>
+                        <span class="material-symbols-outlined text-[16px]">visibility</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order 3: CST-106 -->
+            <div onclick="openModal('CST-106', 'Chị Trần Thu Thảo', '0977 123 *** • Quận 3, TP.HCM', 'Giỏ hoa tone kem tuyết & tím khói tặng sinh nhật mẹ, cắm tự nhiên phong cách Hàn Quốc...', '3.000.000đ - 4.500.000đ', '3500000', 'Giỏ hoa Haute Couture Tím Khói', 'Tím khói & Kem tuyết', 'Cẩm tú cầu, Peony tím, Baby', 'Chúc Mừng Sinh Nhật Mẹ Yêu!', 'Chờ báo giá', 'bg-error-container text-on-error-container')"
+                 class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-primary/30 hover:border-primary hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between space-y-3">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-primary font-bold group-hover:underline">#CST-106</span>
+                        <span class="font-label-md text-label-md bg-error-container text-on-error-container px-2.5 py-0.5 rounded-full font-bold">Chờ báo giá</span>
+                    </div>
+                    <div>
+                        <h4 class="font-title-md text-title-md text-on-surface font-bold group-hover:text-primary transition-colors">Chị Trần Thu Thảo</h4>
+                        <p class="font-body-sm text-body-sm text-secondary">0977 123 *** • Quận 3, TP.HCM</p>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant italic line-clamp-2">"Giỏ hoa tone kem tuyết &amp; tím khói tặng sinh nhật mẹ..."</p>
+                </div>
+                <div class="border-t border-surface-container pt-3 flex items-center justify-between">
+                    <div>
+                        <span class="font-label-md text-label-md text-outline block">Ngân sách dự kiến</span>
+                        <span class="font-title-sm text-title-sm text-primary font-bold">3.000.000đ - 4.500.000đ</span>
+                    </div>
+                    <button type="button" class="px-3.5 py-1.5 rounded-lg bg-primary text-on-primary font-label-md text-label-md font-semibold group-hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm">
+                        <span>Duyệt &amp; Chốt giá</span>
+                        <span class="material-symbols-outlined text-[16px]">edit_square</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order 4: CST-105 -->
+            <div onclick="openModal('CST-105', 'Anh Phạm Hoàng Long', '0938 999 *** • Phú Nhuận, TP.HCM', 'Kệ hoa khai trương 2 tầng tone đỏ rực rỡ & vàng sang trọng...', '4.000.000đ - 5.500.000đ', '5000000', 'Kệ hoa Khai Trương Hoàng Kim', 'Đỏ tươi & Vàng kim', 'Hồng Ecuador, Lan hồ điệp vàng', 'Mã Đáo Thành Công - Khai Trương Hồng Phát!', 'Đang cắm hoa', 'bg-tertiary-fixed text-on-tertiary-fixed')"
+                 class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-outline-variant/40 hover:border-primary hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between space-y-3">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-on-surface font-bold group-hover:text-primary group-hover:underline">#CST-105</span>
+                        <span class="font-label-md text-label-md bg-tertiary-fixed text-on-tertiary-fixed px-2.5 py-0.5 rounded-full font-bold">Đang cắm hoa</span>
+                    </div>
+                    <div>
+                        <h4 class="font-title-md text-title-md text-on-surface font-bold group-hover:text-primary transition-colors">Anh Phạm Hoàng Long</h4>
+                        <p class="font-body-sm text-body-sm text-secondary">0938 999 *** • Phú Nhuận, TP.HCM</p>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant italic line-clamp-2">"Kệ hoa khai trương 2 tầng tone đỏ rực rỡ &amp; vàng sang trọng..."</p>
+                </div>
+                <div class="border-t border-surface-container pt-3 flex items-center justify-between">
+                    <div>
+                        <span class="font-label-md text-label-md text-outline block">Giá đã chốt</span>
+                        <span class="font-title-sm text-title-sm text-tertiary font-bold">5.000.000₫</span>
+                    </div>
+                    <button type="button" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-primary hover:text-on-primary font-label-md text-label-md font-semibold transition-colors flex items-center gap-1">
+                        <span>Chi tiết đơn</span>
+                        <span class="material-symbols-outlined text-[16px]">visibility</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order 5: CST-104 -->
+            <div onclick="openModal('CST-104', 'Chị Đỗ Minh Anh', '0912 456 *** • Cầu Giấy, Hà Nội', 'Bó hoa tulip trắng nhỏ nhắn tinh tế cho kỷ niệm 1 năm quen nhau...', '800.000đ - 1.200.000đ', '950000', 'Bó Hoa Tulip Trắng Minimalist', 'Trắng tinh khôi', 'Tulip trắng Hà Lan', 'Happy Anniversary 1 Year!', 'Chờ báo giá', 'bg-error-container text-on-error-container')"
+                 class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-primary/30 hover:border-primary hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between space-y-3">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-primary font-bold group-hover:underline">#CST-104</span>
+                        <span class="font-label-md text-label-md bg-error-container text-on-error-container px-2.5 py-0.5 rounded-full font-bold">Chờ báo giá</span>
+                    </div>
+                    <div>
+                        <h4 class="font-title-md text-title-md text-on-surface font-bold group-hover:text-primary transition-colors">Chị Đỗ Minh Anh</h4>
+                        <p class="font-body-sm text-body-sm text-secondary">0912 456 *** • Cầu Giấy, Hà Nội</p>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant italic line-clamp-2">"Bó hoa tulip trắng nhỏ nhắn tinh tế cho kỷ niệm 1 năm quen nhau..."</p>
+                </div>
+                <div class="border-t border-surface-container pt-3 flex items-center justify-between">
+                    <div>
+                        <span class="font-label-md text-label-md text-outline block">Ngân sách dự kiến</span>
+                        <span class="font-title-sm text-title-sm text-primary font-bold">800.000đ - 1.200.000đ</span>
+                    </div>
+                    <button type="button" class="px-3.5 py-1.5 rounded-lg bg-primary text-on-primary font-label-md text-label-md font-semibold group-hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm">
+                        <span>Duyệt &amp; Chốt giá</span>
+                        <span class="material-symbols-outlined text-[16px]">edit_square</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order 6: CST-103 -->
+            <div onclick="openModal('CST-103', 'Anh Hoàng Minh Trí', '0909 777 *** • Quận 7, TP.HCM', 'Hộp hoa trái tim phối hồng Ohara & baby trắng tặng sinh nhật người yêu...', '2.000.000đ - 2.500.000đ', '2200000', 'Hộp Hoa Trái Tim Sweet Love', 'Hồng & Trắng', 'Hồng Ohara, Baby trắng', 'Mãi yêu em!', 'Đã hoàn thành', 'bg-surface-container text-on-surface')"
+                 class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm border border-outline-variant/40 hover:border-primary hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between space-y-3">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-on-surface font-bold group-hover:text-primary group-hover:underline">#CST-103</span>
+                        <span class="font-label-md text-label-md bg-surface-container text-on-surface px-2.5 py-0.5 rounded-full font-bold">Đã hoàn thành</span>
+                    </div>
+                    <div>
+                        <h4 class="font-title-md text-title-md text-on-surface font-bold group-hover:text-primary transition-colors">Anh Hoàng Minh Trí</h4>
+                        <p class="font-body-sm text-body-sm text-secondary">0909 777 *** • Quận 7, TP.HCM</p>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant italic line-clamp-2">"Hộp hoa trái tim phối hồng Ohara &amp; baby trắng..."</p>
+                </div>
+                <div class="border-t border-surface-container pt-3 flex items-center justify-between">
+                    <div>
+                        <span class="font-label-md text-label-md text-outline block">Đã hoàn thành</span>
+                        <span class="font-title-sm text-title-sm text-tertiary font-bold">2.200.000₫</span>
+                    </div>
+                    <button type="button" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-primary hover:text-on-primary font-label-md text-label-md font-semibold transition-colors flex items-center gap-1">
+                        <span>Xem đơn hàng</span>
+                        <span class="material-symbols-outlined text-[16px]">visibility</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Popup: Duyệt & Chốt Giá Yêu Cầu -->
+<div id="duyetChotGiaModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
+    <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-2xl my-8 overflow-hidden flex flex-col max-h-[90vh]">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-space-lg py-space-md bg-surface-container-low border-b border-surface-container-high">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">brush</span>
+                <h3 id="modalTitle" class="font-headline-sm text-headline-sm text-on-surface font-semibold">Duyệt &amp; Chốt Giá Yêu Cầu #CST-108</h3>
+            </div>
+            <button type="button" onclick="closeModal()" class="text-secondary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-space-lg space-y-space-md font-body-md text-body-md overflow-y-auto">
+            <!-- Customer Summary Box -->
+            <div class="p-space-md rounded-xl bg-surface-container-low border border-primary/20 space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <span id="modalCustomerName" class="font-title-md text-title-md text-on-surface font-bold">Chị Nguyễn Mai Phương</span>
+                    <span id="modalStatusBadge" class="font-label-md text-label-md bg-error-container text-on-error-container px-2.5 py-0.5 rounded-full font-bold">Chờ báo giá</span>
+                </div>
+                <p id="modalCustomerContact" class="font-body-sm text-body-sm text-secondary">0918 345 *** • Q.1, TP.HCM</p>
+                <p id="modalCustomerNote" class="font-body-sm text-body-sm text-on-surface-variant italic pt-1.5 border-t border-surface-container-high">"Tone hồng pastel kiểu Pháp cho lễ đính hôn, dùng hoa hồng Ohara nhập..."</p>
+            </div>
+
+            <form id="modalForm" onsubmit="handleFormSubmit(event)" class="space-y-space-md">
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Loại sản phẩm đề xuất *</label>
+                    <input type="text" id="inputTenSanPham" value="Bó hoa thiết kế riêng Rosée Éternelle" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-title-sm text-title-sm focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required />
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Tông màu ưu tiên</label>
+                        <input type="text" id="inputTongMau" value="Hồng phấn &amp; Trắng kem" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40" />
+                    </div>
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Loại hoa ưu tiên</label>
+                        <input type="text" id="inputLoaiHoa" value="Hồng Ohara Pháp, Tulip Hà Lan" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Nội dung thiệp chúc mừng</label>
+                    <input type="text" id="inputThiep" value="Chúc mừng lễ đính hôn Phương &amp; Nam - Hạnh phúc viên mãn!" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40" />
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Ngân sách dự kiến</label>
+                        <input type="text" id="inputNganSach" value="1.500.000đ - 2.000.000đ" readonly class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container text-secondary font-title-sm text-title-sm border border-outline-variant/40 cursor-not-allowed" />
+                    </div>
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Giá chốt chính thức (VNĐ) *</label>
+                        <input type="number" id="inputGiaChot" value="1850000" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-primary font-headline-sm font-bold focus:outline-none border border-primary/50" required />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Ghi chú nhân viên / Thợ cắm</label>
+                    <textarea id="inputGhiChu" rows="2" placeholder="Ghi chú thành phần hoa chốt và hướng dẫn shipper..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40"></textarea>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-end gap-space-sm px-space-lg py-space-md bg-surface-container-low border-t border-surface-container-high">
+            <button type="button" onclick="closeModal()" class="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-all">
+                Hủy bỏ
+            </button>
+            <button type="button" onclick="document.getElementById('modalForm').requestSubmit()" class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-md flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                <span>Chốt giá &amp; Tạo đơn hàng</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal(id, customerName, contact, note, budget, finalPrice, prodName, colors, flowers, cardText, statusText, statusClass) {
+        document.getElementById('modalTitle').innerText = 'Duyệt & Chốt Giá Yêu Cầu #' + id;
+        document.getElementById('modalCustomerName').innerText = customerName;
+        document.getElementById('modalCustomerContact').innerText = contact;
+        document.getElementById('modalCustomerNote').innerText = '"' + note + '"';
+        document.getElementById('inputNganSach').value = budget;
+        document.getElementById('inputGiaChot').value = finalPrice || '';
+        document.getElementById('inputTenSanPham').value = prodName || '';
+        document.getElementById('inputTongMau').value = colors || '';
+        document.getElementById('inputLoaiHoa').value = flowers || '';
+        document.getElementById('inputThiep').value = cardText || '';
+        
+        var badge = document.getElementById('modalStatusBadge');
+        badge.innerText = statusText || 'Chờ báo giá';
+        badge.className = 'font-label-md text-label-md px-2.5 py-0.5 rounded-full font-bold ' + (statusClass || 'bg-error-container text-on-error-container');
+
+        var modal = document.getElementById('duyetChotGiaModal');
+        modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+        var modal = document.getElementById('duyetChotGiaModal');
+        modal.classList.add('hidden');
+    }
+
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        alert('Đã duyệt & chốt giá thành công! Đơn hàng đã được chuyển sang bộ phận cắm hoa.');
+        closeModal();
+    }
+</script>

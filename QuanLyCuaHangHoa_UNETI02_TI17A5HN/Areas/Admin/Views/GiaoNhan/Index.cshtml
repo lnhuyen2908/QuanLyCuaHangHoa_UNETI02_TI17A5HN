@@ -1,0 +1,114 @@
+@{
+    ViewBag.Title = "Quản Lý Giao & Nhận";
+    ViewBag.ActiveMenu = "GiaoNhan";
+    ViewBag.Breadcrumb = "Vận chuyển & Logistics";
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
+    <!-- Header Section -->
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <!-- KPI Statistics Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+        <div class="relative overflow-hidden p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <div class="flex flex-col">
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Chờ điều phối</span>
+                    <div class="flex items-baseline gap-space-xs mt-space-xs">
+                        <span class="font-display-lg text-display-lg text-primary leading-none">08</span>
+                        <span class="font-label-lg text-label-lg text-on-surface-variant">đơn hoa</span>
+                    </div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+                    <span class="material-symbols-outlined text-[20px]">pending_actions</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <div class="flex flex-col">
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Đang giao xe lạnh</span>
+                    <div class="flex items-baseline gap-space-xs mt-space-xs">
+                        <span class="font-display-lg text-display-lg text-on-surface leading-none">14</span>
+                        <span class="font-label-lg text-label-lg text-on-surface-variant">chuyến xe</span>
+                    </div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">ac_unit</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <div class="flex flex-col">
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Đã giao thành công</span>
+                    <div class="flex items-baseline gap-space-xs mt-space-xs">
+                        <span class="font-display-lg text-display-lg text-tertiary leading-none">42</span>
+                        <span class="font-label-lg text-label-lg text-on-surface-variant">đã nhận</span>
+                    </div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">task_alt</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <div class="flex flex-col">
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Khách nhận tại Atelier</span>
+                    <div class="flex items-baseline gap-space-xs mt-space-xs">
+                        <span class="font-display-lg text-display-lg text-on-surface leading-none">06</span>
+                        <span class="font-label-lg text-label-lg text-on-surface-variant">giữ quầy</span>
+                    </div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">storefront</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Component -->
+    @await Html.PartialAsync("_AdminFilterBar")
+
+    <!-- Logistics Master Table -->
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-on-surface">
+                <thead>
+                    <tr class="bg-surface-container-low font-label-md text-label-md text-secondary uppercase tracking-wider">
+                        <th class="py-space-md px-space-md">Mã giao nhận</th>
+                        <th class="py-space-md px-space-md">Mã đơn hàng</th>
+                        <th class="py-space-md px-space-md">Hình thức</th>
+                        <th class="py-space-md px-space-md">Thời gian dự kiến</th>
+                        <th class="py-space-md px-space-md">Địa chỉ giao</th>
+                        <th class="py-space-md px-space-md">Người giao (Shipper)</th>
+                        <th class="py-space-md px-space-md text-center">Trạng thái</th>
+                        <th class="py-space-md px-space-md text-right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="font-body-md text-body-md divide-y divide-surface-container">
+                    <tr class="hover:bg-surface-container-low/70 transition-colors">
+                        <td class="py-space-md px-space-md font-mono text-body-sm text-primary font-semibold">GN-1001</td>
+                        <td class="py-space-md px-space-md font-title-sm text-title-sm text-primary">#ORD-9021</td>
+                        <td class="py-space-md px-space-md">Giao tận nơi (Xe lạnh)</td>
+                        <td class="py-space-md px-space-md font-medium text-primary">15:00 Hôm nay</td>
+                        <td class="py-space-md px-space-md text-on-surface-variant">Quận 1, TP. Hồ Chí Minh</td>
+                        <td class="py-space-md px-space-md font-medium text-on-surface">Nguyễn Hữu Đạt (Xe A1)</td>
+                        <td class="py-space-md px-space-md text-center">
+                            @await Html.PartialAsync("_AdminStatusBadge", "Đang giao")
+                        </td>
+                        <td class="py-space-md px-space-md text-right">
+                            <button class="px-3 py-1 rounded-lg bg-tertiary text-on-tertiary font-title-sm text-title-sm">Hoàn thành</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @await Html.PartialAsync("_AdminPagination")
+    </div>
+</div>

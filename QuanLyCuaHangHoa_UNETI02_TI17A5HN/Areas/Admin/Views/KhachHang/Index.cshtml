@@ -1,0 +1,137 @@
+@{
+    ViewBag.Title = "Quản Lý Khách Hàng";
+    ViewBag.ActiveMenu = "KhachHang";
+    ViewBag.Breadcrumb = "Quản lý khách hàng";
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
+    <!-- Header Section -->
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <!-- Statistics Bento Row -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+        <div class="relative overflow-hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-label-md text-label-md tracking-wider uppercase text-outline">Tổng khách hàng</span>
+                <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[20px]">groups</span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="font-display-lg text-display-lg text-on-surface font-semibold">1,248</div>
+                <div class="flex items-center gap-1.5 mt-2 text-tertiary">
+                    <span class="material-symbols-outlined text-[16px]">trending_up</span>
+                    <span class="font-body-sm text-body-sm font-semibold">+24 thành viên</span>
+                    <span class="font-body-sm text-body-sm text-outline">tuần này</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-label-md text-label-md tracking-wider uppercase text-outline">Hội viên VIP</span>
+                <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[20px]">workspace_premium</span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="font-display-lg text-display-lg text-on-surface font-semibold">386</div>
+                <div class="inline-flex items-center gap-1.5 mt-2 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    <span class="font-label-md text-label-md font-semibold">30.9% Tỷ lệ quay lại</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-label-md text-label-md tracking-wider uppercase text-outline">Đơn hàng trung bình</span>
+                <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="font-display-lg text-display-lg text-on-surface font-semibold">3.8 Đơn</div>
+                <div class="font-body-sm text-body-sm text-on-surface-variant mt-2">Bình quân / khách hàng VIP</div>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-label-md text-label-md tracking-wider uppercase text-outline">Giá trị vòng đời (CLV)</span>
+                <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed-variant">
+                    <span class="material-symbols-outlined text-[20px]">loyalty</span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="font-headline-lg text-headline-lg text-primary font-bold">3.850.000₫</div>
+                <div class="flex items-center gap-1.5 mt-2 text-tertiary">
+                    <span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+                    <span class="font-body-sm text-body-sm font-semibold">+12%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Component -->
+    @await Html.PartialAsync("_AdminFilterBar")
+
+    <!-- Customer Data Table Container -->
+    <div class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-surface-container-low text-outline uppercase font-label-md text-label-md tracking-wider">
+                        <th class="py-space-md pl-space-lg pr-space-sm font-semibold">Mã KH</th>
+                        <th class="py-space-md px-space-md font-semibold">Khách hàng</th>
+                        <th class="py-space-md px-space-md font-semibold">Số điện thoại</th>
+                        <th class="py-space-md px-space-md font-semibold">Email</th>
+                        <th class="py-space-md px-space-md font-semibold">Địa chỉ</th>
+                        <th class="py-space-md px-space-md font-semibold text-center">Trạng thái</th>
+                        <th class="py-space-md pr-space-lg pl-space-sm font-semibold text-right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-surface-container font-body-sm text-body-sm">
+                    <tr class="hover:bg-surface-container-low/60 transition-colors">
+                        <td class="py-space-md pl-space-lg pr-space-sm font-mono text-primary font-bold">KH-001</td>
+                        <td class="py-space-md px-space-md">
+                            <div class="font-title-sm text-title-sm text-on-surface">Nguyễn Thu Thảo</div>
+                            <div class="text-secondary font-body-sm text-body-sm">VIP Club Member</div>
+                        </td>
+                        <td class="py-space-md px-space-md font-mono text-on-surface">0903 124 889</td>
+                        <td class="py-space-md px-space-md text-on-surface-variant">thuthao.nguyen@gmail.com</td>
+                        <td class="py-space-md px-space-md text-on-surface-variant">Quận 1, TP. Hồ Chí Minh</td>
+                        <td class="py-space-md px-space-md text-center">
+                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
+                        </td>
+                        <td class="py-space-md pr-space-lg pl-space-sm text-right">
+                            <button class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-low/60 transition-colors">
+                        <td class="py-space-md pl-space-lg pr-space-sm font-mono text-primary font-bold">KH-002</td>
+                        <td class="py-space-md px-space-md">
+                            <div class="font-title-sm text-title-sm text-on-surface">Trần Minh Hoàng</div>
+                            <div class="text-secondary font-body-sm text-body-sm">Khách hàng thân thiết</div>
+                        </td>
+                        <td class="py-space-md px-space-md font-mono text-on-surface">0918 882 102</td>
+                        <td class="py-space-md px-space-md text-on-surface-variant">minhhoang.tran@gmail.com</td>
+                        <td class="py-space-md px-space-md text-on-surface-variant">Bình Thạnh, TP. Hồ Chí Minh</td>
+                        <td class="py-space-md px-space-md text-center">
+                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
+                        </td>
+                        <td class="py-space-md pr-space-lg pl-space-sm text-right">
+                            <button class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @await Html.PartialAsync("_AdminPagination")
+    </div>
+</div>

@@ -1,0 +1,154 @@
+@{
+    ViewBag.Title = "Thêm Mẫu Sản Phẩm Mới";
+    ViewBag.ActiveMenu = "MauSanPhamCreate";
+    ViewBag.Breadcrumb = "Mẫu sản phẩm";
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-lg">
+    <!-- Header Section -->
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <!-- Main Create Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+        <!-- LEFT COLUMN: Product Info & Floral Recipe -->
+        <div class="lg:col-span-7 space-y-space-lg flex flex-col">
+            <!-- Card 1: Basic Information -->
+            <section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+                <div class="flex items-center justify-between pb-space-xs border-b border-surface-container">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-[19px]">spa</span>
+                        </span>
+                        <div>
+                            <h2 class="font-headline-sm text-headline-sm text-on-surface">Thông Tin Cơ Bản Sản Phẩm</h2>
+                            <p class="font-body-sm text-body-sm text-secondary">Định danh, kiểu sản phẩm và dịp sử dụng</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-space-md pt-space-xs">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-space-md">
+                        <!-- Product Title -->
+                        <div class="md:col-span-12 space-y-1.5">
+                            <label class="block font-title-sm text-title-sm text-on-surface">Tên mẫu sản phẩm *</label>
+                            <input type="text" placeholder="VD: Bó Hoa Rosée Éternelle, Giỏ Mây Pastel Bloom..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low focus:bg-surface text-on-surface font-title-sm text-title-sm focus:outline-none shadow-sm" />
+                        </div>
+
+                        <!-- Floral Type / Kind -->
+                        <div class="md:col-span-6 space-y-1.5">
+                            <label class="block font-title-sm text-title-sm text-on-surface">Kiểu sản phẩm *</label>
+                            <select class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low focus:bg-surface text-on-surface font-body-md text-body-md focus:outline-none shadow-sm cursor-pointer">
+                                <option value="bo-hoa">Bó hoa tươi nghệ thuật</option>
+                                <option value="gio-hoa">Giỏ hoa tươi để bàn</option>
+                                <option value="hop-hoa">Hộp hoa cao cấp</option>
+                                <option value="ke-hoa">Kệ hoa chúc mừng / Khai trương</option>
+                            </select>
+                        </div>
+
+                        <!-- Occasions -->
+                        <div class="md:col-span-6 space-y-1.5">
+                            <label class="block font-title-sm text-title-sm text-on-surface">Dịp sử dụng *</label>
+                            <select class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low focus:bg-surface text-on-surface font-body-md text-body-md focus:outline-none shadow-sm cursor-pointer">
+                                <option value="sinh-nhat">Sinh Nhật</option>
+                                <option value="khai-truong">Khai Trương</option>
+                                <option value="ky-niem">Kỷ Niệm / Tình Yêu</option>
+                                <option value="chuc-mung">Chúc Mừng</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="space-y-1.5">
+                        <label class="block font-title-sm text-title-sm text-on-surface">Mô tả nghệ thuật &amp; thông điệp</label>
+                        <textarea rows="4" placeholder="Nhập cảm hứng thiết kế, màu sắc chủ đạo và lời chúc..." class="w-full p-3.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface shadow-sm"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Card 2: Floral Recipe / BOM (Chi Tiết Mẫu - Thành Phần Hoa) -->
+            <section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+                <div class="flex items-center justify-between pb-space-xs border-b border-surface-container">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-[19px]">receipt_long</span>
+                        </span>
+                        <div>
+                            <h2 class="font-headline-sm text-headline-sm text-on-surface">Cấu Hình Thành Phần Hoa (ChiTietMau)</h2>
+                            <p class="font-body-sm text-body-sm text-secondary">Quy định số lượng tiêu chuẩn các loại hoa thành phần trong mẫu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto rounded-lg bg-surface-container-low">
+                    <table class="w-full text-left font-body-md text-body-md text-on-surface">
+                        <thead>
+                            <tr class="font-label-md text-label-md uppercase text-secondary tracking-wider bg-surface-container">
+                                <th class="py-3 px-3.5">Hoa tươi thành phần</th>
+                                <th class="py-3 px-2 text-center">ĐVT</th>
+                                <th class="py-3 px-2 text-center w-28">Số lượng TC</th>
+                                <th class="py-3 px-3 text-right">Đơn giá</th>
+                                <th class="py-3 px-3 text-right">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody class="font-title-sm text-title-sm divide-y divide-surface-container">
+                            <tr>
+                                <td class="py-3 px-3.5">Hoa hồng Ohara Pháp</td>
+                                <td class="py-3 px-2 text-center text-secondary">Cành</td>
+                                <td class="py-3 px-2 text-center">
+                                    <input type="number" value="10" min="1" class="w-16 px-2 py-1 text-center rounded bg-surface-container-lowest font-bold" />
+                                </td>
+                                <td class="py-3 px-3 text-right text-secondary">65.000đ</td>
+                                <td class="py-3 px-3 text-right text-primary font-bold">650.000đ</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-3.5">Tulip Hà Lan Trắng</td>
+                                <td class="py-3 px-2 text-center text-secondary">Cành</td>
+                                <td class="py-3 px-2 text-center">
+                                    <input type="number" value="5" min="1" class="w-16 px-2 py-1 text-center rounded bg-surface-container-lowest font-bold" />
+                                </td>
+                                <td class="py-3 px-3 text-right text-secondary">50.000đ</td>
+                                <td class="py-3 px-3 text-right text-primary font-bold">250.000đ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- RIGHT COLUMN: Pricing & Image Upload -->
+        <div class="lg:col-span-5 space-y-space-lg">
+            <!-- Pricing Card -->
+            <section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-surface-container pb-space-xs">Bảng Giá &amp; Trạng Thái</h3>
+                
+                <div class="space-y-space-md">
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1">Giá cơ bản (VNĐ) *</label>
+                        <input type="number" value="1450000" placeholder="1.450.000" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-primary font-headline-sm font-bold focus:outline-none" />
+                    </div>
+
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1">Trạng thái bán</label>
+                        <select class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none">
+                            <option value="1">Mở bán (Active)</option>
+                            <option value="0">Tạm ngưng (Inactive)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-title-sm text-title-sm text-on-surface mb-1">Hình ảnh đại diện mẫu</label>
+                        <div class="border-2 border-dashed border-outline-variant rounded-xl p-space-lg text-center bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer">
+                            <span class="material-symbols-outlined text-[36px] text-primary">add_a_photo</span>
+                            <p class="font-body-sm text-body-sm text-secondary mt-1">Kéo thả hoặc tải ảnh mẫu bó hoa tươi (PNG, JPG)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-space-md flex gap-space-sm">
+                    <a href="/Admin/MauSanPham" class="flex-1 py-3 text-center rounded-xl bg-surface-container text-on-surface font-title-sm hover:bg-surface-container-high transition-all">Hủy bỏ</a>
+                    <button type="submit" class="flex-1 py-3 text-center rounded-xl bg-primary text-on-primary font-title-sm hover:bg-primary-container transition-all shadow-sm">Lưu mẫu sản phẩm</button>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

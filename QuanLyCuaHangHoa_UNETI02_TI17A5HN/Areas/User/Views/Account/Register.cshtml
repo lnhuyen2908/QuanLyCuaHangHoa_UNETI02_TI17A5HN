@@ -1,0 +1,413 @@
+@{
+    ViewData["Title"] = "Đăng ký thành viên - Web quản lý hoa tươi";
+}
+
+<div class="relative w-full overflow-hidden bg-surface py-6 sm:py-10 lg:py-14">
+    <!-- Subtle Ambient Glow -->
+    <div class="absolute -top-32 -left-20 w-96 h-96 rounded-full bg-primary-fixed/30 blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/2 -right-32 w-80 h-80 rounded-full bg-secondary-container/40 blur-3xl pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin lg:px-margin-desktop relative z-10">
+
+        <!-- Main Dual-Column Canvas -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-stretch">
+            <!-- Left Column: Privilege Editorial Presentation (5 cols on lg) -->
+            <div class="lg:col-span-5 flex flex-col justify-between rounded-xl bg-surface-container-low p-6 sm:p-8 lg:p-10 shadow-sm relative overflow-hidden">
+                <!-- Background botanical accent texture overlay -->
+                <div class="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-bl-full pointer-events-none"></div>
+                <div class="relative z-10 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-label-md font-label-md uppercase tracking-wider">
+                        <span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">stars</span>
+                        <span>Privilege Floral Membership</span>
+                    </div>
+                    <div class="space-y-2">
+                        <h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">
+                            Trở Thành Hội Viên <br class="hidden sm:inline">
+                            <span class="font-display-lg text-[34px] lg:text-[40px] italic font-normal text-on-surface">Web quản lý hoa tươi</span>
+                        </h1>
+                        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            Nơi những tâm hồn đồng điệu hội ngộ cùng nghệ thuật hoa thủ công. Tận hưởng hệ đặc quyền đẳng cấp dành riêng cho khách hàng thân thiết.
+                        </p>
+                    </div>
+                    <!-- Member Perks List -->
+                    <div class="space-y-4 pt-2">
+                        <!-- Perk 1 -->
+                        <div class="flex items-start gap-3.5 p-3.5 rounded-lg bg-surface-container-lowest/80 shadow-sm transition-all hover:translate-x-1 duration-300">
+                            <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center flex-shrink-0 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">redeem</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h2 class="font-title-sm text-title-sm text-on-surface">Voucher chào mừng 100.000₫</h2>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">Áp dụng trực tiếp cho tác phẩm hoa đầu tiên khi đặt hàng.</p>
+                            </div>
+                        </div>
+                        <!-- Perk 2 -->
+                        <div class="flex items-start gap-3.5 p-3.5 rounded-lg bg-surface-container-lowest/80 shadow-sm transition-all hover:translate-x-1 duration-300">
+                            <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center flex-shrink-0 text-primary">
+                                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">cake</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h2 class="font-title-sm text-title-sm text-on-surface">Món quà hoa sinh nhật bất ngờ</h2>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">Trao tặng bó hoa mini độc bản kèm thiệp chúc mừng dập nhũ ngày sinh nhật bạn.</p>
+                            </div>
+                        </div>
+                        <!-- Perk 3 -->
+                        <div class="flex items-start gap-3.5 p-3.5 rounded-lg bg-surface-container-lowest/80 shadow-sm transition-all hover:translate-x-1 duration-300">
+                            <div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center flex-shrink-0 text-tertiary">
+                                <span class="material-symbols-outlined text-[20px]">local_florist</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h2 class="font-title-sm text-title-sm text-on-surface">Tiếp cận trước các bộ sưu tập giới hạn</h2>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">Ưu tiên đặt trước hoa nhập khẩu Hà Lan, Ecuador và BST lễ hội độc quyền.</p>
+                            </div>
+                        </div>
+                        <!-- Perk 4 -->
+                        <div class="flex items-start gap-3.5 p-3.5 rounded-lg bg-surface-container-lowest/80 shadow-sm transition-all hover:translate-x-1 duration-300">
+                            <div class="w-10 h-10 rounded-full bg-primary-fixed-dim/40 flex items-center justify-center flex-shrink-0 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">palette</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h2 class="font-title-sm text-title-sm text-on-surface">Ưu tiên thợ chính Florist Master</h2>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">Tư vấn màu sắc 1:1 và trực tiếp cắm hoa theo yêu cầu cảm xúc cá nhân hoá.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Visual Atmosphere Vignette -->
+                    <div class="relative w-full h-44 rounded-lg overflow-hidden shadow-sm">
+                        <img class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700" alt="Romantic flower workshop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmx4MJ9HCYMYAkGvFkGo2IPyrfutLt_cxX1O1hy3sBpIs_5Nu8bZ9qBj1nZ7Fyi6acFLZTF-6WPlfkGfI5cxqVrVrIX2RK0o1nxgnCd4CUCbN7N8IfVvlyQD0Jv5TgEjvyZkAlTbF4zmwjub-2G-GNI4K42EwciqE5S2A_RVDafKJLbb_uiwKms9xQBfvxbNiA3xo5SA5a6VUIer5ploEagYZ6Xm_c4-UIjIWHAdyG_UVJFuLcQJhWPg">
+                        <div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/70 via-transparent to-transparent flex items-end p-4">
+                            <span class="text-on-primary font-body-sm text-body-sm flex items-center gap-1.5 backdrop-blur-sm bg-inverse-surface/30 px-3 py-1 rounded-full">
+                                <span class="material-symbols-outlined text-[16px] text-primary-fixed">verified</span>
+                                <span>Đồng hành cùng hơn 12.000 người yêu hoa nghệ thuật</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Founder's Signature Quote -->
+                <div class="mt-8 pt-6 bg-surface-container-lowest rounded-lg p-5 shadow-sm relative">
+                    <span class="material-symbols-outlined text-outline-variant/40 text-4xl absolute -top-3 right-4">format_quote</span>
+                    <p class="font-display-lg italic text-[15px] leading-relaxed text-on-surface-variant">
+                        "Mỗi bông hoa nở ra đều mang một thông điệp chân thành của thời khắc. Web quản lý hoa tươi không chỉ bán hoa, chúng tôi gửi gắm những lời tri âm đẹp đẽ nhất."
+                    </p>
+                    <div class="mt-3 flex items-center justify-between">
+                        <div>
+                            <span class="font-title-sm text-title-sm text-primary block">Thảo Vy</span>
+                            <span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Master Florist &amp; Sáng lập Web quản lý hoa tươi</span>
+                        </div>
+                        <div class="flex items-center gap-0.5 text-primary text-sm">
+                            <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Registration Form (7 cols on lg) -->
+            <div class="lg:col-span-7 rounded-xl bg-surface-container-lowest p-6 sm:p-10 shadow-sm flex flex-col justify-between">
+                <div>
+                    <!-- Form Header -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 gap-3">
+                        <div>
+                            <h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">Tạo Tài Khoản Thành Viên</h2>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Điền thông tin bên dưới để kích hoạt tài khoản và nhận ưu đãi chào mừng.</p>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md self-start sm:self-auto">
+                            <span class="material-symbols-outlined text-[14px]">shield</span> Bảo mật 100%
+                        </span>
+                    </div>
+                    <!-- Fast Social Signups -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                        <button class="flex items-center justify-center gap-3 py-2.5 px-4 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-title-sm text-title-sm shadow-sm group" type="button">
+                            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"></path>
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"></path>
+                            </svg>
+                            <span class="group-hover:text-primary transition-colors">Đăng ký với Google</span>
+                        </button>
+                        <button class="flex items-center justify-center gap-3 py-2.5 px-4 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-title-sm text-title-sm shadow-sm group" type="button">
+                            <div class="w-5 h-5 rounded-full bg-[#0068FF] text-white flex items-center justify-center font-bold text-[10px]">Z</div>
+                            <span class="group-hover:text-primary transition-colors">Đăng ký với Zalo</span>
+                        </button>
+                    </div>
+                    <!-- Divider with Text -->
+                    <div class="relative flex items-center justify-center mb-6">
+                        <div class="w-full h-px bg-outline-variant/60"></div>
+                        <span class="absolute px-3 bg-surface-container-lowest text-outline font-label-md text-label-md tracking-wider uppercase">Hoặc đăng ký bằng email &amp; số điện thoại</span>
+                    </div>
+                    <!-- Registration Form Fields -->
+                    <form class="space-y-4" id="atelier-signup-form" onsubmit="event.preventDefault(); handleRegistration();">
+                        <!-- Full Name Field -->
+                        <div class="space-y-1.5">
+                            <label class="block font-title-sm text-title-sm text-on-surface" for="fullName">
+                                Họ và tên quý khách <span class="text-primary">*</span>
+                            </label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">person</span>
+                                <input class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="fullName" placeholder="Ví dụ: Nguyễn Mai Phương" required="" type="text">
+                            </div>
+                        </div>
+                        <!-- Phone & Email Two-Column Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Phone Number -->
+                            <div class="space-y-1.5">
+                                <label class="block font-title-sm text-title-sm text-on-surface" for="phone">
+                                    Số điện thoại <span class="text-primary">*</span>
+                                </label>
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">call</span>
+                                    <input class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="phone" placeholder="0901 234 567" required="" type="tel">
+                                </div>
+                                <p class="font-body-sm text-[11px] text-on-surface-variant flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[13px] text-tertiary">check_circle</span>
+                                    Nhận mã kích hoạt &amp; hình ảnh hoa qua Zalo
+                                </p>
+                            </div>
+                            <!-- Email Address -->
+                            <div class="space-y-1.5">
+                                <label class="block font-title-sm text-title-sm text-on-surface" for="email">
+                                    Địa chỉ Email <span class="text-primary">*</span>
+                                </label>
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">mail</span>
+                                    <input class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="email" placeholder="maiphuong@example.com" required="" type="email">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Passwords Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Password Field -->
+                            <div class="space-y-1.5">
+                                <label class="block font-title-sm text-title-sm text-on-surface" for="password">
+                                    Mật khẩu <span class="text-primary">*</span>
+                                </label>
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">lock</span>
+                                    <input class="w-full pl-11 pr-10 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="password" oninput="evaluatePasswordStrength(this.value)" placeholder="Tối thiểu 8 ký tự" required="" type="password">
+                                    <button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" onclick="togglePasswordVisibility('password', this)" type="button">
+                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Confirm Password Field -->
+                            <div class="space-y-1.5">
+                                <label class="block font-title-sm text-title-sm text-on-surface" for="confirmPassword">
+                                    Xác nhận lại mật khẩu <span class="text-primary">*</span>
+                                </label>
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">lock_reset</span>
+                                    <input class="w-full pl-11 pr-10 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="confirmPassword" oninput="checkPasswordMatch()" placeholder="Nhập lại mật khẩu" required="" type="password">
+                                    <button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" onclick="togglePasswordVisibility('confirmPassword', this)" type="button">
+                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Password Strength Bar & Indicators -->
+                        <div class="p-3 rounded-lg bg-surface-container-low space-y-2">
+                            <div class="flex items-center justify-between text-body-sm font-body-sm">
+                                <span class="text-on-surface-variant">Độ mạnh mật khẩu:</span>
+                                <span class="font-title-sm text-primary" id="strengthText">Chưa nhập</span>
+                            </div>
+                            <!-- Strength Segment Bars -->
+                            <div class="grid grid-cols-4 gap-1.5 h-1.5 w-full">
+                                <div class="h-full rounded-full bg-outline-variant transition-colors" id="bar1"></div>
+                                <div class="h-full rounded-full bg-outline-variant transition-colors" id="bar2"></div>
+                                <div class="h-full rounded-full bg-outline-variant transition-colors" id="bar3"></div>
+                                <div class="h-full rounded-full bg-outline-variant transition-colors" id="bar4"></div>
+                            </div>
+                            <p class="font-body-sm text-[11px] text-outline" id="passwordFeedback">
+                                Gợi ý: Kết hợp chữ hoa, chữ thường, số và ký tự đặc biệt (VD: @@, #, !) để tài khoản luôn an toàn.
+                            </p>
+                        </div>
+                        <!-- Birthday Field (Optional - for Birthday Gifts) -->
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label class="block font-title-sm text-title-sm text-on-surface" for="birthday">
+                                    Ngày sinh của bạn
+                                </label>
+                                <span class="font-label-md text-label-md text-secondary">Không bắt buộc</span>
+                            </div>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">cake</span>
+                                <input class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="birthday" type="date">
+                            </div>
+                            <p class="font-body-sm text-[11px] text-on-surface-variant">
+                                Web quản lý hoa tươi sẽ tự động gửi quà tặng hoa và thiệp tri ân độc quyền vào tuần lễ sinh nhật của bạn.
+                            </p>
+                        </div>
+                        <!-- Checkbox Consents -->
+                        <div class="space-y-2.5 pt-2">
+                            <label class="flex items-start gap-3 cursor-pointer group">
+                                <input class="mt-1 h-4 w-4 rounded text-primary focus:ring-primary accent-primary cursor-pointer" required="" type="checkbox">
+                                <span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">
+                                    Tôi đã đọc và đồng ý với <a class="text-primary underline underline-offset-2 hover:text-primary-container font-title-sm" href="#">Điều khoản dịch vụ</a> và <a class="text-primary underline underline-offset-2 hover:text-primary-container font-title-sm" href="#">Chính sách bảo mật</a> của Web quản lý hoa tươi.
+                                </span>
+                            </label>
+                            <label class="flex items-start gap-3 cursor-pointer group">
+                                <input checked="" class="mt-1 h-4 w-4 rounded text-primary focus:ring-primary accent-primary cursor-pointer" type="checkbox">
+                                <span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">
+                                    Nhận bản tin xu hướng cắm hoa theo mùa, thư ngỏ nghệ thuật &amp; ưu đãi quà tặng sớm.
+                                </span>
+                            </label>
+                        </div>
+                        <!-- CTA Submit Button -->
+                        <div class="pt-4">
+                            <button class="w-full py-3.5 px-6 rounded-full bg-primary hover:bg-primary-container text-on-primary font-title-md text-title-md shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group" type="submit">
+                                <span>Tạo Tài Khoản Ngay</span>
+                                <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Bottom Footer Navigation Link -->
+                <div class="mt-8 pt-6 bg-surface-container-low rounded-lg p-4 text-center">
+                    <p class="font-body-md text-body-md text-on-surface-variant">
+                        Bạn đã có tài khoản tại Web quản lý hoa tươi? 
+                        <a class="font-title-sm text-title-sm text-primary hover:underline underline-offset-4 ml-1.5 inline-flex items-center gap-1 font-semibold" asp-controller="Home" asp-action="Login">
+                            Đăng nhập tại đây
+                            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trust Badges & Guarantee Ribbon -->
+        <div class="mt-12 pt-8 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 bg-surface-container-low rounded-xl p-6 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary flex-shrink-0 shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">verified_user</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Bảo mật thông tin</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Chuẩn mã hóa SSL 256-bit</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-tertiary flex-shrink-0 shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">eco</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Nguồn hoa tuyển chọn</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Nhập khẩu tươi mới mỗi ngày</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary flex-shrink-0 shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">local_shipping</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Giao hỏa tốc 2H</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Bảo quản xe lạnh chuyên dụng</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-secondary flex-shrink-0 shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">support_agent</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Tư vấn viên 24/7</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Đồng hành chọn hoa tinh tế</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function togglePasswordVisibility(fieldId, btn) {
+            const field = document.getElementById(fieldId);
+            const icon = btn.querySelector('.material-symbols-outlined');
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                field.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        function evaluatePasswordStrength(val) {
+            const b1 = document.getElementById('bar1');
+            const b2 = document.getElementById('bar2');
+            const b3 = document.getElementById('bar3');
+            const b4 = document.getElementById('bar4');
+            const text = document.getElementById('strengthText');
+            const feedback = document.getElementById('passwordFeedback');
+
+            [b1, b2, b3, b4].forEach(b => {
+                b.className = 'h-full rounded-full bg-outline-variant transition-colors';
+            });
+
+            if (!val) {
+                text.textContent = 'Chưa nhập';
+                text.className = 'font-title-sm text-outline';
+                feedback.textContent = 'Gợi ý: Kết hợp chữ hoa, chữ thường, số và ký tự đặc biệt.';
+                return;
+            }
+
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            if (score === 1) {
+                b1.className = 'h-full rounded-full bg-error transition-colors';
+                text.textContent = 'Yếu';
+                text.className = 'font-title-sm text-error';
+                feedback.textContent = 'Mật khẩu còn đơn giản. Hãy thêm chữ cái viết hoa và con số.';
+            } else if (score === 2) {
+                b1.className = 'h-full rounded-full bg-amber-500 transition-colors';
+                b2.className = 'h-full rounded-full bg-amber-500 transition-colors';
+                text.textContent = 'Trung bình';
+                text.className = 'font-title-sm text-amber-600';
+                feedback.textContent = 'Khá tốt. Thêm ký tự đặc biệt như (!, @@, #, $) để an toàn tối đa.';
+            } else if (score === 3) {
+                b1.className = 'h-full rounded-full bg-tertiary transition-colors';
+                b2.className = 'h-full rounded-full bg-tertiary transition-colors';
+                b3.className = 'h-full rounded-full bg-tertiary transition-colors';
+                text.textContent = 'Mạnh';
+                text.className = 'font-title-sm text-tertiary';
+                feedback.textContent = 'Mật khẩu mạnh mẽ và an toàn.';
+            } else if (score === 4) {
+                b1.className = 'h-full rounded-full bg-tertiary transition-colors';
+                b2.className = 'h-full rounded-full bg-tertiary transition-colors';
+                b3.className = 'h-full rounded-full bg-tertiary transition-colors';
+                b4.className = 'h-full rounded-full bg-tertiary transition-colors';
+                text.textContent = 'Rất bảo mật';
+                text.className = 'font-title-sm text-tertiary font-bold';
+                feedback.textContent = 'Mật khẩu đạt độ bảo mật tối ưu tiêu chuẩn hội viên!';
+            }
+        }
+
+        function checkPasswordMatch() {
+            const pwd = document.getElementById('password').value;
+            const confirmPwd = document.getElementById('confirmPassword').value;
+            const confirmInput = document.getElementById('confirmPassword');
+            if (confirmPwd && pwd !== confirmPwd) {
+                confirmInput.classList.add('ring-2', 'ring-error');
+            } else {
+                confirmInput.classList.remove('ring-2', 'ring-error');
+            }
+        }
+
+        function handleRegistration() {
+            const pwd = document.getElementById('password').value;
+            const confirmPwd = document.getElementById('confirmPassword').value;
+            const name = document.getElementById('fullName').value;
+
+            if (pwd !== confirmPwd) {
+                alert('Mật khẩu xác nhận không trùng khớp. Vui lòng kiểm tra lại!');
+                return;
+            }
+
+            alert('Chào mừng ' + name + ' gia nhập Web quản lý hoa tươi! Mã voucher 100.000₫ chào mừng đã được gửi tới số điện thoại và email của bạn.');
+        }
+    </script>
+}

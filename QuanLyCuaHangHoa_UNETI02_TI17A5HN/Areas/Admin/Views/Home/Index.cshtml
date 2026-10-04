@@ -1,0 +1,387 @@
+@{
+    ViewBag.Title = "Bảng Điều Khiển Quản Trị";
+    ViewBag.ActiveMenu = "Dashboard";
+    ViewBag.Breadcrumb = "Bảng điều khiển hệ thống";
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-xl">
+    <!-- Top Banner & Quick Status Bar -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-xs">
+        <div>
+            <div class="flex items-center gap-space-xs mb-1">
+                <span class="inline-flex items-center justify-center w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Hệ Thống Trực Tuyến • ASP.NET Core 10 Runtime</span>
+            </div>
+            <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Trung Tâm Điều Hành - Nhóm 2 Atelier</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant">Tổng quan hiệu suất bán lẻ, xử lý đơn hoa tươi và phê duyệt yêu cầu thiết kế theo yêu cầu trong ngày.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-space-sm">
+            <div class="flex items-center gap-space-xs bg-surface-container px-space-md py-2 rounded-xl text-secondary">
+                <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                <span id="live-datetime" class="font-title-sm text-title-sm text-on-surface">Thứ Sáu, 02/10/2026 • 23:56:23</span>
+            </div>
+            <a href="/Admin/DonDatHoa" class="flex items-center gap-space-xs bg-primary text-on-primary px-space-md py-2 rounded-xl font-title-sm text-title-sm shadow-sm hover:bg-primary-container transition-all">
+                <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                <span>Tạo đơn tại quầy</span>
+            </a>
+            <button type="button" class="flex items-center gap-space-xs bg-surface-container-high text-on-surface px-space-md py-2 rounded-xl font-title-sm text-title-sm hover:bg-surface-variant transition-all">
+                <span class="material-symbols-outlined text-[18px]">refresh</span>
+                <span>Đồng bộ LINQ</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Key Metrics (7 Real-time Indicators) -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-space-sm">
+        <!-- Card 1 -->
+        <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-secondary">
+                <span class="font-label-md text-label-md uppercase tracking-wider">Chờ xác nhận</span>
+                <span class="material-symbols-outlined text-[20px] text-primary">pending_actions</span>
+            </div>
+            <div class="mt-space-md">
+                <div class="font-headline-md text-headline-md text-on-surface">24</div>
+                <div class="flex items-center gap-1 mt-1 font-body-sm text-body-sm text-primary">
+                    <span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+                    <span>4 đơn gấp hôm nay</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-secondary">
+                <span class="font-label-md text-label-md uppercase tracking-wider">Đang cắm hoa</span>
+                <span class="material-symbols-outlined text-[20px] text-primary-container">palette</span>
+            </div>
+            <div class="mt-space-md">
+                <div class="font-headline-md text-headline-md text-on-surface">12</div>
+                <div class="font-body-sm text-body-sm text-on-surface-variant mt-1">3 thợ cắm phụ trách</div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-secondary">
+                <span class="font-label-md text-label-md uppercase tracking-wider">Đang giao</span>
+                <span class="material-symbols-outlined text-[20px] text-tertiary">local_shipping</span>
+            </div>
+            <div class="mt-space-md">
+                <div class="font-headline-md text-headline-md text-on-surface">8</div>
+                <div class="flex items-center gap-1 mt-1 font-body-sm text-body-sm text-tertiary">
+                    <span class="material-symbols-outlined text-[14px]">near_me</span>
+                    <span>Nội thành HCM</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-secondary">
+                <span class="font-label-md text-label-md uppercase tracking-wider">Đã hoàn thành</span>
+                <span class="material-symbols-outlined text-[20px] text-tertiary">task_alt</span>
+            </div>
+            <div class="mt-space-md">
+                <div class="font-headline-md text-headline-md text-on-surface">156</div>
+                <div class="font-body-sm text-body-sm text-on-surface-variant mt-1">Tháng 10/2026</div>
+            </div>
+        </div>
+
+        <!-- Card 5 (Doanh thu) -->
+        <div class="col-span-2 md:col-span-1 lg:col-span-1 bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-secondary">
+                <span class="font-label-md text-label-md uppercase tracking-wider">Doanh thu ngày</span>
+                <span class="material-symbols-outlined text-[20px] text-primary">payments</span>
+            </div>
+            <div class="mt-space-md">
+                <div class="font-headline-md text-headline-md text-primary font-bold">25.5Tr</div>
+                <div class="flex items-center gap-1 mt-1 font-body-sm text-body-sm text-tertiary">
+                    <span class="material-symbols-outlined text-[14px]">trending_up</span>
+                    <span>+18% so qua</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-secondary">
+                <span class="font-label-md text-label-md uppercase tracking-wider">Giao hôm nay</span>
+                <span class="material-symbols-outlined text-[20px] text-secondary">schedule_send</span>
+            </div>
+            <div class="mt-space-md">
+                <div class="font-headline-md text-headline-md text-on-surface">18</div>
+                <div class="font-body-sm text-body-sm text-on-surface-variant mt-1">10 đơn buổi chiều</div>
+            </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
+            <div class="flex items-center justify-between text-secondary">
+                <span class="font-label-md text-label-md uppercase tracking-wider">Chưa thanh toán</span>
+                <span class="material-symbols-outlined text-[20px] text-error">credit_card_off</span>
+            </div>
+            <div class="mt-space-md">
+                <div class="font-headline-md text-headline-md text-error">7</div>
+                <div class="font-body-sm text-body-sm text-error mt-1">Cần nhắc COD</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+        <!-- Monthly Revenue Chart -->
+        <div class="lg:col-span-6 bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-space-md">
+                <div>
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Doanh Thu Tháng • LINQ Expression Aggregation</span>
+                    <h2 class="font-headline-sm text-headline-sm text-on-surface mt-1">Biểu Đồ Xu Hướng 2026</h2>
+                </div>
+                <div class="flex items-center gap-space-xs text-secondary bg-surface-container-low px-space-sm py-1 rounded-lg font-title-sm text-title-sm">
+                    <span>Q3 - Q4 2026</span>
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                </div>
+            </div>
+
+            <!-- Line Graph SVG -->
+            <div class="w-full h-56 relative pt-4">
+                <svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 500 180">
+                    <defs>
+                        <linearGradient id="roseGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#8a4853" stop-opacity="0.25"></stop>
+                            <stop offset="100%" stop-color="#8a4853" stop-opacity="0.0"></stop>
+                        </linearGradient>
+                    </defs>
+                    <line x1="0" y1="30" x2="500" y2="30" stroke="#f5ecea" stroke-dasharray="3,3"></line>
+                    <line x1="0" y1="75" x2="500" y2="75" stroke="#f5ecea" stroke-dasharray="3,3"></line>
+                    <line x1="0" y1="120" x2="500" y2="120" stroke="#f5ecea" stroke-dasharray="3,3"></line>
+                    <line x1="0" y1="165" x2="500" y2="165" stroke="#f5ecea"></line>
+                    <path d="M 10 145 Q 60 130, 95 105 T 180 85 T 265 95 T 350 45 T 435 60 T 490 20 L 490 165 L 10 165 Z" fill="url(#roseGradient)"></path>
+                    <path d="M 10 145 Q 60 130, 95 105 T 180 85 T 265 95 T 350 45 T 435 60 T 490 20" fill="none" stroke="#8a4853" stroke-width="3" stroke-linecap="round"></path>
+                    <circle cx="10" cy="145" r="4" fill="#8a4853"></circle>
+                    <circle cx="95" cy="105" r="4" fill="#8a4853"></circle>
+                    <circle cx="180" cy="85" r="4" fill="#8a4853"></circle>
+                    <circle cx="265" cy="95" r="4" fill="#8a4853"></circle>
+                    <circle cx="350" cy="45" r="4" fill="#8a4853"></circle>
+                    <circle cx="435" cy="60" r="4" fill="#8a4853"></circle>
+                    <circle cx="490" cy="20" r="5" fill="#446435"></circle>
+                </svg>
+                <div class="absolute top-2 right-1 bg-surface-container text-on-surface px-2 py-1 rounded shadow-sm font-label-md text-label-md">
+                    Tháng 10: <span class="text-tertiary font-bold">428.600.000đ</span>
+                </div>
+            </div>
+
+            <div class="flex justify-between font-label-md text-label-md text-secondary mt-2 px-1">
+                <span>T5</span>
+                <span>T6</span>
+                <span>T7</span>
+                <span>T8</span>
+                <span>T9 (Vu Lan)</span>
+                <span>T10 (20/10)</span>
+                <span class="text-tertiary font-bold">T11 Dự Báo</span>
+            </div>
+        </div>
+
+        <!-- Donut Chart Stage distribution -->
+        <div class="lg:col-span-3 bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+            <div>
+                <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Cơ cấu trạng thái</span>
+                <h2 class="font-headline-sm text-headline-sm text-on-surface mt-1">208 Đơn Trong Tháng</h2>
+            </div>
+            <div class="flex items-center justify-center my-space-md relative">
+                <svg class="w-36 h-36 transform -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#f5ecea" stroke-width="12"></circle>
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#446435" stroke-dasharray="119 238" stroke-dashoffset="0" stroke-width="12"></circle>
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#8a4853" stroke-dasharray="43 238" stroke-dashoffset="-119" stroke-width="12"></circle>
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#a6606b" stroke-dasharray="33 238" stroke-dashoffset="-162" stroke-width="12"></circle>
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#5b7e4b" stroke-dasharray="28 238" stroke-dashoffset="-195" stroke-width="12"></circle>
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#ba1a1a" stroke-dasharray="15 238" stroke-dashoffset="-223" stroke-width="12"></circle>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span class="font-headline-sm text-headline-sm text-on-surface font-bold">94%</span>
+                    <span class="font-label-md text-label-md text-secondary">Tỷ lệ xong</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-x-2 gap-y-1 font-body-sm text-body-sm text-secondary">
+                <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-tertiary"></span><span>Hoàn tất (50%)</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary"></span><span>Chờ duyệt (18%)</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary-container"></span><span>Đang cắm (14%)</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-tertiary-container"></span><span>Đang giao (12%)</span></div>
+                <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error"></span><span>Hủy đơn (6%)</span></div>
+            </div>
+        </div>
+
+        <!-- Product Category Share -->
+        <div class="lg:col-span-3 bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+            <div>
+                <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Phân loại danh mục</span>
+                <h2 class="font-headline-sm text-headline-sm text-on-surface mt-1">Sức Tiêu Thụ Kiểu Mẫu</h2>
+            </div>
+            <div class="space-y-space-md my-space-sm">
+                <div>
+                    <div class="flex justify-between font-title-sm text-title-sm text-on-surface mb-1">
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-primary">filter_vintage</span> Bó hoa tay (Bouquets)</span>
+                        <span>48%</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+                        <div class="bg-primary h-full rounded-full" style="width: 48%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between font-title-sm text-title-sm text-on-surface mb-1">
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-tertiary">shopping_bag</span> Giỏ hoa tươi (Baskets)</span>
+                        <span>28%</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+                        <div class="bg-tertiary h-full rounded-full" style="width: 28%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between font-title-sm text-title-sm text-on-surface mb-1">
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-primary-container">all_inbox</span> Hộp hoa cao cấp (Boxes)</span>
+                        <span>15%</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+                        <div class="bg-primary-container h-full rounded-full" style="width: 15%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between font-title-sm text-title-sm text-on-surface mb-1">
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-secondary">podium</span> Kệ hoa khai trương / sự kiện</span>
+                        <span>9%</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+                        <div class="bg-secondary h-full rounded-full" style="width: 9%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-space-sm bg-surface-container rounded-lg flex items-center gap-space-xs text-secondary font-body-sm text-body-sm">
+                <span class="material-symbols-outlined text-[18px] text-tertiary">tips_and_updates</span>
+                <span>Bó hoa Ohara hồng &amp; Tulip là dòng bán chạy nhất tuần.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Priority Dispatch Table & Bespoke Fast-track Queue -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+        <!-- Urgent Orders Table -->
+        <div class="lg:col-span-8 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+            <div class="p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-sm bg-surface-container-low/50">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface">Đơn Hàng Cần Xử Lý Gấp Hôm Nay</h2>
+                        <span class="bg-primary text-on-primary font-label-md text-label-md px-2 py-0.5 rounded-full">6 Đơn Trọng Tâm</span>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-secondary mt-0.5">Kiểm soát tiến độ cắm hoa, đối soát tiền và giao hoa đúng khung giờ khách hẹn.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="/Admin/DonDatHoa" class="px-space-md py-1.5 rounded-lg bg-primary/10 text-primary font-title-sm text-title-sm hover:bg-primary/20 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[18px]">list_alt</span>
+                        <span>Quản lý đơn đặt</span>
+                    </a>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-surface-container-low text-secondary font-label-md text-label-md uppercase tracking-wider">
+                            <th class="py-3 px-space-md">Mã đơn</th>
+                            <th class="py-3 px-space-md">Khách hàng</th>
+                            <th class="py-3 px-space-md">Kiểu mẫu</th>
+                            <th class="py-3 px-space-md">Hẹn giao</th>
+                            <th class="py-3 px-space-md">Tổng tiền</th>
+                            <th class="py-3 px-space-md">Trạng thái</th>
+                            <th class="py-3 px-space-md text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-surface-container font-body-sm text-body-sm">
+                        <tr class="hover:bg-surface-container-low/40 transition-colors">
+                            <td class="py-3.5 px-space-md font-title-sm text-title-sm text-primary">#ORD-9021</td>
+                            <td class="py-3.5 px-space-md">
+                                <div class="font-title-sm text-title-sm text-on-surface">Nguyễn Thu Thảo</div>
+                                <div class="text-secondary font-body-sm text-body-sm">0903 124 ***</div>
+                            </td>
+                            <td class="py-3.5 px-space-md">
+                                <span class="font-title-sm text-title-sm text-on-surface">Bó Hoa Sunset Romance</span>
+                            </td>
+                            <td class="py-3.5 px-space-md">
+                                <span class="text-primary font-bold">15:00 Hôm nay</span>
+                            </td>
+                            <td class="py-3.5 px-space-md font-title-sm text-title-sm text-on-surface">1.450.000đ</td>
+                            <td class="py-3.5 px-space-md">
+                                @await Html.PartialAsync("_AdminStatusBadge", "Đang cắm hoa")
+                            </td>
+                            <td class="py-3.5 px-space-md text-right">
+                                <a href="/Admin/DonDatHoa" class="bg-primary text-on-primary px-3 py-1 rounded-lg font-title-sm text-title-sm inline-block">Chi tiết</a>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-surface-container-low/40 transition-colors">
+                            <td class="py-3.5 px-space-md font-title-sm text-title-sm text-primary">#ORD-9020</td>
+                            <td class="py-3.5 px-space-md">
+                                <div class="font-title-sm text-title-sm text-on-surface">Trần Minh Hoàng</div>
+                                <div class="text-secondary font-body-sm text-body-sm">0918 882 ***</div>
+                            </td>
+                            <td class="py-3.5 px-space-md">
+                                <span class="font-title-sm text-title-sm text-on-surface">Giỏ Mây Pastel Bloom</span>
+                            </td>
+                            <td class="py-3.5 px-space-md">
+                                <span class="text-on-surface font-medium">16:30 Hôm nay</span>
+                            </td>
+                            <td class="py-3.5 px-space-md font-title-sm text-title-sm text-on-surface">2.200.000đ</td>
+                            <td class="py-3.5 px-space-md">
+                                @await Html.PartialAsync("_AdminStatusBadge", "Đang giao hàng")
+                            </td>
+                            <td class="py-3.5 px-space-md text-right">
+                                <a href="/Admin/GiaoNhan" class="bg-surface-container text-on-surface px-3 py-1 rounded-lg font-title-sm text-title-sm inline-block">Vận chuyển</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bespoke Fast-track Queue -->
+        <div class="lg:col-span-4 bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between pb-space-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[24px]">draw</span>
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface">Yêu Cầu Thiết Kế Riêng</h2>
+                    </div>
+                    <span class="bg-primary text-on-primary font-label-md text-label-md px-2 py-0.5 rounded-full">5 Mới</span>
+                </div>
+                <p class="font-body-sm text-body-sm text-secondary mb-space-md">Khách hàng gửi yêu cầu thiết kế riêng cần chốt giá và duyệt mẫu.</p>
+
+                <div class="p-space-md bg-surface-container-low rounded-xl mb-space-sm space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-on-surface">Chị Quỳnh Nga</span>
+                        <span class="font-label-md text-label-md text-primary bg-primary/10 px-2 py-0.5 rounded">#CST-108</span>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-secondary italic">"Tone hồng pastel kiểu Pháp cho lễ đính hôn..."</p>
+                    <div class="flex items-center justify-between pt-1">
+                        <span class="font-title-sm text-title-sm text-on-surface">2.500.000đ</span>
+                        <a href="/Admin/YeuCauThietKe" class="bg-primary text-on-primary px-3 py-1 rounded-lg font-title-sm text-title-sm">Xử lý</a>
+                    </div>
+                </div>
+            </div>
+            <a href="/Admin/YeuCauThietKe" class="w-full py-2.5 bg-surface-container hover:bg-surface-variant text-on-surface rounded-xl font-title-sm text-title-sm flex items-center justify-center gap-2 transition-all mt-4">
+                <span>Xem tất cả yêu cầu thiết kế</span>
+                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateLiveClock() {
+        const el = document.getElementById('live-datetime');
+        if (!el) return;
+        const now = new Date();
+        const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+        const dayName = days[now.getDay()];
+        const dateStr = String(now.getDate()).padStart(2, '0') + '/' + String(now.getMonth() + 1).padStart(2, '0') + '/' + now.getFullYear();
+        const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+        el.textContent = dayName + ', ' + dateStr + ' • ' + timeStr;
+    }
+    setInterval(updateLiveClock, 1000);
+    updateLiveClock();
+</script>

@@ -1,0 +1,793 @@
+@{
+    ViewData["Title"] = "Tất cả mẫu hoa - Web quản lý hoa tươi";
+}
+
+<!-- Top Breadcrumb & Page Banner Area -->
+<section class="w-full bg-surface-container-low py-space-md">
+    <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin lg:px-margin-desktop">
+        <!-- Breadcrumb -->
+        @* <nav aria-label="Breadcrumb" class="flex items-center gap-space-xs text-secondary font-label-md text-label-md uppercase tracking-wider mb-space-sm">
+            <a class="hover:text-primary transition-colors flex items-center gap-1" asp-controller="Home" asp-action="Index">
+                <span class="material-symbols-outlined text-[16px]">home</span>
+                Trang chủ
+            </a>
+            <span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+            <a class="hover:text-primary transition-colors" asp-controller="Home" asp-action="Products">Danh mục</a>
+            <span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+            <span class="text-primary font-semibold">Tất cả mẫu hoa</span>
+        </nav> *@
+        <!-- Page Editorial Headline -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+            <div class="space-y-space-xs max-w-2xl">
+               
+                <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Tất cả mẫu hoa thiết kế</h1>
+                <p class="font-body-md text-body-md text-on-surface-variant">Tuyển tập những tác phẩm hoa nghệ thuật được kết nối tỉ mỉ bởi các nghệ nhân Web quản lý hoa tươi. Mỗi sắc thái và kiểu dáng đều mang một thông điệp tình cảm tinh tế.</p>
+            </div>
+            <div class="flex items-center gap-space-xs bg-surface-container px-space-md py-space-sm rounded-full self-start md:self-auto shadow-sm">
+                <span class="w-2.5 h-2.5 rounded-full bg-tertiary animate-pulse"></span>
+                <span class="font-label-lg text-label-lg text-on-surface">Hiển thị <span class="text-primary font-bold">36</span> mẫu hoa tinh tuyển</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content Layout (Sidebar Filter & Product Showcase) -->
+<section class="max-w-7xl mx-auto w-full px-margin-mobile md:px-margin lg:px-margin-desktop py-space-xl">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-start">
+        <!-- LEFT SIDEBAR FILTER (Sticky) -->
+        <aside class="lg:col-span-4 xl:col-span-3">
+            <div class="sticky top-28 bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-lg">
+                <!-- Filter Header & Reset -->
+                <div class="flex items-center justify-between pb-space-xs">
+                    <div class="flex items-center gap-space-xs">
+                        <span class="material-symbols-outlined text-primary text-[20px]">tune</span>
+                        <h3 class="font-title-md text-title-md text-on-surface">Bộ lọc nâng cao</h3>
+                    </div>
+                    <button class="font-label-sm text-label-md text-secondary hover:text-primary transition-colors uppercase tracking-wider flex items-center gap-1" id="reset-all-btn" type="button">
+                        <span class="material-symbols-outlined text-[13px]">refresh</span>
+                        Xóa tất cả
+                    </button>
+                </div>
+
+                <!-- Keyword Search -->
+                <div class="space-y-space-xs">
+                    <label class="font-title-sm text-title-sm text-on-surface block" for="filter-search-input">Từ khóa tìm kiếm</label>
+                    <div class="relative">
+                        <input class="w-full pl-9 pr-space-md py-2 bg-surface-container-low text-on-surface placeholder:text-outline rounded-lg font-body-sm text-body-sm focus:outline-none focus:bg-surface-container-lowest transition-colors shadow-inner" id="filter-search-input" placeholder="Tên hoa, loại hoa (Ohara, Tulip...)" type="text" value="Hoa hồng Ohara">
+                        <span class="material-symbols-outlined absolute left-2.5 top-2.5 text-[18px] text-outline">search</span>
+                    </div>
+                </div>
+
+                <!-- Kiểu sản phẩm (Bó hoa, Giỏ hoa, Hộp hoa, Kệ hoa) -->
+                <div class="space-y-space-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-on-surface">Kiểu sản phẩm</span>
+                        <span class="font-label-md text-label-md text-primary font-semibold">4 kiểu</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-space-xs">
+                        <label class="flex items-center gap-space-xs p-2 rounded-lg bg-surface-container-low hover:bg-secondary-container transition-colors cursor-pointer select-none">
+                            <input checked="" class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm text-on-surface">Bó hoa</span>
+                            <span class="text-outline font-label-md ml-auto text-[11px]">(18)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs p-2 rounded-lg bg-surface-container-low hover:bg-secondary-container transition-colors cursor-pointer select-none">
+                            <input checked="" class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm text-on-surface">Giỏ hoa</span>
+                            <span class="text-outline font-label-md ml-auto text-[11px]">(9)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs p-2 rounded-lg bg-surface-container-low hover:bg-secondary-container transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm text-on-surface">Hộp hoa</span>
+                            <span class="text-outline font-label-md ml-auto text-[11px]">(5)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs p-2 rounded-lg bg-surface-container-low hover:bg-secondary-container transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm text-on-surface">Kệ hoa</span>
+                            <span class="text-outline font-label-md ml-auto text-[11px]">(4)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Khoảng giá (Dual Range & Quick Chips) -->
+                <div class="space-y-space-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-on-surface">Khoảng giá (VND)</span>
+                        <span class="font-label-md text-label-md text-primary font-semibold" id="price-range-display">500.000đ - 3.200.000đ</span>
+                    </div>
+                    <!-- Price Inputs (Min - Max) -->
+                    <div class="grid grid-cols-2 gap-space-xs items-center">
+                        <div class="relative">
+                            <input class="w-full px-2.5 py-1.5 bg-surface-container-low text-on-surface font-body-sm text-body-sm rounded-lg focus:outline-none text-center shadow-inner" id="min-price-val" type="text" value="500.000">
+                            <span class="font-label-md text-[10px] text-outline block text-center mt-0.5">Tối thiểu</span>
+                        </div>
+                        <div class="relative">
+                            <input class="w-full px-2.5 py-1.5 bg-surface-container-low text-on-surface font-body-sm text-body-sm rounded-lg focus:outline-none text-center shadow-inner" id="max-price-val" type="text" value="3.200.000">
+                            <span class="font-label-md text-[10px] text-outline block text-center mt-0.5">Tối đa</span>
+                        </div>
+                    </div>
+                    <!-- Dual Slider Simulation -->
+                    <div class="relative pt-2 pb-1">
+                        <div class="h-1.5 w-full bg-surface-container rounded-full relative">
+                            <div class="absolute h-1.5 bg-primary rounded-full left-[10%] right-[30%]"></div>
+                            <div class="absolute w-4 h-4 bg-primary shadow-sm rounded-full top-1/2 -translate-y-1/2 left-[10%] cursor-pointer hover:scale-110 transition-transform"></div>
+                            <div class="absolute w-4 h-4 bg-primary shadow-sm rounded-full top-1/2 -translate-y-1/2 right-[30%] cursor-pointer hover:scale-110 transition-transform"></div>
+                        </div>
+                    </div>
+                    <!-- Quick price chips -->
+                    <div class="flex flex-wrap gap-1.5 pt-1">
+                        <button class="px-2 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md hover:bg-secondary-container transition-colors" type="button">&lt; 500k</button>
+                        <button class="px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md font-semibold" type="button">500k - 1tr</button>
+                        <button class="px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md font-semibold" type="button">1tr - 2tr</button>
+                        <button class="px-2 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md hover:bg-secondary-container transition-colors" type="button">&gt; 2tr</button>
+                    </div>
+                </div>
+
+                <!-- Tông màu chủ đạo (Color Swatches) -->
+                <div class="space-y-space-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-on-surface">Tông màu hoa</span>
+                        <span class="font-label-md text-label-md text-outline">Đã chọn: Hồng</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-1">
+                        <button class="w-7 h-7 rounded-full bg-[#8a4853] shadow-sm flex items-center justify-center hover:scale-110 transition-transform" title="Đỏ nhung" type="button"></button>
+                        <button class="w-7 h-7 rounded-full bg-[#ffd9dd] shadow-sm flex items-center justify-center scale-110 shadow-md" title="Hồng phấn" type="button">
+                            <span class="material-symbols-outlined text-[16px] text-primary">check</span>
+                        </button>
+                        <button class="w-7 h-7 rounded-full bg-[#ffffff] shadow-sm flex items-center justify-center hover:scale-110 transition-transform" title="Trắng tinh khôi" type="button"></button>
+                        <button class="w-7 h-7 rounded-full bg-[#fde047] shadow-sm flex items-center justify-center hover:scale-110 transition-transform" title="Vàng ấm" type="button"></button>
+                        <button class="w-7 h-7 rounded-full bg-[#c084fc] shadow-sm flex items-center justify-center hover:scale-110 transition-transform" title="Tím mộng mơ" type="button"></button>
+                        <button class="w-7 h-7 rounded-full bg-[#fb923c] shadow-sm flex items-center justify-center hover:scale-110 transition-transform" title="Cam hoàng hôn" type="button"></button>
+                        <button class="w-7 h-7 rounded-full bg-[#abd197] shadow-sm flex items-center justify-center hover:scale-110 transition-transform" title="Xanh pastel" type="button"></button>
+                    </div>
+                </div>
+
+                <!-- Loại hoa (Checkboxes) -->
+                <div class="space-y-space-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-on-surface">Loại hoa nghệ thuật</span>
+                        <span class="material-symbols-outlined text-[16px] text-outline">expand_less</span>
+                    </div>
+                    <div class="max-h-48 overflow-y-auto space-y-space-xs pr-1">
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input checked="" class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Hoa hồng (Ohara, Ecuador)</span>
+                            <span class="text-outline font-label-md text-[11px]">(24)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Hoa Tulip Hà Lan</span>
+                            <span class="text-outline font-label-md text-[11px]">(8)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Hoa Hướng dương</span>
+                            <span class="text-outline font-label-md text-[11px]">(7)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Mẫu đơn nhập khẩu</span>
+                            <span class="text-outline font-label-md text-[11px]">(5)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Hoa Ly kép thơm</span>
+                            <span class="text-outline font-label-md text-[11px]">(6)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Hoa Cẩm chướng</span>
+                            <span class="text-outline font-label-md text-[11px]">(11)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Hoa Baby trắng</span>
+                            <span class="text-outline font-label-md text-[11px]">(9)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Cúc Tana &amp; Họa mi</span>
+                            <span class="text-outline font-label-md text-[11px]">(4)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Dịp sử dụng (Checkboxes) -->
+                <div class="space-y-space-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="font-title-sm text-title-sm text-on-surface">Dịp trao gửi</span>
+                        <span class="material-symbols-outlined text-[16px] text-outline">expand_less</span>
+                    </div>
+                    <div class="space-y-space-xs">
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input checked="" class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Sinh nhật lãng mạn</span>
+                            <span class="text-outline font-label-md text-[11px]">(19)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Kỷ niệm ngày cưới &amp; Yêu</span>
+                            <span class="text-outline font-label-md text-[11px]">(12)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Khai trương &amp; Hồng phát</span>
+                            <span class="text-outline font-label-md text-[11px]">(7)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Chúc mừng &amp; Tốt nghiệp</span>
+                            <span class="text-outline font-label-md text-[11px]">(8)</span>
+                        </label>
+                        <label class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors cursor-pointer select-none">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox">
+                            <span class="font-body-sm text-body-sm flex-1">Chia buồn &amp; Tưởng nhớ</span>
+                            <span class="text-outline font-label-md text-[11px]">(3)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pt-space-xs flex flex-col gap-space-md">
+                    <button class="w-full py-2.5 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-sm flex items-center justify-center gap-space-xs" type="button">
+                        <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+                        Áp dụng bộ lọc
+                    </button>
+                    <button class="w-full py-2 rounded-full bg-secondary-container text-on-secondary-container font-label-lg text-label-lg hover:bg-surface-container transition-colors text-center" id="default-reset-btn" type="button">
+                        Đặt lại mặc định
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- RIGHT PRODUCT SHOWCASE & SORTING AREA -->
+        <main class="lg:col-span-8 xl:col-span-9 flex flex-col gap-space-lg">
+            <!-- Top Controls: Active Filter Badges & Sort Dropdown -->
+            <div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+                <!-- Active Tags -->
+                <div class="flex flex-wrap items-center gap-space-xs">
+                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider mr-1">Bộ lọc đang bật:</span>
+                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-body-sm text-body-sm">
+                        Hoa hồng Ohara
+                        <button class="hover:text-primary" type="button"><span class="material-symbols-outlined text-[14px]">close</span></button>
+                    </span>
+                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-body-sm text-body-sm">
+                        Kiểu: Bó hoa &amp; Giỏ hoa
+                        <button class="hover:text-primary" type="button"><span class="material-symbols-outlined text-[14px]">close</span></button>
+                    </span>
+                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-body-sm text-body-sm">
+                        Tông màu: Hồng
+                        <button class="hover:text-primary" type="button"><span class="material-symbols-outlined text-[14px]">close</span></button>
+                    </span>
+                    <button class="font-label-md text-label-md text-primary hover:underline ml-1" type="button">Xóa hết (3)</button>
+                </div>
+                <!-- Sort Select -->
+                <div class="flex items-center gap-space-xs flex-shrink-0">
+                    <span class="font-body-sm text-body-sm text-secondary whitespace-nowrap">Sắp xếp:</span>
+                    <div class="relative">
+                        <select class="appearance-none bg-surface-container-low text-on-surface font-title-sm text-title-sm pl-space-md pr-9 py-2 rounded-lg focus:outline-none cursor-pointer">
+                            <option selected="" value="featured">Mẫu hoa mới nhất</option>
+                            <option value="price-asc">Giá: Thấp đến cao</option>
+                            <option value="price-desc">Giá: Cao đến thấp</option>
+                            <option value="rating">Đánh giá cao nhất</option>
+                            <option value="alpha-asc">Tên mẫu: A - Z</option>
+                            <option value="alpha-desc">Tên mẫu: Z - A</option>
+                        </select>
+                        <span class="material-symbols-outlined pointer-events-none absolute right-2.5 top-2.5 text-[18px] text-outline">expand_more</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 12-Product Visual Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">
+                <!-- Product Card 1 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Rosée Éternelle • Bó Hồng Ohara Pháp" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1GKKM3aqw3OEtcXe6XNg5MhfglJPjxM-DpK14RLcH5pQg_y0AoVcm1jJbdSH19xoXZzDCy5i8cTHCGhfNm07EcBNZYxGbCcxhYY3J1nG0509DQcMLrCD1fkIie6wQPkB2HhOYSVTcGGrV4okKZHwQb9Ex1lwre7S6-_Dr1wOzuJm00mBS8LpYEFuJGTGOSWC0b28PLGokNl0_-JyBnE0Npqzyz1l_BxfbAcTe6HP9HS0p-VSy09tdSA">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Bó hoa</span>
+                        <span class="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-primary text-on-primary font-label-md text-[11px] tracking-wide font-medium">Bán chạy</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">4.9</span>
+                                <span class="font-body-sm text-body-sm text-outline">(84 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Rosée Éternelle • Bó Hồng Ohara Pháp</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Hồng Ohara nhập khẩu hương thơm dịu ngọt, phối cùng thạch thảo và lá bạc cao cấp.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between border-t-0">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">1.450.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Giỏ Hoa Bình Minh • Juliet Đào" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxyERlMKk0ZSjKRXmhR-eHRfrb6kKY_Wt_cTUdipOPp2s8BHblywqetMqpgEJH7_rfc_JNZBHESH2_erFsi8rvpMvES1DusHfqPIG7geLatkWOWI1r33Zy0mlzLjLraTh_TJikbsfAUxulAU-gTQETB4BJI7EIHGVLC9a6URMI040kBXPyjajJfRFKb3Od_zzZB0oAOYJhb9mlPb2_Fag-S4qnHMgPGRxVRApE89czlmuHFG9lwcNspA">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Giỏ hoa</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">5.0</span>
+                                <span class="font-body-sm text-body-sm text-outline">(62 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Giỏ Hoa Bình Minh • Juliet Đào</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Sự kết hợp thanh tú giữa hồng triệu đô Juliet, lan hồ điệp mini và giỏ mây đan thủ công.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">1.850.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Velvet Noir • Hộp Hoa Hồng Đỏ Ecuador" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-55RyPEhU_NlnNnEL0Z1hqzcP5ohc7Z8QvnDMo_ccy_r3oPpSjTdmgxvQq14qMO3_9ECDBevGNiv7DwSZSeeVdUsUAOLX2nhbRLLLo8JP0LCdFeYjBmriK4utF0slGpb2p-4n_qcTDQwKLlx_-SNcvzFek1vY_5CFU7mf9y0eY9mLf23VTjQasY4dyKk_UV3mzscn107GN53l9OZMnYuPBRUcJrd9pxUY-fZyZSg5u4s-0IKaI4ZV9w">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Hộp hoa</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">4.8</span>
+                                <span class="font-body-sm text-body-sm text-outline">(41 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Velvet Noir • Hộp Hoa Hồng Đỏ Ecuador</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Hộp bìa cứng cao cấp dập nhũ vàng, chứa đựng 28 đóa hồng Ecuador tuyển chọn độ nở hoàn hảo.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">2.400.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 4 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Khởi Sắc Thịnh Vượng • Kệ Hoa Hướng Dương" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOKyHJMpeoic3Ii27wq2VVO94vF682sOq2vjOgZW-3j3ML3AfZbz_Ch67d32OyAAiswEzgLg83UWW_07wiORz2mOkImIvynOm8v1SRYTq_Uo8IchXWwXsULoYkrP7r2D2dGkT1cYwg4fw0TDEzNxzk35d8zNwZlt-E3GOq9S-kBkP2hrdJ82uDabzNhpK-KdKD7Dv8SegcoscALKYTXEqB9EvrsiFMIx30iHxckNIgicPjUXDEMixkIg">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Kệ hoa</span>
+                        <span class="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-tertiary text-on-tertiary font-label-md text-[11px] tracking-wide font-medium">Khai trương</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">4.9</span>
+                                <span class="font-body-sm text-body-sm text-outline">(38 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Khởi Sắc Thịnh Vượng • Kệ Hoa Hướng Dương</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Cấu trúc chân gỗ mộc tự nhiên mang năng lượng tích cực của hướng dương và lan vũ nữ.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">3.150.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 5 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Pure Innocence • Bó Tulip Hà Lan Trắng" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqEUful1EkL8qfeZ4aYMLOIEzWodyIIorYzz_3VjxjmJ6aQC8uFhq33AS_S4EpC49HmDTqIw24oofDGjnjuiqPnEjCEejZ0Qv33JKsJgsVfXJudT9tyCtGWzmGOZa19bVTAKmh2bJ6HOWZxSmhNEMplpNPOQNu5t8BbxipTmrdqBiwbzy1Xh3SvfB-Anun3m0ZU-v1rCuC-Qu5L-CixC6WGQItR5w1-dI5NR0tt4ee1IjMBIhE11eYOA">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Bó hoa</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">5.0</span>
+                                <span class="font-body-sm text-body-sm text-outline">(53 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Pure Innocence • Bó Tulip Hà Lan Trắng</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">20 cành Tulip thuần khiết nhập khẩu đường bay từ Hà Lan, biểu tượng tình yêu chân thành.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">1.250.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 6 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Giấc Mộng Provence • Giỏ Hoa Tím Pastel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkUJCXl7dK2DK-VB-zNIAbh1wr2JfX-TA1o8jZJQmCiOVnTUeGbzMfM_JMvrl4M4uNcM6zticMeAPz3vnC0cEEBWe_3mq5WMSbg32OqZBgTfvh7ZxuiIkkQ8GvtYNhqtDJE2uMKGp3grUNz8PQwg7PLmC4m39EmV6n-t4B50QAPSCu32xu1ghRVZ3VERng3iNBTKroZ9sgWc06qLDziEqDJ1IeUdeOj2EPdATherNFJsXMP6B0xw-HYQ">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Giỏ hoa</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">4.7</span>
+                                <span class="font-body-sm text-body-sm text-outline">(29 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Giấc Mộng Provence • Giỏ Hoa Tím Pastel</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Sắc tím hoài niệm từ hoa hồng tím Tiara và cát tường xoăn mềm mại.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">1.650.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 7 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Mây Hồng Tình Yêu • Bó Hoa Baby Khổng Lồ" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-iQaP7AFCOcLdm9a9clHLeiwhFkFAYgKmuI9k_D74TKI_GxHAP-Vr0C0DJPT__l8xYV6gL7LxTQNjUU0ZbcBIzViqypz7tCoqdcbuu1Y20bR7f5Ro7Oq18lhV_IbAmyWSAty-7fEvw0Q9Po26Caqmr1sjbVPJ_PfKNSILic3jnA-vlnNky8n1Uu11BnJ0TwWlJHxjMueL25CZ1QQU5Nw9sPUwv4eJ_-l9hITm32H4cLpwB0TDRtpIoQ">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Bó hoa</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">4.9</span>
+                                <span class="font-body-sm text-body-sm text-outline">(77 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Mây Hồng Tình Yêu • Bó Hoa Baby Khổng Lồ</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Baby nhập khẩu phun màu ombre chuyển tiếp pastel bồng bềnh như đám mây tình yêu.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">950.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 8 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Le Jardin Secret • Hộp Tròn Mẫu Đơn Sarah" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEULQNczHBGmeGJA_YinEEQrlVHgpQ_TG-RyB1QYJO5-CY47T8eio9nGYcCnFFuJ8CeY-i_EyTbd2SSMkns0JH73j4-Jj761fS0_cvbCZL47R6jAOjXIDm2kGJGenfZCUooN9xxLAkUvKYLxAwhFAL2I--WzWThZbwj25HI2kXBmCnQENy0W2Xk86S_dxFASKf5FSLytyjFuhDCETgccd5P52p6PfSuTanGh6tluKxw4n6emqV3kuzfQ">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Hộp hoa</span>
+                        <span class="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-primary-container text-on-primary font-label-md text-[11px] tracking-wide font-medium">Bespoke</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">5.0</span>
+                                <span class="font-body-sm text-body-sm text-outline">(34 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Le Jardin Secret • Hộp Tròn Mẫu Đơn Sarah</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Mẫu đơn Sarah Bernhardt danh giá phối cùng hồng kem và hộp nhung xanh ngọc bích.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">2.850.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 9 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Nụ Cười Tháng Tư • Bó Cúc Tana Tươi Trẻ" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQVnuaiIRzKg4B8rCsGb87SBhnBQYGWEFepjO01QXq4bxwEaNFwSoUaDPQ5dc2i1p0Hedu550nhIcxQMLa4qUuzqc0enVxy_Bkr-KdpINsxaoMBazj2UEk1VOoILL-YZ3VBL6TTqX_xRmhusoBHFNjEdk6c-rN2axxyMJHWhaq3QqDt_H6M7N-o1Sss7qAfu_KW3rnZ3umYHY4ji23tH0ch9JaX17nTkS-gWlCF5Je6gYmzDiq5FKTYA">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Bó hoa</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">4.8</span>
+                                <span class="font-body-sm text-body-sm text-outline">(59 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Nụ Cười Tháng Tư • Bó Cúc Tana Tươi Trẻ</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Những cánh hoa cúc nhỏ trắng muốt nhị vàng mang thông điệp tích cực và trong trẻo.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">580.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 10 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Đại Cát Đại Lợi • Kệ Hoa Nghệ Thuật Cam Cháy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHDXBpdVvj_uP4chLc7sVw3LAK2ICLTf9dVD2mOcW4pGnEXnOHPAwcK01vvXhbWqNPq_QIcKHOhELxF83eYwBbWTIBxfX-qUPio41Jcszz2qxj8n352VYBAfN1cdp7O2EGQxoNUeT45MlpRfmnJCHSwVAYNuJ6L6GVmGqI8k9_GolCGNdsbrYpywiiqf_L4a6vZushULmTOxfDfO62bHS2bmcmFYM3-lrbZdJE33JBF1jliJOiIHnTYQ">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Kệ hoa</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">4.9</span>
+                                <span class="font-body-sm text-body-sm text-outline">(18 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Đại Cát Đại Lợi • Kệ Hoa Nghệ Thuật Cam Cháy</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Phong cách cắm hoa hiện đại phối hồng cam Spirit, hồng môn choco sang trọng.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">3.800.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 11 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Thanh Âm Mùa Hạ • Giỏ Ly Kép &amp; Mao Lương" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJCagIrIZ2YQ4OaNaTHFPJelmaHeeoKiXjIdRX9fdkQH23E--CuD0petMyTTgnJ80g7grrm4oTeXeq2hdSajiIbicEn_XhChVyCxZI3F36hSrepcBT3K4dQgESXZILMN7jKU3gLdqPW265hQuU_XUZrALUK_0pqQRhULjDL17wIM9KasfNPW_N4Gg_HjYy9H7TFzbLcVevZy8j8-JTkWqoRKLtoIk0FyusckFyd9vhB0FPIUtknSkp3A">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Giỏ hoa</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">4.7</span>
+                                <span class="font-body-sm text-body-sm text-outline">(22 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Thanh Âm Mùa Hạ • Giỏ Ly Kép &amp; Mao Lương</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Hương thơm ngát quyến rũ từ ly kép không phấn kết hợp cùng mao lương đài các.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">1.550.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 12 -->
+                <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Serenade • Hộp Tròn Cẩm Tú Cầu &amp; Hồng Trắng" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoTKu5LNL6k760M5KswoGfo1VSV-xVP5kBV2PjDR6PQn_sAl9OxXE_xtGSG0BNbWVofq2eFf-2gDnpcQT4c51TAR6BAWjx5XKjfbFBqKSZnF-fTybKvMULatdy3A7x666FeXI-jyjt2wZr-EHOwVjiBAPNyDjtwKfU-04aVerr4yxMVma8GNe9da_NcoZmPtSqjBwnz3frxSKWAS92GEDiaURy3J6LfMcsU7DPMikaoloUjwm12Bg-JA">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md uppercase tracking-wider font-semibold">Hộp hoa</span>
+                        <button aria-label="Lưu vào yêu thích" class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 text-on-surface-variant hover:text-primary flex items-center justify-center transition-colors shadow-sm" type="button">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-1 text-[#d99a4e]">
+                                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                <span class="font-label-md text-label-md font-bold text-on-surface">5.0</span>
+                                <span class="font-body-sm text-body-sm text-outline">(45 đánh giá)</span>
+                            </div>
+                            <h3 class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors line-clamp-1">Serenade • Hộp Tròn Cẩm Tú Cầu &amp; Hồng Trắng</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Kiệt tác hộp tròn phong cách quý phái tặng kèm thiệp hoa ép thủ công độc quyền.</p>
+                        </div>
+                        <div class="pt-space-xs flex items-center justify-between">
+                            <div>
+                                <span class="font-label-md text-[11px] text-outline block uppercase">Giá chính thức</span>
+                                <span class="font-headline-sm text-headline-sm text-primary font-bold">2.100.000₫</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a class="p-2 rounded-full bg-surface-container text-on-surface-variant hover:bg-secondary-container hover:text-primary transition-colors" asp-controller="Home" asp-action="Detail" title="Xem chi tiết">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </a>
+                                <a class="px-3.5 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors flex items-center gap-1 shadow-sm" asp-controller="Home" asp-action="Cart">
+                                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                                    <span>Thêm</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination Section -->
+            <div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col sm:flex-row items-center justify-between gap-space-md mt-space-sm">
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                    Đang hiển thị <span class="font-semibold text-on-surface">1 - 12</span> trong tổng số <span class="font-semibold text-primary">36</span> mẫu hoa nghệ thuật
+                </p>
+                <nav aria-label="Phân trang danh mục" class="flex items-center gap-1">
+                    <!-- Nút Trước (Disabled ở trang 1) -->
+                    <button class="px-3 py-1.5 rounded-lg bg-surface-container text-outline font-title-sm text-title-sm opacity-50 cursor-not-allowed flex items-center gap-1" disabled="" type="button">
+                        <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                        <span class="hidden sm:inline">Trước</span>
+                    </button>
+                    <!-- Số trang -->
+                    <a aria-current="page" class="w-9 h-9 rounded-lg bg-primary text-on-primary font-title-sm text-title-sm flex items-center justify-center shadow-sm" asp-controller="Home" asp-action="Products">1</a>
+                    <a class="w-9 h-9 rounded-lg bg-surface-container hover:bg-secondary-container text-on-surface font-title-sm text-title-sm flex items-center justify-center transition-colors" asp-controller="Home" asp-action="Products">2</a>
+                    <a class="w-9 h-9 rounded-lg bg-surface-container hover:bg-secondary-container text-on-surface font-title-sm text-title-sm flex items-center justify-center transition-colors" asp-controller="Home" asp-action="Products">3</a>
+                    <span class="px-1 text-outline">...</span>
+                    <a class="w-9 h-9 rounded-lg bg-surface-container hover:bg-secondary-container text-on-surface font-title-sm text-title-sm flex items-center justify-center transition-colors" asp-controller="Home" asp-action="Products">4</a>
+                    <!-- Nút Tiếp theo -->
+                    <a class="px-3 py-1.5 rounded-lg bg-surface-container text-on-surface hover:bg-secondary-container hover:text-primary font-title-sm text-title-sm transition-colors flex items-center gap-1" asp-controller="Home" asp-action="Products">
+                        <span class="hidden sm:inline">Tiếp theo</span>
+                        <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Bespoke Floral Service Callout Card -->
+            <div class="rounded-xl bg-gradient-to-r from-secondary-container via-surface-container to-surface-container-low p-space-lg flex flex-col md:flex-row items-center justify-between gap-space-lg shadow-sm">
+                <div class="flex items-center gap-space-md">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 text-primary">
+                        <span class="material-symbols-outlined text-[32px]">palette</span>
+                    </div>
+                    <div>
+                        <span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">Dịch vụ cá nhân hóa • Bespoke Atelier</span>
+                        <h4 class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Bạn chưa tìm thấy mẫu hoa ưng ý?</h4>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant max-w-lg mt-1">Florist của chúng tôi sẽ thiết kế riêng theo màu sắc, loài hoa và ngân sách chính xác theo yêu cầu cảm xúc của bạn.</p>
+                    </div>
+                </div>
+                <a class="px-space-lg py-2.5 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors shadow-sm flex items-center gap-space-xs whitespace-nowrap" asp-controller="Home" asp-action="CustomDesign">
+                    <span class="material-symbols-outlined text-[18px]">draw</span>
+                    <span class="">Đặt thiết kế riêng</span>
+                </a>
+            </div>
+        </main>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const resetBtn = document.getElementById('reset-all-btn');
+            const defaultResetBtn = document.getElementById('default-reset-btn');
+            
+            function handleReset() {
+                const checkboxes = document.querySelectorAll('aside input[type="checkbox"]');
+                checkboxes.forEach(cb => cb.checked = false);
+                const searchInput = document.getElementById('filter-search-input');
+                if (searchInput) searchInput.value = '';
+            }
+
+            if (resetBtn) resetBtn.addEventListener('click', handleReset);
+            if (defaultResetBtn) defaultResetBtn.addEventListener('click', handleReset);
+        });
+    </script>
+}

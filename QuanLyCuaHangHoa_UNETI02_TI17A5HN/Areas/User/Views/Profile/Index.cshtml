@@ -1,0 +1,791 @@
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân & Cài đặt bảo mật - Web quản lý hoa tươi";
+}
+
+<!-- Decorative Ambient Underlay -->
+<div class="relative w-full overflow-hidden">
+    <div class="absolute -top-32 right-1/4 w-96 h-96 bg-primary-fixed/30 rounded-full blur-3xl pointer-events-none -z-10"></div>
+    <div class="absolute top-96 -left-20 w-80 h-80 bg-tertiary-fixed/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+    <!-- Container Wrap -->
+    <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin lg:px-margin-desktop py-space-lg md:py-space-xl">
+        <!-- Breadcrumb & Page Introduction Header -->
+        <section class="mb-space-lg md:mb-space-xl">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+                <div class="space-y-space-xs">
+                    <span class="font-label-lg text-label-lg text-tertiary uppercase tracking-widest block font-medium">Boutique Privileges &amp; Profile</span>
+                    <h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">Không Gian Thành Viên</h1>
+                    <p class="font-body-lg text-body-lg text-secondary max-w-2xl">
+                        Kính chào <span class="text-on-surface font-medium">Nguyễn Mai Phương</span>, chào mừng bạn trở lại với không gian hoa nghệ thuật và dịch vụ chăm sóc hoa độc bản của Web quản lý hoa tươi.
+                    </p>
+                </div>
+                <div class="flex items-center gap-space-sm">
+                    <div class="px-space-md py-2 bg-surface-container rounded-full flex items-center gap-space-xs shadow-sm">
+                        <span class="w-2.5 h-2.5 rounded-full bg-tertiary animate-pulse"></span>
+                        <span class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Trạng thái: Hoạt động thường nhật</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Layout: 2 Columns -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-start">
+            <!-- A. LEFT COLUMN: Sidebar Navigation -->
+            <aside class="lg:col-span-4 space-y-space-lg">
+                <!-- Mini Profile Card -->
+                <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md relative overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-28 h-28 bg-secondary-fixed/40 rounded-full blur-xl pointer-events-none"></div>
+                    <div class="flex flex-col items-center text-center space-y-space-sm relative">
+                        <!-- Avatar Frame -->
+                        <div class="relative group cursor-pointer">
+                            <img class="w-24 h-24 rounded-full object-cover shadow-sm transition-transform duration-300 group-hover:scale-105" alt="Editorial portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQT0K-0EIDY-tzxfBJJ2ztekyEPQ2Ito6V_GVbLTBR87AHTfHPhqbQ6ZW70Egckb-dv8lQu0VSAlrpquMlf0XNx4Qfx5bH75V_fJkrp1S6xJ87OMA5ySZDjmqfH_MKUhms_ksrpdI6w2Vq8Zp0fxrFl5FpmakLMw5NFa5WcLDx-pKTgLOBxie15vwWOe59iQeJ4mJNxXKvU4UanrtDfy56W7pCoxkKfaByJa0p6p9aMQmu7iCaeNWYpw">
+                            <button aria-label="Thay đổi ảnh đại diện" class="absolute bottom-0 right-0 p-1.5 bg-primary text-on-primary rounded-full shadow-md hover:bg-primary-container transition-colors flex items-center justify-center" type="button">
+                                <span class="material-symbols-outlined text-[16px]">photo_camera</span>
+                            </button>
+                        </div>
+                        <!-- Name & Contact -->
+                        <div class="space-y-0.5">
+                            <h2 class="font-headline-sm text-headline-sm text-on-surface">Nguyễn Mai Phương</h2>
+                            <p class="font-body-sm text-body-sm text-secondary">maiphuong@example.com</p>
+                            <p class="font-label-md text-label-md text-on-surface-variant">0918 345 678</p>
+                        </div>
+                        <!-- Tier Badge -->
+                        <div class="inline-flex items-center gap-space-xs px-3 py-1 bg-secondary-fixed text-on-secondary-fixed rounded-full shadow-sm">
+                            <span class="material-symbols-outlined text-[15px] text-primary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                            <span class="font-label-md text-label-md uppercase tracking-wider font-semibold">Silver Member</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Navigation Menu -->
+                <nav aria-label="Menu tài khoản" class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-1">
+                    <!-- 1. Thông tin cá nhân -->
+                    <button type="button" data-tab="personal" class="tab-btn active-tab w-full flex items-center justify-between px-space-md py-3 rounded-lg bg-surface-container text-primary font-title-sm text-title-sm shadow-sm transition-all text-left cursor-pointer">
+                        <div class="flex items-center gap-space-sm">
+                            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">person</span>
+                            <span>Thông tin cá nhân</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[18px] text-primary tab-chevron">chevron_right</span>
+                    </button>
+
+                    <!-- 2. Lịch sử đơn hoa -->
+                    <button type="button" data-tab="orders" class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
+                        <div class="flex items-center gap-space-sm">
+                            <span class="material-symbols-outlined text-[20px]">local_florist</span>
+                            <span>Lịch sử đơn hoa</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">5 đơn</span>
+                            <span class="material-symbols-outlined text-[18px] text-outline tab-chevron">chevron_right</span>
+                        </div>
+                    </button>
+
+                    <!-- 3. Hoa thiết kế riêng -->
+                    <button type="button" data-tab="custom-design" class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
+                        <div class="flex items-center gap-space-sm">
+                            <span class="material-symbols-outlined text-[20px]">palette</span>
+                            <span>Hoa thiết kế riêng</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md">1 chờ duyệt</span>
+                            <span class="material-symbols-outlined text-[18px] text-outline tab-chevron">chevron_right</span>
+                        </div>
+                    </button>
+
+                    <!-- 4. Sổ địa chỉ nhận hoa -->
+                    <button type="button" data-tab="addresses" class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
+                        <div class="flex items-center gap-space-sm">
+                            <span class="material-symbols-outlined text-[20px]">pin_drop</span>
+                            <span>Sổ địa chỉ nhận hoa</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[18px] text-outline tab-chevron">chevron_right</span>
+                    </button>
+
+                    <!-- 5. Lịch nhắc ngày kỷ niệm -->
+                    <button type="button" data-tab="reminders" class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
+                        <div class="flex items-center gap-space-sm">
+                            <span class="material-symbols-outlined text-[20px]">event</span>
+                            <span>Lịch nhắc ngày kỷ niệm</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                            <span class="material-symbols-outlined text-[18px] text-outline tab-chevron">chevron_right</span>
+                        </div>
+                    </button>
+
+                    <!-- 6. Cài đặt & Bảo mật -->
+                    <button type="button" data-tab="security" class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
+                        <div class="flex items-center gap-space-sm">
+                            <span class="material-symbols-outlined text-[20px]">shield</span>
+                            <span>Cài đặt &amp; Bảo mật</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[18px] text-outline tab-chevron">chevron_right</span>
+                    </button>
+
+                    <!-- Logout Link -->
+                    <div class="pt-space-sm">
+                        <a class="w-full flex items-center gap-space-sm px-space-md py-2.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/30 transition-colors font-title-sm text-title-sm text-left" asp-controller="Home" asp-action="Login">
+                            <span class="material-symbols-outlined text-[20px]">logout</span>
+                            <span>Đăng xuất tài khoản</span>
+                        </a>
+                    </div>
+                </nav>
+
+                <!-- Artisanal Florist Advice Widget -->
+                <div class="bg-surface-container-low rounded-xl p-space-lg relative space-y-space-sm">
+                    <span class="font-label-md text-label-md text-secondary uppercase tracking-widest block">Web quản lý hoa tươi Concierge</span>
+                    <h3 class="font-headline-sm text-headline-sm text-primary">Chuyên viên cắm hoa riêng</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                        Bạn có yêu cầu đặc biệt về loài hoa nhập khẩu hiếm hoặc sự kiện tư gia? Chuyên viên hoa của chúng tôi luôn sẵn sàng hỗ trợ.
+                    </p>
+                    <a class="inline-flex items-center gap-2 text-primary font-title-sm text-title-sm hover:underline pt-space-xs" href="tel:02838225599">
+                        <span class="material-symbols-outlined text-[18px]">call</span>
+                        <span>Hotline VIP: 028 3822 5599</span>
+                    </a>
+                </div>
+            </aside>
+
+            <!-- B. RIGHT COLUMN: Main Content Tabs -->
+            <main class="lg:col-span-8 space-y-space-xl">
+
+                <!-- TAB 1: THÔNG TIN CÁ NHÂN -->
+                <div id="tab-personal" class="profile-tab-content space-y-space-xl">
+                    <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-lg">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+                            <div>
+                                <h2 class="font-headline-md text-headline-md text-on-surface">Thông Tin Cá Nhân &amp; Gu Thẩm Mỹ</h2>
+                                <p class="font-body-sm text-body-sm text-secondary">Cập nhật sở thích để Web quản lý hoa tươi gợi ý hoa chuẩn cảm xúc nhất.</p>
+                            </div>
+                            <span class="px-3 py-1 bg-surface-container text-secondary rounded-full font-label-md text-label-md uppercase tracking-wider self-start sm:self-auto">
+                                Bảo mật 100%
+                            </span>
+                        </div>
+                        <form class="space-y-space-md" onsubmit="event.preventDefault();">
+                            <!-- Row 1: Name & Birth Date -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+                                <div class="space-y-space-xs">
+                                    <label class="font-title-sm text-title-sm text-on-surface block" for="fullname">Họ và tên quý khách</label>
+                                    <input class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all" id="fullname" type="text" value="Nguyễn Mai Phương">
+                                </div>
+                                <div class="space-y-space-xs">
+                                    <div class="flex items-center justify-between">
+                                        <label class="font-title-sm text-title-sm text-on-surface" for="birthdate">Ngày sinh</label>
+                                        <span class="inline-flex items-center gap-1 font-label-md text-[10px] text-tertiary bg-tertiary-fixed px-2 py-0.5 rounded-full font-semibold">
+                                            <span class="material-symbols-outlined text-[12px]">verified</span>
+                                            Đã xác thực quà sinh nhật
+                                        </span>
+                                    </div>
+                                    <div class="relative">
+                                        <input class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all" id="birthdate" type="date" value="1996-10-18">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Row 2: Phone & Email -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+                                <div class="space-y-space-xs">
+                                    <div class="flex items-center justify-between">
+                                        <label class="font-title-sm text-title-sm text-on-surface" for="phone">Số điện thoại di động</label>
+                                        <span class="inline-flex items-center gap-1 font-label-md text-[10px] text-primary bg-secondary-fixed px-2 py-0.5 rounded-full font-semibold">
+                                            <span class="material-symbols-outlined text-[12px]">chat</span>
+                                            Đã liên kết Zalo ảnh hoa
+                                        </span>
+                                    </div>
+                                    <input class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all" id="phone" type="tel" value="0918 345 678">
+                                </div>
+                                <div class="space-y-space-xs">
+                                    <div class="flex items-center justify-between">
+                                        <label class="font-title-sm text-title-sm text-on-surface" for="email">Địa chỉ Email</label>
+                                        <span class="inline-flex items-center gap-1 font-label-md text-[10px] text-tertiary bg-tertiary-fixed px-2 py-0.5 rounded-full font-semibold">
+                                            <span class="material-symbols-outlined text-[12px]">check</span>
+                                            Đã xác thực
+                                        </span>
+                                    </div>
+                                    <input class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all" id="email" type="email" value="maiphuong@example.com">
+                                </div>
+                            </div>
+                            <!-- Row 3: Gender & Frequency Occasions -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+                                <div class="space-y-space-xs">
+                                    <label class="font-title-sm text-title-sm text-on-surface block">Xưng hô</label>
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <button class="py-2.5 px-3 rounded-lg bg-primary text-on-primary font-title-sm text-title-sm text-center shadow-sm" type="button">
+                                            Chị / Nữ
+                                        </button>
+                                        <button class="py-2.5 px-3 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-surface-container font-title-sm text-title-sm text-center transition-colors" type="button">
+                                            Anh / Nam
+                                        </button>
+                                        <button class="py-2.5 px-3 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-surface-container font-title-sm text-title-sm text-center transition-colors" type="button">
+                                            Khác
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="space-y-space-xs">
+                                    <label class="font-title-sm text-title-sm text-on-surface block">Dịp hoa thường xuyên đặt</label>
+                                    <div class="relative">
+                                        <select class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all appearance-none pr-10">
+                                            <option selected="">Sinh nhật người thân &amp; Kỷ niệm ngày cưới</option>
+                                            <option>Tặng đối tác &amp; Sự kiện khai trương</option>
+                                            <option>Hoa trưng bày tổ ấm hàng tuần</option>
+                                            <option>Tỏ tình &amp; Cầu hôn lãng mạn</option>
+                                        </select>
+                                        <span class="material-symbols-outlined text-[20px] text-outline absolute right-3 top-3.5 pointer-events-none">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Row 4: Gu hoa & Tone màu yêu thích -->
+                            <div class="space-y-space-sm pt-space-xs">
+                                <div class="flex items-center justify-between">
+                                    <label class="font-title-sm text-title-sm text-on-surface block">Gu hoa &amp; Tone màu yêu thích của bạn</label>
+                                    <span class="font-body-sm text-body-sm text-secondary">Chọn tối đa 5 sở thích</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-on-primary font-label-lg text-label-lg shadow-sm cursor-pointer">
+                                        <span class="material-symbols-outlined text-[14px]">check</span>
+                                        Tone Pastel Pháp
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-on-primary font-label-lg text-label-lg shadow-sm cursor-pointer">
+                                        <span class="material-symbols-outlined text-[14px]">check</span>
+                                        Hồng Ohara nhập khẩu
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-on-primary font-label-lg text-label-lg shadow-sm cursor-pointer">
+                                        <span class="material-symbols-outlined text-[14px]">check</span>
+                                        Tulip Hà Lan
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-on-primary font-label-lg text-label-lg shadow-sm cursor-pointer">
+                                        <span class="material-symbols-outlined text-[14px]">check</span>
+                                        Tone trắng kem thanh khiết
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-on-primary font-label-lg text-label-lg shadow-sm cursor-pointer">
+                                        <span class="material-symbols-outlined text-[14px]">check</span>
+                                        Phong cách cắm tự nhiên mộc
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-low text-secondary hover:bg-surface-container font-label-lg text-label-lg cursor-pointer transition-colors">
+                                        + Cẩm tú cầu Hydrangea
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Action Buttons -->
+                            <div class="flex flex-wrap items-center justify-end gap-space-sm pt-space-md">
+                                <button class="px-space-lg py-2.5 rounded-full bg-surface-container-low text-secondary font-title-sm text-title-sm hover:bg-surface-container transition-colors" type="button">
+                                    Hủy thay đổi
+                                </button>
+                                <button class="px-space-xl py-2.5 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container shadow-md transition-all flex items-center gap-2" type="submit">
+                                    <span class="material-symbols-outlined text-[18px]">save</span>
+                                    <span>Lưu thay đổi thông tin</span>
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+
+                <!-- TAB 2: LỊCH SỬ ĐƠN HOA -->
+                <div id="tab-orders" class="profile-tab-content space-y-space-xl hidden">
+                    <!-- Current Active Order Card -->
+                    <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-md">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+                            <div class="space-y-0.5">
+                                <span class="font-label-lg text-label-lg text-tertiary uppercase tracking-widest font-semibold block">Cập nhật thời gian thực</span>
+                                <h2 class="font-headline-md text-headline-md text-on-surface">Đơn Hoa Gần Nhất</h2>
+                            </div>
+                            <span class="px-3 py-1 bg-secondary-fixed text-primary font-label-md text-label-md font-semibold uppercase tracking-wider rounded-full self-start sm:self-auto">
+                                Đang xử lý
+                            </span>
+                        </div>
+
+                        <!-- Order Card with Progress -->
+                        <div class="p-space-lg rounded-xl bg-surface-container-low space-y-space-md">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-xs border-b border-outline-variant/30">
+                                <div>
+                                    <span class="font-label-md text-label-md text-secondary uppercase tracking-widest block">Mã đơn hàng</span>
+                                    <span class="font-title-md text-title-md text-on-surface font-bold">#ORD-2025-9021</span>
+                                </div>
+                                <div class="flex items-center gap-space-xs">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse"></span>
+                                    <span class="font-label-md text-label-md uppercase tracking-wider text-primary font-semibold">
+                                        Đang cắm hoa tại Showroom
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Product Item Details -->
+                            <div class="flex flex-col sm:flex-row items-center gap-space-md pt-space-xs">
+                                <img class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover shadow-sm flex-shrink-0" alt="Bó hoa nghệ thuật Rosée Éternelle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkPahRBwcXlxDJf1XrCTgLP185gHFJxift4daMurK7yuVryF1LmbKAJQSFA-CJzTC5T1b5qd2JfQYS69B7g3MwY8DJKLDFz-SZ0DJrJwxD6gwX4lHwjcRXWspzexCC6D4xM4KlEGpm_BfwxwDdkk11wuL3PGwy2lIucE0kE2I-pjjYgpVcGPkNntoKAEsQ4rjvpE6mhKcEbwZWQdgmCKsOQBod2vpdZ1FhlBYOgyj5bEyor5ZuKQNfQQ">
+                                <div class="flex-1 space-y-1 text-center sm:text-left">
+                                    <h3 class="font-headline-sm text-headline-sm text-on-surface">Bó Hoa Nghệ Thuật - Rosée Éternelle</h3>
+                                    <p class="font-body-sm text-body-sm text-secondary">
+                                        Thành phần: Hoa hồng Juliet David Austin, Pink Ohara, Scabiosa trắng &amp; lá khuynh diệp nhập khẩu.
+                                    </p>
+                                    <p class="font-body-sm text-body-sm text-on-surface-variant">
+                                        Giao tới: <strong class="text-on-surface">Tầng 12, Deutsches Haus, Lê Duẩn, Q.1</strong> • Dự kiến: <strong class="text-tertiary">15:30 Hôm nay</strong>
+                                    </p>
+                                    <div class="font-headline-sm text-headline-sm text-primary font-semibold pt-1">
+                                        1.950.000₫
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Visual Delivery Milestone Tracker -->
+                            <div class="pt-space-md space-y-space-sm border-t border-outline-variant/30">
+                                <span class="font-label-md text-label-md text-secondary uppercase tracking-widest block">Hành trình cắm &amp; giao hoa</span>
+                                <div class="grid grid-cols-4 gap-2 text-center">
+                                    <!-- Step 1 -->
+                                    <div class="space-y-1">
+                                        <div class="h-2 rounded-full bg-tertiary"></div>
+                                        <span class="font-label-md text-label-md text-tertiary block font-semibold">1. Đã nhận đơn</span>
+                                        <span class="font-body-sm text-[11px] text-secondary">10:15 Sáng</span>
+                                    </div>
+                                    <!-- Step 2 -->
+                                    <div class="space-y-1">
+                                        <div class="h-2 rounded-full bg-primary relative overflow-hidden">
+                                            <div class="absolute inset-0 bg-primary-container animate-pulse"></div>
+                                        </div>
+                                        <span class="font-label-md text-label-md text-primary block font-semibold">2. Đang cắm hoa</span>
+                                        <span class="font-body-sm text-[11px] text-primary">Florist Kim Ngân</span>
+                                    </div>
+                                    <!-- Step 3 -->
+                                    <div class="space-y-1">
+                                        <div class="h-2 rounded-full bg-surface-container-highest"></div>
+                                        <span class="font-label-md text-label-md text-outline block">3. Duyệt ảnh Zalo</span>
+                                        <span class="font-body-sm text-[11px] text-outline">Chờ hoàn thiện</span>
+                                    </div>
+                                    <!-- Step 4 -->
+                                    <div class="space-y-1">
+                                        <div class="h-2 rounded-full bg-surface-container-highest"></div>
+                                        <span class="font-label-md text-label-md text-outline block">4. Giao xe lạnh</span>
+                                        <span class="font-body-sm text-[11px] text-outline">Hỏa tốc 2H</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Order History List -->
+                    <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-lg">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+                            <h2 class="font-headline-md text-headline-md text-on-surface">Lịch Sử Đặt Hoa Trước Đó</h2>
+                            <div class="flex items-center gap-2">
+                                <button class="px-3 py-1 rounded-full bg-primary text-on-primary font-label-md text-label-md">Tất cả (5)</button>
+                                <button class="px-3 py-1 rounded-full bg-surface-container-low text-secondary hover:bg-surface-container font-label-md text-label-md">Đã hoàn thành (4)</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-space-md">
+                            <!-- Past Order Item 1 -->
+                            <div class="p-space-md rounded-xl bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+                                <div class="flex items-center gap-space-md">
+                                    <img class="w-16 h-16 rounded-lg object-cover shadow-sm flex-shrink-0" alt="Serenata" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9cQ2Y7t0c1rP3W-9L33X48KzOq34rXlZ07m6wO4-Z_pW9Q2L6uY6rYyX2bX8E8A3C4v5bN8M">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-title-sm text-title-sm text-on-surface font-bold">#ORD-2025-8840</span>
+                                            <span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-[10px] font-semibold">Đã hoàn thành</span>
+                                        </div>
+                                        <h3 class="font-body-md text-body-md text-on-surface font-medium">Bình Hoa Serenata Nocturne - Tone Tím Lavender</h3>
+                                        <p class="font-body-sm text-body-sm text-secondary">Ngày đặt: 15/09/2025 • Người nhận: Bác Lê Mai Hương</p>
+                                    </div>
+                                </div>
+                                <div class="flex md:flex-col items-center md:items-end justify-between gap-1 border-t md:border-t-0 border-outline-variant/30 pt-2 md:pt-0">
+                                    <span class="font-title-md text-title-md text-primary font-bold">1.450.000₫</span>
+                                    <button class="px-4 py-1.5 rounded-full bg-surface-container text-primary font-title-sm text-title-sm hover:bg-primary-fixed transition-colors" type="button">
+                                        Đặt lại đơn này
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Past Order Item 2 -->
+                            <div class="p-space-md rounded-xl bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+                                <div class="flex items-center gap-space-md">
+                                    <img class="w-16 h-16 rounded-lg object-cover shadow-sm flex-shrink-0" alt="Velvet Romance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUQCHqGum-cR7MrVc7wnUdu0sxGFIFxlEX6LVV62Php8qodl3t1FErRjCG6FOlTCerMeS4wYAwFiMa6mVxyBkyQ49B-xBM5L_KRrB-YgcMpACMSLvJ-SksxcZEHtThNo36ZO_x_KKu6QkKucJxm7tDvG2QAXGOFbnrFrYGl_rZvG2ItlDOPsVZ3XpZb7JivOIDXGo4XF77_4RCqo0i7eJAD5sReosEwdq_LEmk3Q2We6s967PXGt9brg">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-title-sm text-title-sm text-on-surface font-bold">#ORD-2025-7521</span>
+                                            <span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-[10px] font-semibold">Đã hoàn thành</span>
+                                        </div>
+                                        <h3 class="font-body-md text-body-md text-on-surface font-medium">Hộp Hoa Nhung Cao Cấp - Velvet Romance</h3>
+                                        <p class="font-body-sm text-body-sm text-secondary">Ngày đặt: 08/03/2025 • Người nhận: Nguyễn Mai Phương</p>
+                                    </div>
+                                </div>
+                                <div class="flex md:flex-col items-center md:items-end justify-between gap-1 border-t md:border-t-0 border-outline-variant/30 pt-2 md:pt-0">
+                                    <span class="font-title-md text-title-md text-primary font-bold">2.800.000₫</span>
+                                    <button class="px-4 py-1.5 rounded-full bg-surface-container text-primary font-title-sm text-title-sm hover:bg-primary-fixed transition-colors" type="button">
+                                        Đặt lại đơn này
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- TAB 3: HOA THIẾT KẾ RIÊNG -->
+                <div id="tab-custom-design" class="profile-tab-content space-y-space-xl hidden">
+                    <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-lg">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+                            <div>
+                                <h2 class="font-headline-md text-headline-md text-on-surface">Hoa Thiết Kế Riêng Của Tôi (Bespoke)</h2>
+                                <p class="font-body-sm text-body-sm text-secondary">Quản lý các bản thảo cắm hoa độc bản được thiết kế riêng theo yêu cầu cá nhân.</p>
+                            </div>
+                            <a class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors shadow-sm self-start sm:self-auto" asp-controller="Home" asp-action="CustomDesign">
+                                <span class="material-symbols-outlined text-[18px]">add</span>
+                                <span>Tạo thiết kế hoa mới</span>
+                            </a>
+                        </div>
+
+                        <!-- Active Custom Request Card -->
+                        <div class="p-space-lg rounded-xl bg-surface-container-low border border-primary/20 space-y-space-md relative overflow-hidden">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-xs border-b border-outline-variant/30">
+                                <div>
+                                    <span class="font-label-md text-label-md text-secondary uppercase tracking-widest block">Mã thiết kế riêng</span>
+                                    <span class="font-title-md text-title-md text-on-surface font-bold">#CTM-2025-089</span>
+                                </div>
+                                <span class="px-3 py-1 bg-primary-fixed text-on-primary-fixed font-label-md text-label-md font-semibold uppercase tracking-wider rounded-full self-start sm:self-auto">
+                                    Nghệ nhân đang phác thảo
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+                                <div class="md:col-span-2 space-y-2">
+                                    <h3 class="font-headline-sm text-headline-sm text-on-surface">Bó Hoa Mùa Thu "Romantic Autumn"</h3>
+                                    <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                                        <strong class="text-on-surface">Yêu cầu đặc biệt:</strong> Tone màu cam ấm rực rỡ, phối hợp giữa hoa hồng Ohara cam, tulip Hà Lan nhung và nhành lan vũ nữ kiêu sa. Gói giấy dó thủ công.
+                                    </p>
+                                    <div class="flex flex-wrap gap-2 pt-1">
+                                        <span class="px-2.5 py-1 rounded-full bg-surface-container font-label-md text-label-md text-secondary">Ngân sách: 2.500.000₫</span>
+                                        <span class="px-2.5 py-1 rounded-full bg-surface-container font-label-md text-label-md text-secondary">Dịp: Sinh nhật đối tác</span>
+                                    </div>
+                                </div>
+                                <div class="bg-surface-container-lowest rounded-lg p-space-sm flex flex-col justify-between space-y-2">
+                                    <div>
+                                        <span class="font-label-md text-label-md text-secondary uppercase block">Florist Phụ Trách</span>
+                                        <span class="font-title-sm text-title-sm text-primary font-semibold">Master Florist Kim Ngân</span>
+                                    </div>
+                                    <p class="font-body-sm text-[11px] text-secondary">Dự kiến gửi bản phác thảo 3D qua Zalo trước 17:00 hôm nay.</p>
+                                    <button class="w-full py-2 rounded-lg bg-secondary-fixed text-primary font-title-sm text-title-sm hover:bg-primary-fixed transition-colors" type="button">
+                                        Trao đổi trực tiếp Zalo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Past Custom Requests Table -->
+                        <div class="space-y-space-sm pt-space-sm">
+                            <h3 class="font-title-md text-title-md text-on-surface">Lịch Sử Yêu Cầu Thiết Kế Trước Đây</h3>
+                            <div class="p-space-md rounded-xl bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+                                <div>
+                                    <span class="font-title-sm text-title-sm text-on-surface font-semibold">Kệ Hoa Chúc Mừng Grand Launching</span>
+                                    <p class="font-body-sm text-body-sm text-secondary">Ngân sách: 4.500.000₫ • Đã hoàn thành ngày 10/08/2025</p>
+                                </div>
+                                <a class="px-4 py-1.5 rounded-full bg-surface-container text-primary font-title-sm text-title-sm hover:bg-primary-fixed transition-colors self-start sm:self-auto" asp-controller="Home" asp-action="CustomDesign">
+                                    Xem mẫu này
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- TAB 4: SỔ ĐỊA CHỈ NHẬN HOA -->
+                <div id="tab-addresses" class="profile-tab-content space-y-space-xl hidden">
+                    <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-lg">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+                            <div>
+                                <h2 class="font-headline-md text-headline-md text-on-surface">Sổ Địa Chỉ Nhận Hoa Thân Thiết</h2>
+                                <p class="font-body-sm text-body-sm text-secondary">Tối ưu thời gian khi gửi hoa bất ngờ tới người thương hoặc tư gia.</p>
+                            </div>
+                            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-secondary-fixed text-primary font-title-sm text-title-sm hover:bg-primary-fixed transition-colors shadow-sm self-start sm:self-auto" type="button">
+                                <span class="material-symbols-outlined text-[18px]">add</span>
+                                <span>Thêm địa chỉ mới</span>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+                            <!-- Address Card 1: Default -->
+                            <div class="p-space-lg rounded-xl bg-surface-container-low relative space-y-space-sm flex flex-col justify-between border border-primary/20">
+                                <div>
+                                    <div class="flex items-center justify-between mb-space-xs">
+                                        <span class="px-2.5 py-0.5 rounded-full bg-primary text-on-primary font-label-md text-label-md font-semibold uppercase tracking-wider">
+                                            Mặc định • Nhà riêng
+                                        </span>
+                                        <div class="flex items-center gap-1 text-secondary">
+                                            <button aria-label="Sửa địa chỉ" class="p-1 hover:text-primary transition-colors" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                            </button>
+                                            <button aria-label="Xóa địa chỉ" class="p-1 hover:text-error transition-colors" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="font-title-md text-title-md text-on-surface font-semibold">Nguyễn Mai Phương</h3>
+                                    <p class="font-body-sm text-body-sm text-secondary font-medium">0918 345 678</p>
+                                    <p class="font-body-md text-body-md text-on-surface-variant pt-2 leading-relaxed">
+                                        Tầng 12, Tòa nhà Deutsches Haus, 33 Lê Duẩn, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh
+                                    </p>
+                                </div>
+                                <div class="pt-space-sm mt-space-sm bg-surface-container rounded-lg p-space-xs text-secondary font-body-sm text-body-sm flex items-start gap-1.5">
+                                    <span class="material-symbols-outlined text-[16px] text-primary flex-shrink-0 mt-0.5">ac_unit</span>
+                                    <span>Ghi chú: Gọi trước 10 phút, giao xe lạnh chuyên dụng, kèm gói dưỡng Chrysal.</span>
+                                </div>
+                            </div>
+
+                            <!-- Address Card 2 -->
+                            <div class="p-space-lg rounded-xl bg-surface-container-low relative space-y-space-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between mb-space-xs">
+                                        <span class="px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md font-semibold uppercase tracking-wider">
+                                            Giao tặng • Mẹ yêu
+                                        </span>
+                                        <div class="flex items-center gap-1 text-secondary">
+                                            <button aria-label="Sửa địa chỉ" class="p-1 hover:text-primary transition-colors" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                            </button>
+                                            <button aria-label="Xóa địa chỉ" class="p-1 hover:text-error transition-colors" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <h3 class="font-title-md text-title-md text-on-surface font-semibold">Bác Lê Mai Hương (Mẹ)</h3>
+                                    <p class="font-body-sm text-body-sm text-secondary font-medium">0934 555 777</p>
+                                    <p class="font-body-md text-body-md text-on-surface-variant pt-2 leading-relaxed">
+                                        Biệt thự Sala Saroma Villa, Số 10 Đường Hoàng Thế Thiện, P. An Khánh, TP. Thủ Đức, TP. HCM
+                                    </p>
+                                </div>
+                                <div class="pt-space-sm mt-space-sm bg-surface-container rounded-lg p-space-xs text-secondary font-body-sm text-body-sm flex items-start gap-1.5">
+                                    <span class="material-symbols-outlined text-[16px] text-tertiary flex-shrink-0 mt-0.5">sentiment_satisfied</span>
+                                    <span>Ghi chú: Giao hoa bất ngờ, nhân viên mặc trang phục lịch sự trao tận tay.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- TAB 5: LỊCH NHẮC NGÀY KỶ NIỆM -->
+                <div id="tab-reminders" class="profile-tab-content space-y-space-xl hidden">
+                    <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-lg">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+                            <div>
+                                <h2 class="font-headline-md text-headline-md text-on-surface">Lịch Nhắc Ngày Kỷ Niệm &amp; Dịp Đặc Biệt</h2>
+                                <p class="font-body-sm text-body-sm text-secondary">Web quản lý hoa tươi sẽ tự động thông báo Zalo/Email trước 3-5 ngày để bạn chủ động chuẩn bị hoa tươi ngập tràn cảm xúc.</p>
+                            </div>
+                            <button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors shadow-sm self-start sm:self-auto" type="button">
+                                <span class="material-symbols-outlined text-[18px]">add</span>
+                                <span>Thêm ngày kỷ niệm</span>
+                            </button>
+                        </div>
+
+                        <div class="space-y-space-md">
+                            <!-- Event Item 1 -->
+                            <div class="p-space-lg rounded-xl bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+                                <div class="flex items-start gap-space-md">
+                                    <div class="w-12 h-12 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed flex flex-col items-center justify-center font-bold flex-shrink-0">
+                                        <span class="text-[12px] uppercase">Tháng 11</span>
+                                        <span class="text-[18px] leading-none">15</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="font-title-md text-title-md text-on-surface font-semibold">Sinh Nhật Mẹ Yêu</h3>
+                                            <span class="px-2.5 py-0.5 rounded-full bg-tertiary text-on-tertiary font-label-md text-[10px]">Hàng năm</span>
+                                        </div>
+                                        <p class="font-body-sm text-body-sm text-secondary">Gợi ý loài hoa: Lan hồ điệp Grand Luxe hoặc Bó hoa Mẫu Đơn Peony hồng pastel.</p>
+                                        <div class="flex items-center gap-4 text-secondary font-label-md text-label-md pt-1">
+                                            <span class="flex items-center gap-1 text-tertiary">
+                                                <span class="material-symbols-outlined text-[14px]">notifications_active</span>
+                                                Nhắc Zalo trước 5 ngày
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-space-xs self-end md:self-auto">
+                                    <button class="px-4 py-2 rounded-full bg-surface-container text-primary font-title-sm text-title-sm hover:bg-primary-fixed transition-colors" type="button">
+                                        Đặt hoa trước
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Event Item 2 -->
+                            <div class="p-space-lg rounded-xl bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+                                <div class="flex items-start gap-space-md">
+                                    <div class="w-12 h-12 rounded-xl bg-primary-fixed text-on-primary-fixed flex flex-col items-center justify-center font-bold flex-shrink-0">
+                                        <span class="text-[12px] uppercase">Tháng 12</span>
+                                        <span class="text-[18px] leading-none">20</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="font-title-md text-title-md text-on-surface font-semibold">Kỷ Niệm Ngày Cưới (5 Năm)</h3>
+                                            <span class="px-2.5 py-0.5 rounded-full bg-primary text-on-primary font-label-md text-[10px]">Đặc biệt</span>
+                                        </div>
+                                        <p class="font-body-sm text-body-sm text-secondary">Gợi ý loài hoa: 99 bông Hồng Red Ecuador Luxe nơ lụa satin đỏ.</p>
+                                        <div class="flex items-center gap-4 text-secondary font-label-md text-label-md pt-1">
+                                            <span class="flex items-center gap-1 text-primary">
+                                                <span class="material-symbols-outlined text-[14px]">notifications_active</span>
+                                                Nhắc Zalo &amp; Email trước 3 ngày
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-space-xs self-end md:self-auto">
+                                    <button class="px-4 py-2 rounded-full bg-surface-container text-primary font-title-sm text-title-sm hover:bg-primary-fixed transition-colors" type="button">
+                                        Đặt hoa trước
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- TAB 6: CÀI ĐẶT & BẢO MẬT -->
+                <div id="tab-security" class="profile-tab-content space-y-space-xl hidden">
+                    <div class="flex items-center gap-space-sm border-b border-outline-variant/40 pb-space-md">
+                        <span class="material-symbols-outlined text-primary text-[28px]">shield</span>
+                        <div>
+                            <h2 class="font-headline-md text-headline-md text-on-surface">Cài Đặt &amp; Bảo Mật Tài Khoản</h2>
+                            <p class="font-body-sm text-body-sm text-secondary">Quản lý thông tin đăng nhập, phương thức xác thực và phiên thiết bị an toàn.</p>
+                        </div>
+                    </div>
+
+                    <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-lg">
+                        <div class="flex items-center justify-between border-b border-outline-variant/40 pb-space-sm">
+                            <div>
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface">Đổi Mật Khẩu Đăng Nhập</h3>
+                                <p class="font-body-sm text-body-sm text-secondary">Nên sử dụng mật khẩu mạnh kết hợp chữ hoa, chữ thường, số và ký tự đặc biệt.</p>
+                            </div>
+                            <span class="material-symbols-outlined text-primary text-[24px]">lock_reset</span>
+                        </div>
+                        <form class="space-y-space-md" onsubmit="event.preventDefault();">
+                            <div class="space-y-space-xs">
+                                <label class="font-title-sm text-title-sm text-on-surface block" for="current_pwd">Mật khẩu hiện tại</label>
+                                <div class="relative">
+                                    <input class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm pr-10" id="current_pwd" placeholder="••••••••••••" type="password">
+                                    <span class="material-symbols-outlined text-[20px] text-outline absolute right-3 top-3.5 cursor-pointer hover:text-on-surface transition-colors">visibility</span>
+                                </div>
+                            </div>
+                            <div class="space-y-space-xs">
+                                <label class="font-title-sm text-title-sm text-on-surface block" for="new_pwd">Mật khẩu mới</label>
+                                <div class="relative">
+                                    <input class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm pr-10" id="new_pwd" placeholder="Nhập mật khẩu mới" type="password">
+                                    <span class="material-symbols-outlined text-[20px] text-outline absolute right-3 top-3.5 cursor-pointer hover:text-on-surface transition-colors">visibility</span>
+                                </div>
+                            </div>
+                            <div class="space-y-space-xs">
+                                <label class="font-title-sm text-title-sm text-on-surface block" for="confirm_pwd">Xác nhận mật khẩu mới</label>
+                                <div class="relative">
+                                    <input class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm pr-10" id="confirm_pwd" placeholder="Nhập lại mật khẩu mới" type="password">
+                                    <span class="material-symbols-outlined text-[20px] text-outline absolute right-3 top-3.5 cursor-pointer hover:text-on-surface transition-colors">visibility</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 pt-space-xs">
+                                <input class="w-4 h-4 rounded text-primary focus:ring-primary accent-primary cursor-pointer" id="logout_others" type="checkbox">
+                                <label class="font-body-sm text-body-sm text-on-surface cursor-pointer" for="logout_others">Đăng xuất khỏi tất cả các thiết bị khác sau khi đổi</label>
+                            </div>
+                            <div class="flex items-center justify-end gap-space-sm pt-space-sm">
+                                <button class="px-space-lg py-2.5 rounded-full bg-surface-container-low text-secondary font-title-sm text-title-sm hover:bg-surface-container transition-colors" type="button">Hủy bỏ</button>
+                                <button class="px-space-xl py-2.5 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container shadow-md transition-all flex items-center gap-2" type="submit">
+                                    <span class="material-symbols-outlined text-[18px]">verified_user</span>
+                                    <span>Cập nhật mật khẩu mới</span>
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Tab Switching & Hash Navigation -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.profile-tab-content');
+        const breadcrumbCurrent = document.getElementById('breadcrumb-current');
+
+        const tabNames = {
+            'personal': 'Thông tin cá nhân',
+            'orders': 'Lịch sử đơn hoa',
+            'custom-design': 'Hoa thiết kế riêng',
+            'addresses': 'Sổ địa chỉ nhận hoa',
+            'reminders': 'Lịch nhắc ngày kỷ niệm',
+            'security': 'Cài đặt & Bảo mật'
+        };
+
+        function switchTab(tabId) {
+            if (!document.getElementById('tab-' + tabId)) {
+                tabId = 'personal';
+            }
+
+            // Hide all tab contents
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Deactivate all tab buttons
+            tabBtns.forEach(btn => {
+                btn.classList.remove('bg-surface-container', 'text-primary', 'shadow-sm', 'active-tab');
+                btn.classList.add('text-on-surface-variant', 'hover:bg-surface-container-low', 'hover:text-on-surface');
+
+                const mainIcon = btn.querySelector('.flex .material-symbols-outlined');
+                if (mainIcon) {
+                    mainIcon.style.fontVariationSettings = "'FILL' 0";
+                }
+
+                const chevron = btn.querySelector('.tab-chevron');
+                if (chevron) {
+                    chevron.classList.remove('text-primary');
+                    chevron.classList.add('text-outline');
+                }
+            });
+
+            // Show selected tab content
+            const targetContent = document.getElementById('tab-' + tabId);
+            if (targetContent) {
+                targetContent.classList.remove('hidden');
+            }
+
+            // Activate selected tab button
+            const targetBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+            if (targetBtn) {
+                targetBtn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-low', 'hover:text-on-surface');
+                targetBtn.classList.add('bg-surface-container', 'text-primary', 'shadow-sm', 'active-tab');
+
+                const mainIcon = targetBtn.querySelector('.flex .material-symbols-outlined');
+                if (mainIcon) {
+                    mainIcon.style.fontVariationSettings = "'FILL' 1";
+                }
+
+                const chevron = targetBtn.querySelector('.tab-chevron');
+                if (chevron) {
+                    chevron.classList.remove('text-outline');
+                    chevron.classList.add('text-primary');
+                }
+            }
+
+            // Update breadcrumb text
+            if (breadcrumbCurrent && tabNames[tabId]) {
+                breadcrumbCurrent.textContent = tabNames[tabId];
+            }
+        }
+
+        // Attach click listeners to all tab buttons
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const tabId = this.getAttribute('data-tab');
+                if (tabId) {
+                    switchTab(tabId);
+                    history.pushState(null, null, '#' + tabId);
+                }
+            });
+        });
+
+        // Handle browser Back / Forward buttons & initial URL hash
+        window.addEventListener('hashchange', function () {
+            const hash = window.location.hash.replace('#', '');
+            if (hash) {
+                switchTab(hash);
+            }
+        });
+
+        const initialHash = window.location.hash.replace('#', '');
+        if (initialHash) {
+            switchTab(initialHash);
+        } else {
+            switchTab('personal');
+        }
+    });
+</script>

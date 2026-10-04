@@ -1,0 +1,277 @@
+@{
+    ViewBag.Title = "Quản Lý Mẫu Sản Phẩm";
+    ViewBag.ActiveMenu = "MauSanPham";
+    ViewBag.Breadcrumb = "Mẫu sản phẩm";
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
+    <!-- Header Section -->
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <!-- Key Statistics Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md mb-space-lg">
+        <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Tổng mẫu sản phẩm</span>
+                    <div class="mt-2 flex items-baseline gap-2">
+                        <span class="font-display-lg text-display-lg text-on-surface">64</span>
+                        <span class="font-title-sm text-title-sm text-secondary">mẫu hoa</span>
+                    </div>
+                </div>
+                <div class="p-3 rounded-full bg-surface-container text-primary">
+                    <span class="material-symbols-outlined text-[24px]">local_florist</span>
+                </div>
+            </div>
+            <div class="mt-4 flex items-center gap-1.5 text-tertiary font-title-sm text-title-sm">
+                <span class="material-symbols-outlined text-[16px]">trending_up</span>
+                <span>+4 mẫu thiết kế mới</span>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Đang mở bán</span>
+                    <div class="mt-2 flex items-baseline gap-2">
+                        <span class="font-display-lg text-display-lg text-tertiary">52</span>
+                        <span class="font-title-sm text-title-sm text-secondary">mẫu sẵn sàng</span>
+                    </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-label-md">81.2% Đang bật</span>
+            </div>
+            <div class="mt-4 flex items-center gap-2">
+                <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-tertiary h-full rounded-full" style="width: 81%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Tạm ngưng bán</span>
+                    <div class="mt-2 flex items-baseline gap-2">
+                        <span class="font-display-lg text-display-lg text-secondary">12</span>
+                        <span class="font-title-sm text-title-sm text-secondary">mẫu ngưng</span>
+                    </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">Thiếu nguyên liệu</span>
+            </div>
+            <div class="mt-4 flex items-center gap-1.5 text-secondary font-title-sm text-title-sm">
+                <span class="material-symbols-outlined text-[16px]">info</span>
+                <span>Cần nhập bổ sung hoa tươi</span>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Thiết kế nổi bật</span>
+                    <div class="mt-2 flex items-baseline gap-2">
+                        <span class="font-display-lg text-display-lg text-primary">8</span>
+                        <span class="font-title-sm text-title-sm text-secondary">BST Thu-Đông</span>
+                    </div>
+                </div>
+                <div class="p-3 rounded-full bg-primary-fixed text-on-primary-fixed">
+                    <span class="material-symbols-outlined text-[24px]">palette</span>
+                </div>
+            </div>
+            <div class="mt-4 flex items-center gap-1.5 text-primary font-title-sm text-title-sm">
+                <span class="material-symbols-outlined text-[16px]">auto_awesome</span>
+                <span>BST Nhóm 2 Atelier</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Component -->
+    @await Html.PartialAsync("_AdminFilterBar")
+
+    <!-- Products Table -->
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+        <!-- Table Top Bar -->
+        <div class="p-space-md bg-surface-container-lowest flex items-center justify-between gap-space-sm border-b border-surface-container">
+            <div class="flex items-center gap-space-sm">
+                <span class="font-headline-sm text-headline-sm text-on-surface">Danh Sách Mẫu Sản Phẩm</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">64 Mẫu hoa</span>
+            </div>
+            <button type="button" onclick="openAddModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                <span>Thêm Mẫu Sản Phẩm Mới</span>
+            </button>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-on-surface">
+                <thead>
+                    <tr class="bg-surface-container-low font-label-md text-label-md text-secondary uppercase tracking-wider">
+                        <th class="py-space-md px-space-md">Mã mẫu</th>
+                        <th class="py-space-md px-space-md">Mẫu sản phẩm</th>
+                        <th class="py-space-md px-space-md">Dịp sử dụng</th>
+                        <th class="py-space-md px-space-md">Kiểu sản phẩm</th>
+                        <th class="py-space-md px-space-md text-right">Giá cơ bản</th>
+                        <th class="py-space-md px-space-md text-center">Trạng thái</th>
+                        <th class="py-space-md px-space-md text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="font-body-md text-body-md divide-y divide-surface-container">
+                    <tr class="hover:bg-surface-container-low/70 transition-colors">
+                        <td class="py-space-md px-space-md font-mono text-body-sm text-primary font-semibold">MSP-2025</td>
+                        <td class="py-space-md px-space-md">
+                            <div class="font-title-sm text-title-sm text-on-surface">Bó Hoa Sunset Romance</div>
+                            <div class="font-body-sm text-body-sm text-on-surface-variant">Bó hoa hồng Ohara phối Cúc Tana</div>
+                        </td>
+                        <td class="py-space-md px-space-md">Tình Yêu &amp; Kỷ Niệm</td>
+                        <td class="py-space-md px-space-md">Bó hoa tay</td>
+                        <td class="py-space-md px-space-md text-right font-title-sm text-title-sm font-semibold text-primary">1.450.000₫</td>
+                        <td class="py-space-md px-space-md text-center">
+                            @await Html.PartialAsync("_AdminStatusBadge", "Đang mở bán")
+                        </td>
+                        <td class="py-space-md px-space-md text-center">
+                            <div class="flex items-center justify-center gap-1">
+                                <button type="button" onclick="openEditModal('MSP-2025', 'Bó Hoa Sunset Romance', 'Bó hoa hồng Ohara phối Cúc Tana', 'Tình Yêu & Kỷ Niệm', 'Bó hoa tay', '1450000', '1')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors" title="Sửa mẫu &amp; cấu hình hoa">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                </button>
+                                <button type="button" onclick="alert('Đã xóa mẫu sản phẩm!')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors" title="Xóa mẫu">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-low/70 transition-colors">
+                        <td class="py-space-md px-space-md font-mono text-body-sm text-primary font-semibold">MSP-2024</td>
+                        <td class="py-space-md px-space-md">
+                            <div class="font-title-sm text-title-sm text-on-surface">Giỏ Mây Pastel Bloom</div>
+                            <div class="font-body-sm text-body-sm text-on-surface-variant">Giỏ hoa Tulip phối Cẩm tú cầu</div>
+                        </td>
+                        <td class="py-space-md px-space-md">Sinh Nhật</td>
+                        <td class="py-space-md px-space-md">Giỏ hoa tươi</td>
+                        <td class="py-space-md px-space-md text-right font-title-sm text-title-sm font-semibold text-primary">2.200.000₫</td>
+                        <td class="py-space-md px-space-md text-center">
+                            @await Html.PartialAsync("_AdminStatusBadge", "Đang mở bán")
+                        </td>
+                        <td class="py-space-md px-space-md text-center">
+                            <div class="flex items-center justify-center gap-1">
+                                <button type="button" onclick="openEditModal('MSP-2024', 'Giỏ Mây Pastel Bloom', 'Giỏ hoa Tulip phối Cẩm tú cầu', 'Sinh Nhật', 'Giỏ hoa tươi', '2200000', '1')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                </button>
+                                <button type="button" onclick="alert('Đã xóa mẫu sản phẩm!')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @await Html.PartialAsync("_AdminPagination")
+    </div>
+</div>
+
+<!-- Popup Modal: Thêm / Chỉnh Sửa Mẫu Sản Phẩm -->
+<div id="mauSanPhamModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
+    <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-2xl my-8 overflow-hidden flex flex-col max-h-[90vh]">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-space-lg py-space-md bg-surface-container-low border-b border-surface-container-high">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">palette</span>
+                <h3 id="modalMauSanPhamTitle" class="font-headline-sm text-headline-sm text-on-surface font-semibold">Thêm Mẫu Sản Phẩm Mới</h3>
+            </div>
+            <button type="button" onclick="closeMauSanPhamModal()" class="text-secondary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <form id="mauSanPhamForm" onsubmit="handleMauSanPhamSubmit(event)" class="p-space-lg space-y-space-md font-body-md text-body-md overflow-y-auto">
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Tên mẫu sản phẩm *</label>
+                <input type="text" id="inputTenMauSP" placeholder="VD: Bó Hoa Sunset Romance, Giỏ Mây Pastel Bloom..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-title-sm text-title-sm focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Dịp sử dụng</label>
+                    <select id="selectDipSuDung" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40">
+                        <option value="Tình Yêu & Kỷ Niệm">Tình Yêu & Kỷ Niệm</option>
+                        <option value="Sinh Nhật">Sinh Nhật</option>
+                        <option value="Khai Trương">Khai Trương</option>
+                        <option value="Cảm Ơn & Tri Ân">Cảm Ơn & Tri Ân</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Kiểu dáng sản phẩm</label>
+                    <select id="selectKieuDang" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40">
+                        <option value="Bó hoa tay">Bó hoa tay</option>
+                        <option value="Giỏ hoa tươi">Giỏ hoa tươi</option>
+                        <option value="Hộp hoa cao cấp">Hộp hoa cao cấp</option>
+                        <option value="Bình gốm để bàn">Bình gốm để bàn</option>
+                        <option value="Kệ hoa khai trương">Kệ hoa khai trương</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Giá bán niêm yết (VNĐ) *</label>
+                    <input type="number" id="inputGiaBan" placeholder="1450000" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-primary font-headline-sm font-bold focus:outline-none border border-primary/40" required />
+                </div>
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Trạng thái mở bán</label>
+                    <select id="selectTrangThaiMau" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40">
+                        <option value="1">Đang mở bán (Hiển thị Storefront)</option>
+                        <option value="0">Tạm ngưng bán (Thiếu nguyên liệu)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Mô tả sản phẩm &amp; Thành phần hoa</label>
+                <textarea id="inputMoTaMau" rows="3" placeholder="Nhập mô tả ý nghĩa bó hoa, nguyên liệu hoa hồng Ohara, cúc tana, lá phụ..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40"></textarea>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-end gap-space-sm pt-space-md border-t border-surface-container-high">
+                <button type="button" onclick="closeMauSanPhamModal()" class="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-all">
+                    Hủy bỏ
+                </button>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-md flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    <span>Lưu mẫu sản phẩm</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openAddModal() {
+        document.getElementById('modalMauSanPhamTitle').innerText = 'Thêm Mẫu Sản Phẩm Mới';
+        document.getElementById('inputTenMauSP').value = '';
+        document.getElementById('inputMoTaMau').value = '';
+        document.getElementById('inputGiaBan').value = '';
+        document.getElementById('mauSanPhamModal').classList.remove('hidden');
+    }
+
+    function openEditModal(code, name, desc, dip, type, price, status) {
+        document.getElementById('modalMauSanPhamTitle').innerText = 'Chỉnh Sửa Mẫu Sản Phẩm #' + code;
+        document.getElementById('inputTenMauSP').value = name;
+        document.getElementById('inputMoTaMau').value = desc;
+        document.getElementById('selectDipSuDung').value = dip;
+        document.getElementById('selectKieuDang').value = type;
+        document.getElementById('inputGiaBan').value = price;
+        document.getElementById('selectTrangThaiMau').value = status;
+        document.getElementById('mauSanPhamModal').classList.remove('hidden');
+    }
+
+    function closeMauSanPhamModal() {
+        document.getElementById('mauSanPhamModal').classList.add('hidden');
+    }
+
+    function handleMauSanPhamSubmit(e) {
+        e.preventDefault();
+        alert('Lưu mẫu sản phẩm thành công!');
+        closeMauSanPhamModal();
+    }
+</script>

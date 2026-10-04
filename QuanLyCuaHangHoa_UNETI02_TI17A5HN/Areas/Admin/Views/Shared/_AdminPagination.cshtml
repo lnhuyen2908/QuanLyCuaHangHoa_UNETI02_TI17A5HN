@@ -1,0 +1,29 @@
+@* 
+    Reusable Admin Pagination Component
+*@
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-md border-t border-surface-container-high font-body-sm text-body-sm text-secondary">
+    <div>
+        Hiển thị <span class="font-bold text-on-surface">1</span> đến <span class="font-bold text-on-surface">10</span> trong tổng số <span class="font-bold text-on-surface">48</span> mục dữ liệu
+    </div>
+    <div class="flex items-center gap-1">
+        <button type="button" disabled class="px-3 py-1.5 rounded-lg bg-surface-container text-outline cursor-not-allowed font-title-sm text-title-sm">
+            Trước
+        </button>
+        <button type="button" class="px-3.5 py-1.5 rounded-lg bg-primary text-on-primary font-title-sm text-title-sm font-semibold shadow-sm">
+            1
+        </button>
+        <button type="button" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors">
+            2
+        </button>
+        <button type="button" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors">
+            3
+        </button>
+        <span class="px-2">...</span>
+        <button type="button" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors">
+            5
+        </button>
+        <button type="button" class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors">
+            Sau
+        </button>
+    </div>
+</div>

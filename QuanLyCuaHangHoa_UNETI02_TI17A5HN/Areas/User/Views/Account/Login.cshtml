@@ -1,0 +1,242 @@
+@{
+    ViewData["Title"] = "Đăng nhập thành viên - Web quản lý hoa tươi";
+}
+
+<div class="relative w-full py-space-xl lg:py-margin-desktop overflow-hidden flex items-center justify-center">
+    <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-secondary-container/40 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-36 -right-28 w-[28rem] h-[28rem] rounded-full bg-primary-fixed/30 blur-3xl pointer-events-none"></div>
+    <div class="max-w-6xl w-full mx-auto px-margin-mobile md:px-margin">
+        <div class="grid grid-cols-1 lg:grid-cols-12 rounded-xl bg-surface-container-lowest shadow-xl overflow-hidden">
+            <!-- Left Column: Atmosphere Presentation -->
+            <div class="lg:col-span-5 relative hidden lg:flex flex-col justify-between p-space-xl overflow-hidden bg-surface-container-low text-on-surface">
+                <div class="absolute inset-0 bg-cover bg-center opacity-30" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCIVimCCNV1v_kFzEWCeUCvdH_d1tnJdervPCIHb8VGlMtbnm5To5W_a1HTB0-C0QQfi28nCrqK4i9CZLiXejpaD9RGFS5gKyd3BcqRpI5I1Z1MFjeVJjvos1U4i4eOzFoouoyKNvTPf2X2oKZnCEMQN76BdBM_8DNQlE2sXp0fDT_NwABTv6DsgzT81n0M3pRhvIfWq323K9CHvD05efBD_eXYpsfGPEAfFXTiNccLosPDmb2Cy4MOJg')"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-surface-container via-surface-container-low/75 to-transparent"></div>
+                <div class="relative z-10 space-y-space-md">
+                    <div class="inline-flex items-center gap-space-xs px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-md text-label-md uppercase tracking-widest shadow-sm">
+                        <span class="material-symbols-outlined text-[14px]">local_florist</span>
+                        <span>Club Privé</span>
+                    </div>
+                    <div>
+                        <span class="font-headline-md text-headline-md text-primary block leading-tight">Nghệ Thuật Cắm Hoa Độc Bản</span>
+                        <p class="font-body-md text-body-md text-on-surface-variant mt-space-xs">Nơi lưu giữ từng nhịp rung cảm xúc, gửi gắm yêu thương qua hương thơm và sắc màu thuần khiết của thiên nhiên.</p>
+                    </div>
+                </div>
+                <div class="relative z-10 space-y-space-sm pt-space-xl">
+                    <div class="p-space-md rounded-lg bg-surface/90 shadow-sm backdrop-blur-sm space-y-space-xs">
+                        <div class="flex items-center gap-space-xs text-primary font-title-sm text-title-sm">
+                            <span class="material-symbols-outlined text-[20px]">stars</span>
+                            <span>Đặc quyền Hội viên</span>
+                        </div>
+                        <ul class="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
+                            <li class="flex items-center gap-space-xs">
+                                <span class="material-symbols-outlined text-tertiary text-[16px]">check_circle</span>
+                                <span>Tích lũy 5% giá trị cho mỗi đơn hoa nghệ thuật</span>
+                            </li>
+                            <li class="flex items-center gap-space-xs">
+                                <span class="material-symbols-outlined text-tertiary text-[16px]">check_circle</span>
+                                <span>Miễn phí in thiệp giấy mỹ thuật &amp; dập ruy-băng tên</span>
+                            </li>
+                            <li class="flex items-center gap-space-xs">
+                                <span class="material-symbols-outlined text-tertiary text-[16px]">check_circle</span>
+                                <span>Ưu tiên giữ lịch cắm hoa dịp lễ Valentine, 8/3 &amp; 20/10</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="flex items-center justify-between px-space-sm font-label-md text-label-md text-secondary">
+                        <span>Hà Nội &amp; TP. Hồ Chí Minh</span>
+                        <span>•</span>
+                        <span>Giao hỏa tốc 2H</span>
+                        <span>•</span>
+                        <span>Hoa nhập khẩu</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Login Form -->
+            <div class="lg:col-span-7 p-space-lg md:p-space-xl flex flex-col justify-center bg-surface-container-lowest">
+                <div class="max-w-lg w-full mx-auto">
+                    <div class="text-center md:text-left mb-space-lg">
+                        <span class="font-label-md text-label-md uppercase tracking-widest text-primary block mb-space-xs">Hân hạnh phục vụ</span>
+                        <h1 class="font-headline-lg text-headline-lg text-on-surface">Chào Mừng Trở Lại Web Quản Lý Hoa Tươi</h1>
+                        <p class="font-body-md text-body-md text-on-surface-variant mt-space-xs">Đăng nhập để theo dõi hành trình hoa tươi, tích lũy điểm và quản lý các thiết kế riêng của bạn.</p>
+                    </div>
+                    <div class="p-1 rounded-full bg-surface-container flex items-center mb-space-lg">
+                        <button class="flex-1 py-2 rounded-full font-title-sm text-title-sm transition-all duration-300 bg-surface-container-lowest text-primary shadow-sm flex items-center justify-center gap-space-xs" id="tab-client" onclick="switchLoginMode('client')" type="button">
+                            <span class="material-symbols-outlined text-[18px]">favorite</span>
+                            <span>Khách hàng thân thiết</span>
+                        </button>
+                        <button class="flex-1 py-2 rounded-full font-title-sm text-title-sm transition-all duration-300 text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-space-xs" id="tab-staff" onclick="switchLoginMode('staff')" type="button">
+                            <span class="material-symbols-outlined text-[18px]">badge</span>
+                            <span>Quản trị viên &amp; Florist (CMS)</span>
+                        </button>
+                    </div>
+                    <form class="space-y-space-md" onsubmit="handleLoginSubmit(event)">
+                        <div class="space-y-space-xs">
+                            <label class="block font-title-sm text-title-sm text-on-surface" for="login-account" id="account-label">Email hoặc Số điện thoại đặt hoa</label>
+                            <div class="relative flex items-center">
+                                <span class="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">mail</span>
+                                <input class="w-full pl-11 pr-4 py-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 bg-surface-container-low/40" id="login-account" placeholder="nguyenan@example.com hoặc 0909xxxxxx" required="" type="text">
+                            </div>
+                        </div>
+                        <div class="space-y-space-xs">
+                            <div class="flex items-center justify-between">
+                                <label class="block font-title-sm text-title-sm text-on-surface" for="login-password">Mật khẩu bảo mật</label>
+                                <a class="font-title-sm text-title-sm text-primary hover:text-primary-container transition-colors" href="#">Quên mật khẩu?</a>
+                            </div>
+                            <div class="relative flex items-center">
+                                <span class="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">lock</span>
+                                <input class="w-full pl-11 pr-11 py-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 bg-surface-container-low/40" id="login-password" placeholder="Nhập mật khẩu ít nhất 8 ký tự" required="" type="password">
+                                <button aria-label="Hiện hoặc ẩn mật khẩu" class="absolute right-3 p-1 rounded-full text-outline hover:text-on-surface transition-colors flex items-center justify-center" onclick="togglePasswordVisibility()" type="button">
+                                    <span class="material-symbols-outlined text-[20px]" id="pwd-icon">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="space-y-space-xs hidden" id="staff-field">
+                            <label class="block font-title-sm text-title-sm text-on-surface" for="staff-branch">Showroom / Phân xưởng công tác</label>
+                            <div class="relative flex items-center">
+                                <span class="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">storefront</span>
+                                <select class="w-full pl-11 pr-4 py-3 rounded-lg bg-surface-container-low/40 text-on-surface font-body-md text-body-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none" id="staff-branch">
+                                    <option value="sg-flagship">Flagship Store - 98 Đồng Khởi, Q.1, TP.HCM</option>
+                                    <option value="hn-boutique">Boutique Store - 42 Tràng Tiền, Hoàn Kiếm, Hà Nội</option>
+                                    <option value="lab-dalat">Floral Cold-Storage &amp; Lab - Đà Lạt Farm</option>
+                                </select>
+                                <span class="material-symbols-outlined absolute right-3 text-outline text-[20px] pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <label class="flex items-center gap-space-xs cursor-pointer select-none">
+                                <input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary/40 accent-primary" type="checkbox">
+                                <span class="font-body-sm text-body-sm text-on-surface-variant">Ghi nhớ đăng nhập trên thiết bị này</span>
+                            </label>
+                            <span class="px-2 py-0.5 rounded-full font-label-md text-label-md bg-secondary-container text-on-secondary-container" id="badge-mode">Hội viên</span>
+                        </div>
+                        <button class="w-full py-3.5 px-space-lg rounded-full bg-primary hover:bg-primary-container text-on-primary font-title-sm text-title-sm shadow-md transition-all duration-300 flex items-center justify-center gap-space-xs" id="btn-submit" type="submit">
+                            <span>Đăng Nhập Ngay</span>
+                            <span class="material-symbols-outlined text-[18px]">east</span>
+                        </button>
+                    </form>
+                    <div class="mt-space-lg pt-space-md space-y-space-md" id="social-block">
+                        <div class="relative flex items-center justify-center">
+                            <div class="w-full h-px bg-surface-container-high"></div>
+                            <span class="absolute px-3 bg-surface-container-lowest font-label-md text-label-md uppercase tracking-wider text-outline">Hoặc tiếp tục qua</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-space-xs sm:gap-space-sm">
+                            <button class="py-2.5 px-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-title-sm text-title-sm transition-all duration-200 flex items-center justify-center gap-space-xs shadow-sm" type="button">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24">
+                                    <path d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z" fill="#EA4335"></path>
+                                    <path d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z" fill="#4285F4"></path>
+                                    <path d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z" fill="#FBBC05"></path>
+                                    <path d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.3-6.4-5.2L1.9 16c1.8 3.7 5.6 7 10.1 7z" fill="#34A853"></path>
+                                </svg>
+                                <span class="hidden sm:inline">Google</span>
+                            </button>
+                            <button class="py-2.5 px-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-title-sm text-title-sm transition-all duration-200 flex items-center justify-center gap-space-xs shadow-sm" type="button">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.65-.79 1.1-1.89.98-3-.95.04-2.09.63-2.77 1.42-.59.68-1.11 1.78-.97 2.84 1.05.08 2.13-.53 2.76-1.26z"></path>
+                                </svg>
+                                <span class="hidden sm:inline">Apple</span>
+                            </button>
+                            <button class="py-2.5 px-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-title-sm text-title-sm transition-all duration-200 flex items-center justify-center gap-space-xs shadow-sm" type="button">
+                                <span class="w-4 h-4 rounded-full bg-primary-container text-on-primary-container font-label-md text-[10px] flex items-center justify-center font-bold">Z</span>
+                                <span>Zalo OA</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-space-lg text-center font-body-sm text-body-sm text-on-surface-variant">
+                        <span>Chưa có tài khoản Web quản lý hoa tươi? </span>
+                        <a class="font-title-sm text-title-sm text-primary hover:text-primary-container underline decoration-1 underline-offset-4 transition-colors" asp-controller="Home" asp-action="Register">Đăng ký thành viên ngay</a>
+                    </div>
+                    <div class="mt-space-md p-space-sm rounded-lg bg-surface-container-low text-center font-body-sm text-body-sm text-secondary">
+                        <span class="material-symbols-outlined text-[15px] align-middle text-tertiary mr-1">security</span>
+                        <span>Thông tin khách hàng được mã hóa chuẩn SSL 256-bit bảo mật cao cấp.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-space-lg p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col md:flex-row items-center justify-between gap-space-md">
+            <div class="flex items-center gap-space-sm">
+                <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px]">support_agent</span>
+                </div>
+                <div>
+                    <span class="font-title-sm text-title-sm text-on-surface block">Cần hỗ trợ đặt hoa theo phong cách riêng?</span>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Chuyên viên nghệ thuật của Web quản lý hoa tươi sẵn sàng lắng nghe và tư vấn bảng màu hoa lý tưởng 24/7.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-space-sm shrink-0">
+                <a class="px-space-md py-2 rounded-full bg-surface-container text-on-surface hover:bg-secondary-container font-title-sm text-title-sm transition-colors" asp-controller="Home" asp-action="CustomDesign">Gặp Florist Tư Vấn</a>
+                <a class="px-space-md py-2 rounded-full bg-tertiary text-on-tertiary font-title-sm text-title-sm hover:opacity-90 transition-opacity flex items-center gap-1" href="tel:19008866">
+                    <span class="material-symbols-outlined text-[16px]">call</span>
+                    <span>1900 8866</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function togglePasswordVisibility() {
+            const pwd = document.getElementById('login-password');
+            const icon = document.getElementById('pwd-icon');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                pwd.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        function switchLoginMode(mode) {
+            const tabClient = document.getElementById('tab-client');
+            const tabStaff = document.getElementById('tab-staff');
+            const staffField = document.getElementById('staff-field');
+            const socialBlock = document.getElementById('social-block');
+            const accountLabel = document.getElementById('account-label');
+            const loginAccount = document.getElementById('login-account');
+            const badgeMode = document.getElementById('badge-mode');
+            const btnSubmit = document.getElementById('btn-submit');
+
+            if (mode === 'staff') {
+                tabClient.className = 'flex-1 py-2 rounded-full font-title-sm text-title-sm transition-all duration-300 text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-space-xs';
+                tabStaff.className = 'flex-1 py-2 rounded-full font-title-sm text-title-sm transition-all duration-300 bg-surface-container-lowest text-primary shadow-sm flex items-center justify-center gap-space-xs';
+                
+                staffField.classList.remove('hidden');
+                socialBlock.classList.add('hidden');
+                accountLabel.textContent = 'Mã nhân viên / Email nội bộ Florist';
+                loginAccount.placeholder = 'florist.id@webquanlyhoatuoi.vn';
+                badgeMode.textContent = 'CMS Quản Trị';
+                badgeMode.className = 'px-2 py-0.5 rounded-full font-label-md text-label-md bg-tertiary-fixed text-on-tertiary-fixed-variant';
+                btnSubmit.querySelector('span:first-child').textContent = 'Vào Bàn Cắm Hoa (CMS Workbench)';
+            } else {
+                tabStaff.className = 'flex-1 py-2 rounded-full font-title-sm text-title-sm transition-all duration-300 text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-space-xs';
+                tabClient.className = 'flex-1 py-2 rounded-full font-title-sm text-title-sm transition-all duration-300 bg-surface-container-lowest text-primary shadow-sm flex items-center justify-center gap-space-xs';
+                
+                staffField.classList.add('hidden');
+                socialBlock.classList.remove('hidden');
+                accountLabel.textContent = 'Email hoặc Số điện thoại đặt hoa';
+                loginAccount.placeholder = 'nguyenan@example.com hoặc 0909xxxxxx';
+                badgeMode.textContent = 'Hội viên';
+                badgeMode.className = 'px-2 py-0.5 rounded-full font-label-md text-label-md bg-secondary-container text-on-secondary-container';
+                btnSubmit.querySelector('span:first-child').textContent = 'Đăng Nhập Ngay';
+            }
+        }
+
+        function handleLoginSubmit(event) {
+            event.preventDefault();
+            const account = document.getElementById('login-account').value;
+            const btn = document.getElementById('btn-submit');
+            const originalText = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Đang xác thực thông tin...</span>';
+            
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                alert('Chào mừng ' + account + ' trở lại với Web quản lý hoa tươi!');
+            }, 1200);
+        }
+    </script>
+}
