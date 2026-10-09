@@ -1,23 +1,23 @@
-﻿// Họ và tên: Lã Ngọc Huyền
+// Họ và tên: Lã Ngọc Huyền
 // Mã sinh viên: 23103100271
 // Nội dung thực hiện: Entity TaiKhoan phục vụ đăng nhập, Session và phân quyền.
 
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities
 {
     // Unique Index đảm bảo tên đăng nhập không trùng ở mức cơ sở dữ liệu
     [Index(nameof(TenDangNhap), IsUnique = true)]
     public class TaiKhoan
     {
         [Key]
-        public int MaTaiKhoan {  get; set; }
+        public int MaTaiKhoan { get; set; }
 
-        [Required (ErrorMessage = "Tên đăng nhập là bắt buộc")]
+        [Required(ErrorMessage = "Tên đăng nhập là bắt buộc")]
         [StringLength(50, MinimumLength = 4, ErrorMessage = "Tên đăng nhập từ 4 đến 50 ký tự")]
         [Display(Name = "Tên đăng nhập")]
-        public string TenDangNhap { get; set;  }  = string.Empty;
+        public string TenDangNhap { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
         [StringLength(255, MinimumLength = 6, ErrorMessage = "Mật khẩu tối thiểu 6 ký tự")]
