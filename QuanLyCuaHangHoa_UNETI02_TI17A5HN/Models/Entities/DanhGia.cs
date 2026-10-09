@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.NguyenThiDao_23103100245
+namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities
 {
     // Họ và tên: Nguyễn Thị Đào
     // Mã sinh viên: 23103100245

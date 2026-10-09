@@ -1,4 +1,4 @@
-﻿// Họ và tên: Đặng Thị Mai Hương
+// Họ và tên: Đặng Thị Mai Hương
 // Mã sinh viên: 23103100293
 // Nội dung thực hiện: Xây dựng Entity DonDatHoa
 
@@ -90,5 +90,11 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities
 
         // Navigation Property: DonDatHoa (1) - (n) ChiTietDonHoa
         public virtual ICollection<ChiTietDonHoa> ChiTietDonHoas { get; set; } = new List<ChiTietDonHoa>();
+        
+
+        public virtual ICollection<LichSuXuLyDon> LichSuXuLyDons { get; set; } = new List<LichSuXuLyDon>();
+        public virtual ICollection<GiaoNhan> GiaoNhans { get; set; } = new List<GiaoNhan>();
+        public virtual ICollection<ThanhToan> ThanhToans { get; set; } = new List<ThanhToan>();
+        public virtual DanhGia? DanhGia { get; set; }
     }
 }

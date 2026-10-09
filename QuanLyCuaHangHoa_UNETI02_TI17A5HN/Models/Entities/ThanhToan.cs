@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.NguyenThiDao_23103100245
+namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities
 {
     // Họ và tên: Nguyễn Thị Đào
     // Mã sinh viên: 23103100245
@@ -42,10 +43,6 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.NguyenThiDao_23103100245
 
         // Navigation Property
 
-        //public DonDatHoa DonDatHoa { get; set; } = null!;
-
-        // ở class DonDatHoa
-        //public ICollection<LichSuXuLyDon> LichSuXuLyDons { get; set; }
-        //    = new List<LichSuXuLyDon>();
+        public DonDatHoa DonDatHoa { get; set; } = null!;
     }
 }
