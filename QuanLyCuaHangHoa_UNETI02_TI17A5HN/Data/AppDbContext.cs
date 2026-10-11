@@ -1,4 +1,7 @@
-﻿
+﻿// Họ và tên: Lã Ngọc Huyền
+// Mã sinh viên: 23103100271
+// Nội dung thực hiện: Tạo AppDbContext
+
 using Microsoft.EntityFrameworkCore;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities;
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data

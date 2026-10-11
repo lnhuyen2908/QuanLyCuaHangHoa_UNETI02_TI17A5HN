@@ -128,15 +128,17 @@
         </a>
         <div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container">
             <div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xs">
-                N2
+                <span class="material-symbols-outlined text-[18px]">person</span>
             </div>
             <div class="flex flex-col min-w-0 flex-1">
-                <a href="/Admin/TaiKhoan/Profile" class="font-title-sm text-title-sm text-on-surface truncate hover:text-primary">Admin Nhóm 2</a>
-                <span class="font-label-md text-label-md text-secondary truncate">Quản Trị Viên</span>
+                <a href="/Admin/TaiKhoan/Profile" class="font-title-sm text-title-sm text-on-surface truncate hover:text-primary">@(Context.Session.GetHoTen() ?? "Admin")</a>
+                <span class="font-label-md text-label-md text-secondary truncate">@(Context.Session.GetVaiTro() ?? "Quản Trị Viên")</span>
             </div>
-            <a href="/User/Login" aria-label="Đăng xuất" class="text-on-surface-variant hover:text-error transition-colors">
-                <span class="material-symbols-outlined text-[20px]">logout</span>
-            </a>
+            <form asp-area="User" asp-controller="TaiKhoan" asp-action="Logout" method="post" class="m-0">
+                <button type="submit" aria-label="Đăng xuất" title="Đăng xuất" class="text-on-surface-variant hover:text-error transition-colors cursor-pointer p-1 rounded flex items-center">
+                    <span class="material-symbols-outlined text-[20px]">logout</span>
+                </button>
+            </form>
         </div>
     </div>
 </aside>

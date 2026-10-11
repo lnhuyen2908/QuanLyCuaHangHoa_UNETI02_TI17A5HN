@@ -1,3 +1,4 @@
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.RegisterViewModel
 @{
     ViewData["Title"] = "Đăng ký thành viên - Web quản lý hoa tươi";
 }
@@ -139,7 +140,26 @@
                         <span class="absolute px-3 bg-surface-container-lowest text-outline font-label-md text-label-md tracking-wider uppercase">Hoặc đăng ký bằng email &amp; số điện thoại</span>
                     </div>
                     <!-- Registration Form Fields -->
-                    <form class="space-y-4" id="atelier-signup-form" onsubmit="event.preventDefault(); handleRegistration();">
+                    <form asp-area="User" asp-controller="TaiKhoan" asp-action="Register" method="post" class="space-y-4" id="atelier-signup-form" novalidate>
+                        @Html.AntiForgeryToken()
+
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div asp-validation-summary="ModelOnly" class="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm font-medium"></div>
+                        }
+
+                        <!-- Username Field -->
+                        <div class="space-y-1.5">
+                            <label class="block font-title-sm text-title-sm text-on-surface" for="userName">
+                                Tên đăng nhập <span class="text-primary">*</span>
+                            </label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">badge</span>
+                                <input asp-for="TenDangNhap" class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="userName" placeholder="Ví dụ: testuser01 (4 đến 50 ký tự)">
+                            </div>
+                            <span asp-validation-for="TenDangNhap" class="text-error text-xs block font-medium"></span>
+                        </div>
+
                         <!-- Full Name Field -->
                         <div class="space-y-1.5">
                             <label class="block font-title-sm text-title-sm text-on-surface" for="fullName">
@@ -147,9 +167,11 @@
                             </label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">person</span>
-                                <input class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="fullName" placeholder="Ví dụ: Nguyễn Mai Phương" required="" type="text">
+                                <input asp-for="HoTen" class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="fullName" placeholder="Ví dụ: Nguyễn Mai Phương">
                             </div>
+                            <span asp-validation-for="HoTen" class="text-error text-xs block font-medium"></span>
                         </div>
+
                         <!-- Phone & Email Two-Column Grid -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Phone Number -->
@@ -159,12 +181,9 @@
                                 </label>
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">call</span>
-                                    <input class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="phone" placeholder="0901 234 567" required="" type="tel">
+                                    <input asp-for="SoDienThoai" class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="phone" placeholder="0901 234 567" type="tel">
                                 </div>
-                                <p class="font-body-sm text-[11px] text-on-surface-variant flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[13px] text-tertiary">check_circle</span>
-                                    Nhận mã kích hoạt &amp; hình ảnh hoa qua Zalo
-                                </p>
+                                <span asp-validation-for="SoDienThoai" class="text-error text-xs block font-medium"></span>
                             </div>
                             <!-- Email Address -->
                             <div class="space-y-1.5">
@@ -173,10 +192,12 @@
                                 </label>
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">mail</span>
-                                    <input class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="email" placeholder="maiphuong@example.com" required="" type="email">
+                                    <input asp-for="Email" class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="email" placeholder="maiphuong@example.com" type="email">
                                 </div>
+                                <span asp-validation-for="Email" class="text-error text-xs block font-medium"></span>
                             </div>
                         </div>
+
                         <!-- Passwords Grid -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Password Field -->
@@ -186,11 +207,12 @@
                                 </label>
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">lock</span>
-                                    <input class="w-full pl-11 pr-10 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="password" oninput="evaluatePasswordStrength(this.value)" placeholder="Tối thiểu 8 ký tự" required="" type="password">
+                                    <input asp-for="MatKhau" class="w-full pl-11 pr-10 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="password" oninput="evaluatePasswordStrength(this.value)" placeholder="Tối thiểu 6 ký tự" type="password">
                                     <button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" onclick="togglePasswordVisibility('password', this)" type="button">
                                         <span class="material-symbols-outlined text-[18px]">visibility</span>
                                     </button>
                                 </div>
+                                <span asp-validation-for="MatKhau" class="text-error text-xs block font-medium"></span>
                             </div>
                             <!-- Confirm Password Field -->
                             <div class="space-y-1.5">
@@ -199,13 +221,15 @@
                                 </label>
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">lock_reset</span>
-                                    <input class="w-full pl-11 pr-10 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="confirmPassword" oninput="checkPasswordMatch()" placeholder="Nhập lại mật khẩu" required="" type="password">
+                                    <input asp-for="XacNhanMatKhau" class="w-full pl-11 pr-10 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="confirmPassword" oninput="checkPasswordMatch()" placeholder="Nhập lại mật khẩu" type="password">
                                     <button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" onclick="togglePasswordVisibility('confirmPassword', this)" type="button">
                                         <span class="material-symbols-outlined text-[18px]">visibility</span>
                                     </button>
                                 </div>
+                                <span asp-validation-for="XacNhanMatKhau" class="text-error text-xs block font-medium"></span>
                             </div>
                         </div>
+
                         <!-- Password Strength Bar & Indicators -->
                         <div class="p-3 rounded-lg bg-surface-container-low space-y-2">
                             <div class="flex items-center justify-between text-body-sm font-body-sm">
@@ -223,6 +247,7 @@
                                 Gợi ý: Kết hợp chữ hoa, chữ thường, số và ký tự đặc biệt (VD: @@, #, !) để tài khoản luôn an toàn.
                             </p>
                         </div>
+
                         <!-- Birthday Field (Optional - for Birthday Gifts) -->
                         <div class="space-y-1.5">
                             <div class="flex items-center justify-between">
@@ -233,30 +258,24 @@
                             </div>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px]">cake</span>
-                                <input class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="birthday" type="date">
+                                <input asp-for="NgaySinh" class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm transition-all" id="birthday" type="date">
                             </div>
-                            <p class="font-body-sm text-[11px] text-on-surface-variant">
-                                Web quản lý hoa tươi sẽ tự động gửi quà tặng hoa và thiệp tri ân độc quyền vào tuần lễ sinh nhật của bạn.
-                            </p>
                         </div>
+
                         <!-- Checkbox Consents -->
                         <div class="space-y-2.5 pt-2">
                             <label class="flex items-start gap-3 cursor-pointer group">
-                                <input class="mt-1 h-4 w-4 rounded text-primary focus:ring-primary accent-primary cursor-pointer" required="" type="checkbox">
+                                <input asp-for="DongYDieuKhoan" class="mt-1 h-4 w-4 rounded text-primary focus:ring-primary accent-primary cursor-pointer" type="checkbox">
                                 <span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">
                                     Tôi đã đọc và đồng ý với <a class="text-primary underline underline-offset-2 hover:text-primary-container font-title-sm" href="#">Điều khoản dịch vụ</a> và <a class="text-primary underline underline-offset-2 hover:text-primary-container font-title-sm" href="#">Chính sách bảo mật</a> của Web quản lý hoa tươi.
                                 </span>
                             </label>
-                            <label class="flex items-start gap-3 cursor-pointer group">
-                                <input checked="" class="mt-1 h-4 w-4 rounded text-primary focus:ring-primary accent-primary cursor-pointer" type="checkbox">
-                                <span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">
-                                    Nhận bản tin xu hướng cắm hoa theo mùa, thư ngỏ nghệ thuật &amp; ưu đãi quà tặng sớm.
-                                </span>
-                            </label>
+                            <span asp-validation-for="DongYDieuKhoan" class="text-error text-xs block font-medium"></span>
                         </div>
+
                         <!-- CTA Submit Button -->
                         <div class="pt-4">
-                            <button class="w-full py-3.5 px-6 rounded-full bg-primary hover:bg-primary-container text-on-primary font-title-md text-title-md shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group" type="submit">
+                            <button class="w-full py-3.5 px-6 rounded-full bg-primary hover:bg-primary-container text-on-primary font-title-md text-title-md shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group cursor-pointer" type="submit">
                                 <span>Tạo Tài Khoản Ngay</span>
                                 <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                             </button>
@@ -267,7 +286,7 @@
                 <div class="mt-8 pt-6 bg-surface-container-low rounded-lg p-4 text-center">
                     <p class="font-body-md text-body-md text-on-surface-variant">
                         Bạn đã có tài khoản tại Web quản lý hoa tươi? 
-                        <a class="font-title-sm text-title-sm text-primary hover:underline underline-offset-4 ml-1.5 inline-flex items-center gap-1 font-semibold" asp-controller="Home" asp-action="Login">
+                        <a class="font-title-sm text-title-sm text-primary hover:underline underline-offset-4 ml-1.5 inline-flex items-center gap-1 font-semibold" asp-area="User" asp-controller="TaiKhoan" asp-action="Login">
                             Đăng nhập tại đây
                             <span class="material-symbols-outlined text-[16px]">chevron_right</span>
                         </a>
@@ -395,19 +414,6 @@
             } else {
                 confirmInput.classList.remove('ring-2', 'ring-error');
             }
-        }
-
-        function handleRegistration() {
-            const pwd = document.getElementById('password').value;
-            const confirmPwd = document.getElementById('confirmPassword').value;
-            const name = document.getElementById('fullName').value;
-
-            if (pwd !== confirmPwd) {
-                alert('Mật khẩu xác nhận không trùng khớp. Vui lòng kiểm tra lại!');
-                return;
-            }
-
-            alert('Chào mừng ' + name + ' gia nhập Web quản lý hoa tươi! Mã voucher 100.000₫ chào mừng đã được gửi tới số điện thoại và email của bạn.');
         }
     </script>
 }
