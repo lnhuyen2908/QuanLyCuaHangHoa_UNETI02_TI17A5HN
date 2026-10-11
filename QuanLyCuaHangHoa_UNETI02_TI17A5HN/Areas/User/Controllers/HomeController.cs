@@ -27,15 +27,15 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
         }
 
         // Backwards compatibility redirects for legacy routes
-        public IActionResult Products() => RedirectToAction("Index", "Products");
-        public IActionResult Detail() => RedirectToAction("Detail", "Products");
-        public IActionResult ProductDetail() => RedirectToAction("Detail", "Products");
-        public IActionResult Cart() => RedirectToAction("Index", "Cart");
-        public IActionResult Checkout() => RedirectToAction("Index", "Checkout");
-        public IActionResult CustomDesign() => RedirectToAction("Index", "CustomDesign");
-        public IActionResult Profile() => RedirectToAction("Index", "Profile");
-        public IActionResult Wishlist() => RedirectToAction("Index", "Wishlist");
-        public IActionResult Register() => RedirectToAction("Register", "Account");
-        public IActionResult Login() => RedirectToAction("Login", "Account");
+        public IActionResult Products() => RedirectToAction("Index", "MauSanPham");
+        public IActionResult Detail() => RedirectToAction("Detail", "MauSanPham");
+        public IActionResult ProductDetail() => RedirectToAction("Detail", "MauSanPham");
+        public IActionResult Cart() => RedirectToAction("Index", "GioHang");
+        public IActionResult Checkout() => RedirectToAction("Index", "DatHang");
+        public IActionResult CustomDesign() => RedirectToAction("Index", "ThietKeRieng");
+        public IActionResult Profile() => RedirectToAction("Index", "HoSo");
+        public IActionResult Wishlist() => RedirectToAction("Index", "YeuThich");
+        public IActionResult Register() => RedirectToAction("Register", "TaiKhoan");
+        public IActionResult Login() => RedirectToAction("Login", "TaiKhoan");
     }
 }

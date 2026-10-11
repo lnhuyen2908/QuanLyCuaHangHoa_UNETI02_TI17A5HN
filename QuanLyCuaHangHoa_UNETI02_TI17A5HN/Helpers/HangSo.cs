@@ -1,6 +1,7 @@
-﻿// Họ và tên: Lã Ngọc Huyền
+﻿
+// Họ và tên: Lã Ngọc Huyền
 // Mã sinh viên: 23103100271
-// Nội dung thực hiện: Entity TaiKhoan phục vụ đăng nhập, Session và phân quyền.
+// Nội dung thực hiện: Tập trung các hằng số dùng chung (vai trò, trạng thái, hình thức, phương thức thanh toán).
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
 {
@@ -34,5 +35,20 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
         public const string GioHoa = "Giỏ hoa";
         public const string HopHoa = "Hộp hoa";
         public const string KeHoa = "Kệ hoa";
+    }
+
+    public static class TrangThaiGiaoNhanConst
+    {
+        public const string ChoXuLy = "Chờ xử lý";
+        public const string DangGiao = "Đang giao";
+        public const string HoanThanh = "Hoàn thành";
+    }
+
+    public static class PhuongThucThanhToanConst
+    {
+        public const string TienMat = "Tiền mặt";
+        public const string ChuyenKhoan = "Chuyển khoản";
+        public const string ViDienTu = "Ví điện tử";
+        public const string TheNganHang = "Thẻ ngân hàng";
     }
 }

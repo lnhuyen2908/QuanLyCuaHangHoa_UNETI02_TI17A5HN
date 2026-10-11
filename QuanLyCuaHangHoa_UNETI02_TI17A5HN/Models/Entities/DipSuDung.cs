@@ -1,4 +1,4 @@
-﻿// Họ và tên: Lã Ngọc Huyền
+// Họ và tên: Lã Ngọc Huyền
 // Mã sinh viên: 23103100271
 // Nội dung thực hiện: Entity TaiKhoan phục vụ đăng nhập, Session và phân quyền.
 
@@ -6,7 +6,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities
 {
     // Tên dịp sử dụng không trùng
     [Index(nameof(TenDip), IsUnique = true)]
