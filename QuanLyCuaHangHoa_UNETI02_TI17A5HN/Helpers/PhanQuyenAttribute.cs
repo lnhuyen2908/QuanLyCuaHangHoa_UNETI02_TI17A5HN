@@ -1,4 +1,4 @@
-﻿// Họ và tên: Lã Ngọc Huyền
+// Họ và tên: Lã Ngọc Huyền
 // Mã sinh viên: 23103100271
 // Nội dung thực hiện: Filter kiểm tra đăng nhập (Session) và vai trò tại Controller, hỗ trợ [AllowAnonymous].
 
@@ -15,7 +15,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
     //   [PhanQuyen(VaiTroConst.Admin, VaiTroConst.NhanVien)]   -> Admin HOẶC Nhân viên       (như [Authorize(Roles="Admin,NhanVien")])
     //   [AllowAnonymous] trên Action                           -> mở ngoại lệ công khai
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class PhanQuyenAttribute : Attribute, IAuthorizationFilter
+    public class PhanQuyenAttribute : Attribute, IAsyncAuthorizationFilter
     {
         private readonly string[] _vaiTroChoPhep;
 
@@ -24,7 +24,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
             _vaiTroChoPhep = vaiTroChoPhep ?? Array.Empty<string>();
         }
 
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             // Bước 0: Action có [AllowAnonymous] -> bỏ qua kiểm tra.
             // Nếu thiếu bước này, đặt [PhanQuyen] ở cấp Controller sẽ chặn luôn
@@ -44,6 +44,22 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
                     : new RedirectToActionResult("Login", "TaiKhoan",
                         new { area = "User", returnUrl = LayReturnUrl(http.Request) });
                 return;
+            }
+
+            // Kiểm tra tài khoản có bị khóa trong CSDL hay không (phòng trường hợp bị khóa khi session còn hạn)
+            var maTaiKhoan = session.GetMaTaiKhoan();
+            if (maTaiKhoan.HasValue)
+            {
+                var taiKhoanService = http.RequestServices.GetRequiredService<Services.TaiKhoanService>();
+                if (!await taiKhoanService.ConHoatDongAsync(maTaiKhoan.Value))
+                {
+                    session.Clear();
+                    context.Result = laAjax
+                        ? new StatusCodeResult(StatusCodes.Status401Unauthorized)
+                        : new RedirectToActionResult("Login", "TaiKhoan",
+                            new { area = "User", returnUrl = LayReturnUrl(http.Request) });
+                    return;
+                }
             }
 
             // Bước 2: Đã đăng nhập nhưng sai vai trò -> 403 -> trang từ chối truy cập

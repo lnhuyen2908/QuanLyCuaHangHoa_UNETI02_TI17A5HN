@@ -1,4 +1,4 @@
-﻿// Họ và tên: Lã Ngọc Huyền
+// Họ và tên: Lã Ngọc Huyền
 // Mã sinh viên: 23103100271
 // Nội dung thực hiện: Dữ liệu mẫu cho toàn bộ 13 entity (tài khoản, danh mục, hoa, mẫu, khách hàng, đơn, giao nhận, thanh toán, đánh giá).
 
@@ -224,7 +224,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
                 khachHangs.Add(new KhachHang
                 {
                     MaTaiKhoan = acc.MaTaiKhoan, HoTen = acc.HoTen, SoDienThoai = Phone(i + 1),
-                    Email = acc.Email, DiaChi = DiaChiKhach[i % DiaChiKhach.Length]
+                    Email = acc.Email, DiaChi = DiaChiKhach[i % DiaChiKhach.Length],
+                    TrangThai = acc.TrangThai
                 });
             }
 
