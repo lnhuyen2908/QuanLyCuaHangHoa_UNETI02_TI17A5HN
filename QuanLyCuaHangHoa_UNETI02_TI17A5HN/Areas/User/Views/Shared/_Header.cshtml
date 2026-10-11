@@ -1,3 +1,4 @@
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
 <header class="fixed top-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] transition-all">
     <!-- Top announcement bar -->
     <div class="bg-primary-container text-on-primary-container px-margin-mobile md:px-margin lg:px-margin-desktop py-1.5 text-center font-label-md text-label-md tracking-wider">
@@ -39,7 +40,7 @@
                 </a>
 
                 <!-- Mega Dropdown Menu -->
-                <div class="absolute left-1/2 -translate-x-1/2 top-full pt-2 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 pointer-events-none group-hover:pointer-events-auto">
+                <div class="absolute left-0 top-full pt-2 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 pointer-events-none group-hover:pointer-events-auto">
                     <div class="w-[880px] bg-surface-container-lowest border border-outline-variant/50 rounded-2xl shadow-2xl p-7 text-left">
                         <div class="grid grid-cols-12 gap-6">
                             <!-- Cột 1: LOÀI HOA NỔI BẬT -->
@@ -230,10 +231,79 @@
                 <span class="absolute top-1 right-1 w-4 h-4 bg-primary text-on-primary font-label-md text-[10px] rounded-full flex items-center justify-center font-medium leading-none">2</span>
             </a>
 
-            <!-- User Account -->
-            <a aria-label="Tài khoản cá nhân" class="relative p-2 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center" href="/User/Profile">
-                <span class="material-symbols-outlined text-[22px]">person</span>
-            </a>
+            <!-- User Account / Authentication -->
+            @if (Context.Session.DaDangNhap())
+            {
+                <div class="relative group py-2">
+                    <!-- Giao diện hình Account tài khoản -->
+                    <a href="/User/Profile" aria-label="Tài khoản cá nhân" class="relative flex items-center gap-2 p-1 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all group-hover:bg-surface-container">
+                        <div class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold ring-2 ring-primary/20 shadow-sm group-hover:ring-primary/40 transition-all">
+                            <span class="material-symbols-outlined text-[22px]">person</span>
+                        </div>
+                        <div class="hidden lg:flex flex-col text-left pr-1">
+                            <span class="font-title-sm text-xs font-semibold text-on-surface max-w-[120px] truncate leading-tight">@Context.Session.GetHoTen()</span>
+                            <span class="text-[10px] text-secondary font-label-md leading-tight">
+                                @(Context.Session.GetVaiTro() == "Admin" ? "Quản trị viên" : (Context.Session.GetVaiTro() == "NhanVien" ? "Nhân viên" : "Khách hàng"))
+                            </span>
+                        </div>
+                        <span class="hidden md:inline material-symbols-outlined text-[16px] text-outline transition-transform duration-200 group-hover:rotate-180">expand_more</span>
+                    </a>
+
+                    <!-- Menu Dropdown Tài khoản -->
+                    <div class="absolute right-0 top-full pt-1 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 z-50 pointer-events-none group-hover:pointer-events-auto min-w-[220px]">
+                        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl shadow-xl p-2 text-left">
+                            <div class="px-3 py-2 border-b border-outline-variant/20 mb-1.5 bg-surface-container-low/60 rounded-xl">
+                                <p class="font-title-sm text-xs text-on-surface font-semibold truncate">@Context.Session.GetHoTen()</p>
+                                <span class="inline-block mt-0.5 px-2 py-0.5 rounded-full text-[10px] font-semibold @(Context.Session.GetVaiTro() == "Admin" ? "bg-error-container text-on-error-container" : (Context.Session.GetVaiTro() == "NhanVien" ? "bg-tertiary-container text-on-tertiary-container" : "bg-primary-container text-on-primary-container"))">
+                                    @(Context.Session.GetVaiTro() == "Admin" ? "Quản trị viên" : (Context.Session.GetVaiTro() == "NhanVien" ? "Nhân viên" : "Khách hàng"))
+                                </span>
+                            </div>
+
+                            @if (Context.Session.GetVaiTro() is "Admin" or "NhanVien")
+                            {
+                                <a href="/Admin" class="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/10 rounded-xl transition-colors">
+                                    <span class="material-symbols-outlined text-[18px]">dashboard</span>
+                                    <span>Trang Dashboard Quản Trị</span>
+                                </a>
+                            }
+
+                            <a href="/User/Profile" class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-xl transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">account_circle</span>
+                                <span>Hồ sơ cá nhân</span>
+                            </a>
+
+                            <a href="/User/DatHang" class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-xl transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">receipt_long</span>
+                                <span>Đơn hàng của tôi</span>
+                            </a>
+
+                            <a href="/User/Wishlist" class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-xl transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">favorite</span>
+                                <span>Sản phẩm yêu thích</span>
+                            </a>
+
+                            <div class="border-t border-outline-variant/20 my-1"></div>
+
+                            <form asp-area="User" asp-controller="TaiKhoan" asp-action="Logout" method="post" class="m-0">
+                                <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-error hover:bg-error-container/40 rounded-xl transition-colors cursor-pointer text-left">
+                                    <span class="material-symbols-outlined text-[18px]">logout</span>
+                                    <span>Đăng xuất</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <a asp-area="User" asp-controller="TaiKhoan" asp-action="Login" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold bg-primary text-on-primary hover:opacity-90 transition-all shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">account_circle</span>
+                    <span>Đăng nhập</span>
+                </a>
+                @* <a asp-area="User" asp-controller="TaiKhoan" asp-action="Register" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold border border-primary/40 text-primary hover:bg-primary/10 transition-colors">
+                    <span>Đăng ký</span>
+                </a> *@
+            }
 
             <!-- Cart -->
             <a aria-label="Giỏ hàng" class="relative p-2 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center" href="/User/Cart">

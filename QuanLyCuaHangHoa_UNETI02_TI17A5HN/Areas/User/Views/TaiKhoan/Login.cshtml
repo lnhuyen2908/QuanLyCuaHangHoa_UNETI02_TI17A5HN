@@ -1,3 +1,4 @@
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.LoginViewModel
 @{
     ViewData["Title"] = "Đăng nhập thành viên - Web quản lý hoa tươi";
 }
@@ -70,13 +71,30 @@
                             <span>Quản trị viên &amp; Florist (CMS)</span>
                         </button>
                     </div>
-                    <form class="space-y-space-md" onsubmit="handleLoginSubmit(event)">
+                    <form asp-area="User" asp-controller="TaiKhoan" asp-action="Login" method="post" class="space-y-space-md" novalidate>
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ReturnUrl" />
+
+                        @if (TempData["ThanhCong"] != null)
+                        {
+                            <div class="p-3 rounded-lg bg-green-50 border border-green-200 text-green-700 font-body-sm text-sm flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                                <span>@TempData["ThanhCong"]</span>
+                            </div>
+                        }
+
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div asp-validation-summary="ModelOnly" class="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 font-body-sm text-sm"></div>
+                        }
+
                         <div class="space-y-space-xs">
-                            <label class="block font-title-sm text-title-sm text-on-surface" for="login-account" id="account-label">Email hoặc Số điện thoại đặt hoa</label>
+                            <label class="block font-title-sm text-title-sm text-on-surface" for="login-account" id="account-label">Tên đăng nhập hoặc Email</label>
                             <div class="relative flex items-center">
                                 <span class="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">mail</span>
-                                <input class="w-full pl-11 pr-4 py-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 bg-surface-container-low/40" id="login-account" placeholder="nguyenan@example.com hoặc 0909xxxxxx" required="" type="text">
+                                <input asp-for="TenDangNhap" class="w-full pl-11 pr-4 py-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 bg-surface-container-low/40" id="login-account" placeholder="admin, nhanvien01 hoặc khachhang01..." type="text">
                             </div>
+                            <span asp-validation-for="TenDangNhap" class="text-error text-xs block font-medium"></span>
                         </div>
                         <div class="space-y-space-xs">
                             <div class="flex items-center justify-between">
@@ -85,11 +103,12 @@
                             </div>
                             <div class="relative flex items-center">
                                 <span class="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">lock</span>
-                                <input class="w-full pl-11 pr-11 py-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 bg-surface-container-low/40" id="login-password" placeholder="Nhập mật khẩu ít nhất 8 ký tự" required="" type="password">
+                                <input asp-for="MatKhau" class="w-full pl-11 pr-11 py-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 bg-surface-container-low/40" id="login-password" placeholder="Nhập mật khẩu" type="password">
                                 <button aria-label="Hiện hoặc ẩn mật khẩu" class="absolute right-3 p-1 rounded-full text-outline hover:text-on-surface transition-colors flex items-center justify-center" onclick="togglePasswordVisibility()" type="button">
                                     <span class="material-symbols-outlined text-[20px]" id="pwd-icon">visibility</span>
                                 </button>
                             </div>
+                            <span asp-validation-for="MatKhau" class="text-error text-xs block font-medium"></span>
                         </div>
                         <div class="space-y-space-xs hidden" id="staff-field">
                             <label class="block font-title-sm text-title-sm text-on-surface" for="staff-branch">Showroom / Phân xưởng công tác</label>
@@ -105,7 +124,7 @@
                         </div>
                         <div class="flex items-center justify-between pt-1">
                             <label class="flex items-center gap-space-xs cursor-pointer select-none">
-                                <input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary/40 accent-primary" type="checkbox">
+                                <input asp-for="GhiNho" class="w-4 h-4 rounded text-primary focus:ring-primary/40 accent-primary" type="checkbox">
                                 <span class="font-body-sm text-body-sm text-on-surface-variant">Ghi nhớ đăng nhập trên thiết bị này</span>
                             </label>
                             <span class="px-2 py-0.5 rounded-full font-label-md text-label-md bg-secondary-container text-on-secondary-container" id="badge-mode">Hội viên</span>
@@ -144,7 +163,7 @@
                     </div>
                     <div class="mt-space-lg text-center font-body-sm text-body-sm text-on-surface-variant">
                         <span>Chưa có tài khoản Web quản lý hoa tươi? </span>
-                        <a class="font-title-sm text-title-sm text-primary hover:text-primary-container underline decoration-1 underline-offset-4 transition-colors" asp-controller="Home" asp-action="Register">Đăng ký thành viên ngay</a>
+                        <a class="font-title-sm text-title-sm text-primary hover:text-primary-container underline decoration-1 underline-offset-4 transition-colors" asp-area="User" asp-controller="TaiKhoan" asp-action="Register">Đăng ký thành viên ngay</a>
                     </div>
                     <div class="mt-space-md p-space-sm rounded-lg bg-surface-container-low text-center font-body-sm text-body-sm text-secondary">
                         <span class="material-symbols-outlined text-[15px] align-middle text-tertiary mr-1">security</span>
@@ -204,8 +223,8 @@
                 
                 staffField.classList.remove('hidden');
                 socialBlock.classList.add('hidden');
-                accountLabel.textContent = 'Mã nhân viên / Email nội bộ Florist';
-                loginAccount.placeholder = 'florist.id@webquanlyhoatuoi.vn';
+                accountLabel.textContent = 'Mã nhân viên / Email / Tên đăng nhập';
+                loginAccount.placeholder = 'admin, nhanvien01 hoặc email...';
                 badgeMode.textContent = 'CMS Quản Trị';
                 badgeMode.className = 'px-2 py-0.5 rounded-full font-label-md text-label-md bg-tertiary-fixed text-on-tertiary-fixed-variant';
                 btnSubmit.querySelector('span:first-child').textContent = 'Vào Bàn Cắm Hoa (CMS Workbench)';
@@ -215,28 +234,12 @@
                 
                 staffField.classList.add('hidden');
                 socialBlock.classList.remove('hidden');
-                accountLabel.textContent = 'Email hoặc Số điện thoại đặt hoa';
-                loginAccount.placeholder = 'nguyenan@example.com hoặc 0909xxxxxx';
+                accountLabel.textContent = 'Tên đăng nhập hoặc Email';
+                loginAccount.placeholder = 'khachhang01, khachhang02 hoặc email...';
                 badgeMode.textContent = 'Hội viên';
                 badgeMode.className = 'px-2 py-0.5 rounded-full font-label-md text-label-md bg-secondary-container text-on-secondary-container';
                 btnSubmit.querySelector('span:first-child').textContent = 'Đăng Nhập Ngay';
             }
-        }
-
-        function handleLoginSubmit(event) {
-            event.preventDefault();
-            const account = document.getElementById('login-account').value;
-            const btn = document.getElementById('btn-submit');
-            const originalText = btn.innerHTML;
-            
-            btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Đang xác thực thông tin...</span>';
-            
-            setTimeout(() => {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-                alert('Chào mừng ' + account + ' trở lại với Web quản lý hoa tươi!');
-            }, 1200);
         }
     </script>
 }
