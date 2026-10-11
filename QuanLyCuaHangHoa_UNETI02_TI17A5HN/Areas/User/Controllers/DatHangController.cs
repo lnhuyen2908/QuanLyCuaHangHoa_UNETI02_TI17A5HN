@@ -1,11 +1,13 @@
 
 using Microsoft.AspNetCore.Mvc;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 {
     [Area("User")]
     [Route("User/[controller]")]
     [Route("User/Checkout")]
+    [PhanQuyen]
     public class DatHangController : Controller
     {
         // GET: /User/Checkout or /User/DatHang

@@ -1,11 +1,13 @@
 
 using Microsoft.AspNetCore.Mvc;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 {
     [Area("User")]
     [Route("User/[controller]")]
     [Route("User/Cart")]
+    [PhanQuyen]
     public class GioHangController : Controller
     {
         // GET: /User/Cart or /User/GioHang

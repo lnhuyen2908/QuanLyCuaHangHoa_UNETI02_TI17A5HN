@@ -1,11 +1,13 @@
 
 using Microsoft.AspNetCore.Mvc;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 {
     [Area("User")]
     [Route("User/[controller]")]
     [Route("User/Wishlist")]
+    [PhanQuyen]
     public class YeuThichController : Controller
     {
         // GET: /User/Wishlist or /User/YeuThich
