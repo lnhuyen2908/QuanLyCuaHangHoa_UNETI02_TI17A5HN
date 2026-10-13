@@ -1,29 +1,75 @@
-@* 
-    Reusable Admin Pagination Component
-*@
-<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-md border-t border-surface-container-high font-body-sm text-body-sm text-secondary">
-    <div>
-        Hiển thị <span class="font-bold text-on-surface">1</span> đến <span class="font-bold text-on-surface">10</span> trong tổng số <span class="font-bold text-on-surface">48</span> mục dữ liệu
+@* Họ và tên: Đặng Thị Mai Hương
+Mã sinh viên: 23103100293
+Nội dung thực hiện: Phân trang động dùng chung*@
+
+@using Microsoft.AspNetCore.Routing
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
+@{
+    var pagination = ViewData.Model as PaginationViewModel;
+}
+@if (pagination != null)
+{
+    int tong = Math.Max(0, pagination.TongSoBanGhi);
+    int size = Math.Max(1, pagination.SoBanGhiMoiTrang);
+    int pages = Math.Max(1, pagination.TongSoTrang);
+    int page = Math.Clamp(pagination.TrangHienTai, 1, pages);
+    int first = tong == 0 ? 0 : (page - 1) * size + 1;
+    int last = Math.Min(page * size, tong);
+    int start = Math.Max(1, page - 2);
+    int end = Math.Min(pages, start + 4);
+    start = Math.Max(1, end - 4);
+
+    RouteValueDictionary RouteFor(int p)
+    {
+        var route = new RouteValueDictionary { ["area"] = pagination.Area, ["page"] = p };
+        foreach (var entry in pagination.BoLoc)
+        {
+            if (entry.Key.Equals("page", StringComparison.OrdinalIgnoreCase) ||
+                entry.Key.Equals("area", StringComparison.OrdinalIgnoreCase) ||
+                entry.Key.Equals("controller", StringComparison.OrdinalIgnoreCase) ||
+                entry.Key.Equals("action", StringComparison.OrdinalIgnoreCase)) continue;
+            if (!string.IsNullOrWhiteSpace(entry.Value)) route[entry.Key] = entry.Value;
+        }
+        return route;
+    }
+
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-md border-t border-surface-container-high font-body-sm text-body-sm text-secondary">
+        <div>
+            Hiển thị <span class="font-bold text-on-surface">@first</span> đến
+            <span class="font-bold text-on-surface">@last</span> trong tổng số
+            <span class="font-bold text-on-surface">@tong</span> mục dữ liệu
+        </div>
+        <div class="flex items-center gap-1">
+            @if (page > 1)
+            {
+                <a href="@Url.Action(pagination.Action, pagination.Controller, RouteFor(page - 1))"
+                   class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors">Trước</a>
+            }
+            else
+            {
+                <span class="px-3 py-1.5 rounded-lg bg-surface-container text-outline cursor-not-allowed font-title-sm text-title-sm">Trước</span>
+            }
+            @for (int i = start; i <= end; i++)
+            {
+                if (i == page)
+                {
+                    <span aria-current="page" class="px-3.5 py-1.5 rounded-lg bg-primary text-on-primary font-title-sm text-title-sm font-semibold shadow-sm">@i</span>
+                }
+                else
+                {
+                    <a href="@Url.Action(pagination.Action, pagination.Controller, RouteFor(i))"
+                       class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors">@i</a>
+                }
+            }
+            @if (page < pages)
+            {
+                <a href="@Url.Action(pagination.Action, pagination.Controller, RouteFor(page + 1))"
+                   class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors">Sau</a>
+            }
+            else
+            {
+                <span class="px-3 py-1.5 rounded-lg bg-surface-container text-outline cursor-not-allowed font-title-sm text-title-sm">Sau</span>
+            }
+        </div>
     </div>
-    <div class="flex items-center gap-1">
-        <button type="button" disabled class="px-3 py-1.5 rounded-lg bg-surface-container text-outline cursor-not-allowed font-title-sm text-title-sm">
-            Trước
-        </button>
-        <button type="button" class="px-3.5 py-1.5 rounded-lg bg-primary text-on-primary font-title-sm text-title-sm font-semibold shadow-sm">
-            1
-        </button>
-        <button type="button" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors">
-            2
-        </button>
-        <button type="button" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors">
-            3
-        </button>
-        <span class="px-2">...</span>
-        <button type="button" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors">
-            5
-        </button>
-        <button type="button" class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-colors">
-            Sau
-        </button>
-    </div>
-</div>
+}

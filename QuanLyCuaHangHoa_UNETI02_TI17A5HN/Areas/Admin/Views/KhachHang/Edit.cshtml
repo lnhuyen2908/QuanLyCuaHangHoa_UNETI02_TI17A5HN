@@ -1,0 +1,44 @@
+﻿@* Họ và tên: Đặng Thị Mai Hương
+   Mã sinh viên: 23103100293
+   Nội dung thực hiện: Giao diện chỉnh sửa thông tin khách hàng. *@
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.KhachHangEditViewModel
+@{
+    ViewBag.Title = "Chỉnh Sửa Khách Hàng";
+    ViewBag.ActiveMenu = "KhachHang";
+    ViewBag.Breadcrumb = "Chỉnh sửa khách hàng";
+}
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
+    @await Html.PartialAsync("_AdminPageHeader")
+    <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-space-lg">
+        <h2 class="font-title-lg text-title-lg text-on-surface font-semibold mb-6">Chỉnh sửa khách hàng KH-@Model.MaKhachHang.ToString("D3")</h2>
+        <form asp-area="Admin" asp-controller="KhachHang" asp-action="Edit" asp-route-id="@Model.MaKhachHang" method="post" class="flex flex-col gap-space-md">
+            @Html.AntiForgeryToken()
+            <input asp-for="MaKhachHang" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="text-error font-body-sm text-body-sm"></div>
+            <div>
+                <label asp-for="HoTen" class="block mb-2 font-label-md text-label-md text-on-surface"></label>
+                <input asp-for="HoTen" class="w-full bg-surface-container-low rounded-xl p-3 text-on-surface border border-transparent focus:border-primary focus:outline-none" />
+                <span asp-validation-for="HoTen" class="text-error font-body-sm text-body-sm"></span>
+            </div>
+            <div>
+                <label asp-for="SoDienThoai" class="block mb-2 font-label-md text-label-md text-on-surface"></label>
+                <input asp-for="SoDienThoai" class="w-full bg-surface-container-low rounded-xl p-3 text-on-surface border border-transparent focus:border-primary focus:outline-none" />
+                <span asp-validation-for="SoDienThoai" class="text-error font-body-sm text-body-sm"></span>
+            </div>
+            <div>
+                <label asp-for="Email" class="block mb-2 font-label-md text-label-md text-on-surface"></label>
+                <input asp-for="Email" class="w-full bg-surface-container-low rounded-xl p-3 text-on-surface border border-transparent focus:border-primary focus:outline-none" />
+                <span asp-validation-for="Email" class="text-error font-body-sm text-body-sm"></span>
+            </div>
+            <div>
+                <label asp-for="DiaChi" class="block mb-2 font-label-md text-label-md text-on-surface"></label>
+                <textarea asp-for="DiaChi" rows="3" class="w-full bg-surface-container-low rounded-xl p-3 text-on-surface border border-transparent focus:border-primary focus:outline-none"></textarea>
+                <span asp-validation-for="DiaChi" class="text-error font-body-sm text-body-sm"></span>
+            </div>
+            <div class="flex flex-wrap items-center gap-3 mt-4">
+                <button type="submit" class="bg-primary text-on-primary px-5 py-3 rounded-xl font-label-md text-label-md font-semibold hover:opacity-90 transition-all">Lưu thay đổi</button>
+                <a asp-area="Admin" asp-controller="KhachHang" asp-action="Index" class="bg-surface-container-high text-on-surface px-5 py-3 rounded-xl font-label-md text-label-md font-semibold hover:bg-surface-container transition-all">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,82 +1,70 @@
+@* Họ và tên: Đặng Thị Mai Hương
+   Mã sinh viên: 23103100293
+   Nội dung thực hiện: Danh sách khách hàng từ Database, tìm kiếm, lọc, phân trang và thống kê.
+*@
+
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.KhachHangIndexViewModel
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
 @{
     ViewBag.Title = "Quản Lý Khách Hàng";
     ViewBag.ActiveMenu = "KhachHang";
     ViewBag.Breadcrumb = "Quản lý khách hàng";
 }
-
 <div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
-    <!-- Header Section -->
     @await Html.PartialAsync("_AdminPageHeader")
+    @if (TempData["ThongBao"] != null)
+    {
+        <div class="bg-primary-fixed text-on-primary-fixed-variant px-space-lg py-space-md rounded-2xl shadow-sm">@TempData["ThongBao"]</div>
+    }
 
-    <!-- Statistics Bento Row -->
+    @if (TempData["ThongBao"] != null)
+    {
+        <div class="bg-primary-fixed text-on-primary-fixed-variant p-space-md rounded-xl shadow-sm">@TempData["ThongBao"]</div>
+    }
+
+    <!-- Giữ nguyên kiểu Bento 4 ô, thay dữ liệu mẫu bằng thống kê thực -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
         <div class="relative overflow-hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
                 <span class="font-label-md text-label-md tracking-wider uppercase text-outline">Tổng khách hàng</span>
-                <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined text-[20px]">groups</span>
-                </div>
+                <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">groups</span></div>
             </div>
-            <div class="mt-4">
-                <div class="font-display-lg text-display-lg text-on-surface font-semibold">1,248</div>
-                <div class="flex items-center gap-1.5 mt-2 text-tertiary">
-                    <span class="material-symbols-outlined text-[16px]">trending_up</span>
-                    <span class="font-body-sm text-body-sm font-semibold">+24 thành viên</span>
-                    <span class="font-body-sm text-body-sm text-outline">tuần này</span>
-                </div>
-            </div>
+            <div class="mt-4"><div class="font-display-lg text-display-lg text-on-surface font-semibold">@Model.TongKhachHang.ToString("N0")</div><div class="font-body-sm text-body-sm text-on-surface-variant mt-2">Tổng số khách trong hệ thống</div></div>
         </div>
-
         <div class="relative overflow-hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="font-label-md text-label-md tracking-wider uppercase text-outline">Hội viên VIP</span>
-                <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined text-[20px]">workspace_premium</span>
-                </div>
+                <span class="font-label-md text-label-md tracking-wider uppercase text-outline">Đang hoạt động</span>
+                <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">person_check</span></div>
             </div>
-            <div class="mt-4">
-                <div class="font-display-lg text-display-lg text-on-surface font-semibold">386</div>
-                <div class="inline-flex items-center gap-1.5 mt-2 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    <span class="font-label-md text-label-md font-semibold">30.9% Tỷ lệ quay lại</span>
-                </div>
-            </div>
+            <div class="mt-4"><div class="font-display-lg text-display-lg text-on-surface font-semibold">@Model.TongDangHoatDong.ToString("N0")</div><div class="font-body-sm text-body-sm text-on-surface-variant mt-2">Khách hàng đang hoạt động</div></div>
         </div>
-
         <div class="relative overflow-hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="font-label-md text-label-md tracking-wider uppercase text-outline">Đơn hàng trung bình</span>
-                <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
-                </div>
+                <span class="font-label-md text-label-md tracking-wider uppercase text-outline">Đã khóa</span>
+                <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">person_off</span></div>
             </div>
-            <div class="mt-4">
-                <div class="font-display-lg text-display-lg text-on-surface font-semibold">3.8 Đơn</div>
-                <div class="font-body-sm text-body-sm text-on-surface-variant mt-2">Bình quân / khách hàng VIP</div>
-            </div>
+            <div class="mt-4"><div class="font-display-lg text-display-lg text-on-surface font-semibold">@Model.TongBiKhoa.ToString("N0")</div><div class="font-body-sm text-body-sm text-on-surface-variant mt-2">Khách hàng bị khóa</div></div>
         </div>
-
         <div class="relative overflow-hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="font-label-md text-label-md tracking-wider uppercase text-outline">Giá trị vòng đời (CLV)</span>
-                <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed-variant">
-                    <span class="material-symbols-outlined text-[20px]">loyalty</span>
-                </div>
+                <span class="font-label-md text-label-md tracking-wider uppercase text-outline">Kết quả tìm kiếm</span>
+                <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed-variant"><span class="material-symbols-outlined text-[20px]">manage_search</span></div>
             </div>
-            <div class="mt-4">
-                <div class="font-headline-lg text-headline-lg text-primary font-bold">3.850.000₫</div>
-                <div class="flex items-center gap-1.5 mt-2 text-tertiary">
-                    <span class="material-symbols-outlined text-[16px]">arrow_upward</span>
-                    <span class="font-body-sm text-body-sm font-semibold">+12%</span>
-                </div>
-            </div>
+            <div class="mt-4"><div class="font-headline-lg text-headline-lg text-primary font-bold">@Model.DanhSach.TongSoBanGhi.ToString("N0")</div><div class="font-body-sm text-body-sm text-on-surface-variant mt-2">Phù hợp bộ lọc hiện tại</div></div>
         </div>
     </div>
 
-    <!-- Filter Component -->
-    @await Html.PartialAsync("_AdminFilterBar")
+    @await Html.PartialAsync("_AdminFilterBar", new AdminFilterViewModel
+    {
+        Area = "Admin",
+        Controller = "KhachHang",
+        Action = "Index",
+        TuKhoa = Model.TuKhoa,
+        TrangThai = Model.TrangThai,
+        SapXep = Model.SapXep
+    })
 
-    <!-- Customer Data Table Container -->
     <div class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -92,46 +80,63 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-surface-container font-body-sm text-body-sm">
-                    <tr class="hover:bg-surface-container-low/60 transition-colors">
-                        <td class="py-space-md pl-space-lg pr-space-sm font-mono text-primary font-bold">KH-001</td>
-                        <td class="py-space-md px-space-md">
-                            <div class="font-title-sm text-title-sm text-on-surface">Nguyễn Thu Thảo</div>
-                            <div class="text-secondary font-body-sm text-body-sm">VIP Club Member</div>
-                        </td>
-                        <td class="py-space-md px-space-md font-mono text-on-surface">0903 124 889</td>
-                        <td class="py-space-md px-space-md text-on-surface-variant">thuthao.nguyen@gmail.com</td>
-                        <td class="py-space-md px-space-md text-on-surface-variant">Quận 1, TP. Hồ Chí Minh</td>
-                        <td class="py-space-md px-space-md text-center">
-                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
-                        </td>
-                        <td class="py-space-md pr-space-lg pl-space-sm text-right">
-                            <button class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-surface-container-low/60 transition-colors">
-                        <td class="py-space-md pl-space-lg pr-space-sm font-mono text-primary font-bold">KH-002</td>
-                        <td class="py-space-md px-space-md">
-                            <div class="font-title-sm text-title-sm text-on-surface">Trần Minh Hoàng</div>
-                            <div class="text-secondary font-body-sm text-body-sm">Khách hàng thân thiết</div>
-                        </td>
-                        <td class="py-space-md px-space-md font-mono text-on-surface">0918 882 102</td>
-                        <td class="py-space-md px-space-md text-on-surface-variant">minhhoang.tran@gmail.com</td>
-                        <td class="py-space-md px-space-md text-on-surface-variant">Bình Thạnh, TP. Hồ Chí Minh</td>
-                        <td class="py-space-md px-space-md text-center">
-                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
-                        </td>
-                        <td class="py-space-md pr-space-lg pl-space-sm text-right">
-                            <button class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                        </td>
-                    </tr>
+                    @foreach (var kh in Model.DanhSach.DuLieu)
+                    {
+                        <tr class="hover:bg-surface-container-low/60 transition-colors">
+                            <td class="py-space-md pl-space-lg pr-space-sm font-mono text-primary font-bold">KH-@kh.MaKhachHang.ToString("D3")</td>
+                            <td class="py-space-md px-space-md"><div class="font-title-sm text-title-sm text-on-surface">@kh.HoTen</div><div class="text-secondary font-body-sm text-body-sm">Khách hàng</div></td>
+                            <td class="py-space-md px-space-md font-mono text-on-surface">@kh.SoDienThoai</td>
+                            <td class="py-space-md px-space-md text-on-surface-variant">@kh.Email</td>
+                            <td class="py-space-md px-space-md text-on-surface-variant">@(string.IsNullOrWhiteSpace(kh.DiaChi) ? "Chưa cập nhật" : kh.DiaChi)</td>
+                            <td class="py-space-md px-space-md text-center">@await Html.PartialAsync("_AdminStatusBadge", kh.TrangThai ? "Hoạt động" : "Đã khóa")</td>
+                            <td class="py-space-md pr-space-lg pl-space-sm text-right">
+                                <div class="flex items-center justify-end gap-1">
+                                    <a asp-area="Admin" asp-controller="KhachHang" asp-action="Edit"
+                                       asp-route-id="@kh.MaKhachHang" title="Chỉnh sửa khách hàng"
+                                       class="inline-flex p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                    </a>
+                                    @if (Context.Session.CoVaiTro(VaiTroConst.Admin))
+                                    {
+                                        <form asp-area="Admin" asp-controller="KhachHang" asp-action="DoiTrangThai"
+                                              method="post" class="inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@kh.MaKhachHang" />
+                                            <button type="submit" title="@(kh.TrangThai ? "Khóa khách hàng" : "Mở khóa khách hàng")"
+                                                    onclick="return confirm('Bạn có chắc muốn @(kh.TrangThai ? "khóa" : "mở khóa") khách hàng này?')"
+                                                    class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all">
+                                                <span class="material-symbols-outlined text-[18px]">@(kh.TrangThai ? "lock" : "lock_open")</span>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.DanhSach.DuLieu.Any())
+                    {
+                        <tr><td colspan="7" class="py-space-lg px-space-lg text-center text-on-surface-variant">Không tìm thấy khách hàng phù hợp.</td></tr>
+                    }
                 </tbody>
             </table>
         </div>
-
-        @await Html.PartialAsync("_AdminPagination")
+        <div class="px-space-lg pb-space-md">
+            @await Html.PartialAsync("_AdminPagination", new PaginationViewModel
+            {
+                TrangHienTai = Model.DanhSach.TrangHienTai,
+                TongSoTrang = Model.DanhSach.TongSoTrang,
+                TongSoBanGhi = Model.DanhSach.TongSoBanGhi,
+                SoBanGhiMoiTrang = Model.DanhSach.SoBanGhiMoiTrang,
+                Area = "Admin",
+                Controller = "KhachHang",
+                Action = "Index",
+                BoLoc = new Dictionary<string, string?>
+                {
+                    ["tuKhoa"] = Model.TuKhoa,
+                    ["trangThai"] = Model.TrangThai?.ToString().ToLowerInvariant(),
+                    ["sapXep"] = Model.SapXep
+                }
+            })
+        </div>
     </div>
 </div>
