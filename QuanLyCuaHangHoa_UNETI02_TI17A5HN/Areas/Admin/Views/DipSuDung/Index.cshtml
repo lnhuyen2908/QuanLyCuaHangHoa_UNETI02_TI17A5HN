@@ -1,3 +1,14 @@
+@*
+    Họ và tên: Lã Ngọc Huyền
+    Mã sinh viên: 23103100271
+    Nội dung thực hiện: Giao diện Quản lý Dịp sử dụng: hiển thị danh sách từ DB, đếm số mẫu hoa bằng LINQ, tìm kiếm/lọc, Form POST Thêm, Sửa, Đổi trạng thái và Xóa (ngừng hoạt động thì không dùng cho mẫu mới).
+*@
+
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
+@using System.Text.Encodings.Web
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.DipSuDungIndexViewModel
+
 @{
     ViewBag.Title = "Quản Lý Dịp Sử Dụng";
     ViewBag.ActiveMenu = "DipSuDung";
@@ -8,74 +19,131 @@
     <!-- Header Section -->
     @await Html.PartialAsync("_AdminPageHeader")
 
-    <!-- Key Metrics Grid -->
+    <!-- Thông báo kết quả thao tác -->
+    @if (TempData["ThanhCong"] != null)
+    {
+        <div class="flex items-center gap-2 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 shadow-sm animate-fade-in">
+            <span class="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+            <span class="font-body-md text-body-md font-medium">@TempData["ThanhCong"]</span>
+        </div>
+    }
+
+    @if (TempData["Loi"] != null)
+    {
+        <div class="flex items-center gap-2 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 shadow-sm animate-fade-in">
+            <span class="material-symbols-outlined text-[20px] text-rose-600">error</span>
+            <span class="font-body-md text-body-md font-medium">@TempData["Loi"]</span>
+        </div>
+    }
+
+    <!-- Key Metrics Grid (Dữ liệu thống kê thực tế tính bằng LINQ) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md mb-space-lg">
-        <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col justify-between">
+        <!-- Card 1: Tổng số dịp -->
+        <div class="relative overflow-hidden rounded-2xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col justify-between transition-all hover:shadow-md">
             <div class="flex items-start justify-between">
                 <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Tổng số dịp chủ đề</span>
-                <span class="w-8 h-8 rounded-full bg-secondary-container text-primary flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[18px]">loyalty</span>
+                <span class="w-10 h-10 rounded-xl bg-secondary-container text-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">loyalty</span>
                 </span>
             </div>
             <div class="mt-4 flex flex-col">
-                <span class="font-headline-md text-headline-md text-on-surface font-semibold">12 Dịp</span>
-                <div class="flex items-center gap-1.5 mt-1 text-tertiary font-label-md text-label-md">
-                    <span class="material-symbols-outlined text-[15px]">eco</span>
-                    <span>+2 Dịp mùa lễ hội mới</span>
+                <span class="font-headline-md text-headline-md text-on-surface font-semibold">@Model.TongSoDip.ToString("N0") Dịp</span>
+                <div class="flex items-center gap-1.5 mt-1 text-secondary font-label-md text-label-md">
+                    <span class="material-symbols-outlined text-[15px]">category</span>
+                    <span>Phân loại chủ đề hoa tươi</span>
                 </div>
             </div>
         </div>
 
-        <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col justify-between">
+        <!-- Card 2: Đang kích hoạt (Dùng cho mẫu mới) -->
+        <div class="relative overflow-hidden rounded-2xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col justify-between transition-all hover:shadow-md">
             <div class="flex items-start justify-between">
-                <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Đang hiển thị</span>
-                <span class="w-8 h-8 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Đang hoạt động</span>
+                <span class="w-10 h-10 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed-variant flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">visibility</span>
                 </span>
             </div>
             <div class="mt-4 flex flex-col">
-                <span class="font-headline-md text-headline-md text-on-surface font-semibold">10 Kích hoạt</span>
-                <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Xuất hiện tại Storefront</span>
+                <span class="font-headline-md text-headline-md text-on-surface font-semibold">@Model.TongDangHoatDong.ToString("N0") Kích hoạt</span>
+                <span class="font-body-sm text-body-sm text-tertiary mt-1 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                    <span>Được dùng khi tạo mẫu hoa mới</span>
+                </span>
             </div>
         </div>
 
-        <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col justify-between">
+        <!-- Card 3: Ngừng hoạt động (Không dùng cho mẫu mới) -->
+        <div class="relative overflow-hidden rounded-2xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col justify-between transition-all hover:shadow-md">
+            <div class="flex items-start justify-between">
+                <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Ngừng hoạt động</span>
+                <span class="w-10 h-10 rounded-xl bg-error-container text-on-error-container flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">visibility_off</span>
+                </span>
+            </div>
+            <div class="mt-4 flex flex-col">
+                <span class="font-headline-md text-headline-md text-on-surface font-semibold">@Model.TongNgungHoatDong.ToString("N0") Tạm ngưng</span>
+                <span class="font-body-sm text-body-sm text-error mt-1 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                    <span>Không dùng cho mẫu sản phẩm mới</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Card 4: Mẫu hoa liên kết (LINQ Count) -->
+        <div class="relative overflow-hidden rounded-2xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col justify-between transition-all hover:shadow-md">
             <div class="flex items-start justify-between">
                 <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Mẫu hoa liên kết</span>
-                <span class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[18px]">local_florist</span>
+                <span class="w-10 h-10 rounded-xl bg-primary-fixed text-on-primary-fixed flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">local_florist</span>
                 </span>
             </div>
             <div class="mt-4 flex flex-col">
-                <span class="font-headline-md text-headline-md text-on-surface font-semibold">64 Mẫu sản phẩm</span>
-                <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Bình quân 5.3 mẫu / dịp</span>
-            </div>
-        </div>
-
-        <div class="relative overflow-hidden rounded-xl bg-surface-container-high p-space-md shadow-sm flex flex-col justify-between">
-            <div class="flex items-start justify-between">
-                <span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Top Đặt Hàng</span>
-                <span class="w-8 h-8 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">favorite</span>
+                <span class="font-headline-md text-headline-md text-on-surface font-semibold">@Model.TongMauHoaLienKet.ToString("N0") Mẫu hoa</span>
+                <span class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                    Bình quân @(Model.TongSoDip > 0 ? ((double)Model.TongMauHoaLienKet / Model.TongSoDip).ToString("0.0") : "0") mẫu / dịp
                 </span>
-            </div>
-            <div class="mt-3 flex flex-col">
-                <span class="font-title-md text-title-md text-primary font-bold">Sinh Nhật &amp; Tình Yêu</span>
-                <span class="font-label-md text-label-md text-on-surface font-semibold mt-1">58.4% doanh thu</span>
             </div>
         </div>
     </div>
 
-    <!-- Filter Component -->
-    @await Html.PartialAsync("_AdminFilterBar")
+    <!-- Filter Component: Form GET tìm kiếm và lọc -->
+    <form asp-area="Admin" asp-controller="DipSuDung" asp-action="Index" method="get"
+          class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+        <div class="flex items-center gap-space-xs bg-surface-container px-space-md py-2 rounded-xl flex-1 max-w-lg">
+            <span class="material-symbols-outlined text-[20px] text-on-surface-variant">search</span>
+            <input type="text" name="tuKhoa" value="@Model.TuKhoa" placeholder="Tìm theo tên dịp sử dụng, mô tả ý nghĩa..."
+                   class="bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none w-full" />
+        </div>
+        <div class="flex flex-wrap items-center gap-space-sm">
+            <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
+                <span class="material-symbols-outlined text-[18px]">filter_list</span>
+                <select name="trangThai" class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+                    <option value="" selected="@(Model.TrangThai == null)">Tất cả trạng thái</option>
+                    <option value="true" selected="@(Model.TrangThai == true)">Hoạt động (Dùng cho mẫu mới)</option>
+                    <option value="false" selected="@(Model.TrangThai == false)">Ngừng hoạt động (Không dùng mẫu mới)</option>
+                </select>
+            </div>
+            <button type="submit" class="flex items-center gap-space-xs bg-primary text-on-primary px-4 py-2 rounded-xl font-title-sm text-title-sm hover:opacity-90 transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">search</span>
+                <span>Tìm kiếm</span>
+            </button>
+            <a asp-area="Admin" asp-controller="DipSuDung" asp-action="Index"
+               class="flex items-center gap-space-xs bg-surface-container text-on-surface-variant px-3 py-2 rounded-xl font-title-sm text-title-sm hover:bg-surface-container-high transition-all">
+                <span class="material-symbols-outlined text-[18px]">refresh</span>
+                <span class="hidden sm:inline">Làm mới</span>
+            </a>
+        </div>
+    </form>
 
     <!-- Full Width Table Container -->
-    <div class="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden flex flex-col">
+    <div class="rounded-2xl bg-surface-container-lowest shadow-sm overflow-hidden flex flex-col">
         <!-- Table Header Bar -->
         <div class="p-space-md bg-surface-container-lowest flex items-center justify-between gap-space-sm border-b border-surface-container">
             <div class="flex items-center gap-space-sm">
                 <span class="font-headline-sm text-headline-sm text-on-surface">Danh Mục Dịp Sử Dụng</span>
-                <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">12 Chủ đề</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">
+                    @Model.DanhSach.TongSoBanGhi Chủ đề
+                </span>
             </div>
             <button type="button" onclick="openAddModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-sm">
                 <span class="material-symbols-outlined text-[18px]">add_circle</span>
@@ -87,133 +155,358 @@
             <table class="w-full text-left font-body-sm text-body-sm">
                 <thead>
                     <tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
-                        <th class="py-3.5 px-4">Mã</th>
+                        <th class="py-3.5 px-4">Mã Dịp</th>
                         <th class="py-3.5 px-4">Tên Dịp Sử Dụng</th>
                         <th class="py-3.5 px-4">Mô tả chủ đề</th>
+                        <th class="py-3.5 px-4 text-center">Mẫu hoa liên kết</th>
                         <th class="py-3.5 px-4 text-center">Trạng thái</th>
                         <th class="py-3.5 px-4 text-right">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody class="text-on-surface divide-y divide-surface-container">
-                    <tr class="hover:bg-surface-container-low/60 transition-colors">
-                        <td class="py-4 px-4 font-mono font-bold text-primary">DIP-01</td>
-                        <td class="py-4 px-4 font-title-sm text-title-sm text-on-surface">Sinh Nhật</td>
-                        <td class="py-4 px-4 text-on-surface-variant">Hoa chúc mừng sinh nhật người thân, bạn bè, đối tác</td>
-                        <td class="py-4 px-4 text-center">
-                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
-                        </td>
-                        <td class="py-4 px-4 text-right">
-                            <button type="button" onclick="openEditModal('DIP-01', 'Sinh Nhật', 'Hoa chúc mừng sinh nhật người thân, bạn bè, đối tác', '1')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-surface-container-low/60 transition-colors">
-                        <td class="py-4 px-4 font-mono font-bold text-primary">DIP-02</td>
-                        <td class="py-4 px-4 font-title-sm text-title-sm text-on-surface">Kỷ Niệm &amp; Tình Yêu</td>
-                        <td class="py-4 px-4 text-on-surface-variant">Hoa lãng mạn ngày Valentine, kỷ niệm ngày cưới, lời tỏ tình</td>
-                        <td class="py-4 px-4 text-center">
-                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
-                        </td>
-                        <td class="py-4 px-4 text-right">
-                            <button type="button" onclick="openEditModal('DIP-02', 'Kỷ Niệm & Tình Yêu', 'Hoa lãng mạn ngày Valentine, kỷ niệm ngày cưới, lời tỏ tình', '1')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-surface-container-low/60 transition-colors">
-                        <td class="py-4 px-4 font-mono font-bold text-primary">DIP-03</td>
-                        <td class="py-4 px-4 font-title-sm text-title-sm text-on-surface">Khai Trương</td>
-                        <td class="py-4 px-4 text-on-surface-variant">Kệ hoa &amp; lẵng hoa chúc mừng khai trương cửa hàng, chi nhánh mới</td>
-                        <td class="py-4 px-4 text-center">
-                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
-                        </td>
-                        <td class="py-4 px-4 text-right">
-                            <button type="button" onclick="openEditModal('DIP-03', 'Khai Trương', 'Kệ hoa & lẵng hoa chúc mừng khai trương cửa hàng, chi nhánh mới', '1')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                        </td>
-                    </tr>
+                    @if (Model.DanhSach.DuLieu.Any())
+                    {
+                        @foreach (var item in Model.DanhSach.DuLieu)
+                        {
+                            <tr class="hover:bg-surface-container-low/60 transition-colors">
+                                <td class="py-4 px-4 font-mono font-bold text-primary">
+                                    DIP-@item.MaDip.ToString("D2")
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+                                            <span class="material-symbols-outlined text-[18px]">celebration</span>
+                                        </span>
+                                        <span class="font-title-sm text-title-sm text-on-surface font-semibold">@item.TenDip</span>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 text-on-surface-variant max-w-md">
+                                    @(string.IsNullOrWhiteSpace(item.MoTa) ? "—" : item.MoTa)
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold">
+                                        <span class="material-symbols-outlined text-[14px] text-primary">filter_vintage</span>
+                                        <span>@item.SoMauHoa mẫu</span>
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    @await Html.PartialAsync("_AdminStatusBadge", item.TrangThai ? "Hoạt động" : "Ngừng hoạt động")
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        <!-- Form Đổi Nhanh Trạng Thái (Kích hoạt / Ngừng hoạt động) -->
+                                        <form asp-area="Admin" asp-controller="DipSuDung" asp-action="ToggleTrangThai" method="post" class="inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@item.MaDip" />
+                                            <button type="submit"
+                                                    class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-all"
+                                                    title="@(item.TrangThai ? "Chuyển sang Ngừng hoạt động (không cho mẫu mới dùng)" : "Kích hoạt lại dịp sử dụng (cho phép mẫu mới dùng)")">
+                                                <span class="material-symbols-outlined text-[18px]">
+                                                    @(item.TrangThai ? "toggle_on" : "toggle_off")
+                                                </span>
+                                            </button>
+                                        </form>
+
+                                        <!-- Nút Chỉnh Sửa -->
+                                        <button type="button"
+                                                onclick="openEditModal(@item.MaDip, '@Html.Raw(JavaScriptEncoder.Default.Encode(item.TenDip))', '@Html.Raw(JavaScriptEncoder.Default.Encode(item.MoTa ?? ""))', '@(item.TrangThai ? "1" : "0")')"
+                                                class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all"
+                                                title="Chỉnh sửa dịp sử dụng">
+                                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        </button>
+
+                                        <!-- Nút Xóa Dịp Sử Dụng -->
+                                        <button type="button"
+                                                onclick="openDeleteModal(@item.MaDip, '@Html.Raw(JavaScriptEncoder.Default.Encode(item.TenDip))', @item.SoMauHoa)"
+                                                class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-surface-container transition-all"
+                                                title="Xóa dịp sử dụng">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="py-space-xl px-space-lg text-center text-on-surface-variant font-body-md">
+                                Không tìm thấy dịp sử dụng nào phù hợp.
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
 
-        @await Html.PartialAsync("_AdminPagination")
+        <!-- Phân trang động -->
+        <div class="p-space-md border-t border-surface-container">
+            @await Html.PartialAsync("_AdminPagination", new PaginationViewModel
+            {
+                TrangHienTai = Model.DanhSach.TrangHienTai,
+                TongSoTrang = Model.DanhSach.TongSoTrang,
+                TongSoBanGhi = Model.DanhSach.TongSoBanGhi,
+                SoBanGhiMoiTrang = Model.DanhSach.SoBanGhiMoiTrang,
+                Area = "Admin",
+                Controller = "DipSuDung",
+                Action = "Index",
+                BoLoc = new Dictionary<string, string?>
+                {
+                    ["tuKhoa"] = Model.TuKhoa,
+                    ["trangThai"] = Model.TrangThai?.ToString().ToLowerInvariant()
+                }
+            })
+        </div>
     </div>
 </div>
 
-<!-- Popup Modal: Thêm / Chỉnh Sửa Dịp Sử Dụng -->
-<div id="dipSuDungModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
+<!-- ============================================================== -->
+<!-- Popup Modal: THÊM DỊP SỬ DỤNG MỚI                             -->
+<!-- ============================================================== -->
+<div id="addDipSuDungModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
     <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden flex flex-col">
         <!-- Modal Header -->
         <div class="flex items-center justify-between px-space-lg py-space-md bg-surface-container-low border-b border-surface-container-high">
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-primary text-[22px]">loyalty</span>
-                <h3 id="modalDipSuDungTitle" class="font-headline-sm text-headline-sm text-on-surface font-semibold">Thêm Dịp Sử Dụng Mới</h3>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Thêm Dịp Sử Dụng Mới</h3>
             </div>
-            <button type="button" onclick="closeDipSuDungModal()" class="text-secondary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container transition-colors">
+            <button type="button" onclick="closeAddModal()" class="text-secondary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container transition-colors">
                 <span class="material-symbols-outlined text-[20px]">close</span>
             </button>
         </div>
 
-        <!-- Modal Body -->
-        <form id="dipSuDungForm" onsubmit="handleDipSuDungSubmit(event)" class="p-space-lg space-y-space-md font-body-md text-body-md">
+        <!-- Modal Body (POST Form) -->
+        <form asp-area="Admin" asp-controller="DipSuDung" asp-action="Create" method="post" id="formAddDipSuDung" class="p-space-lg space-y-space-md font-body-md text-body-md">
+            @Html.AntiForgeryToken()
+
             <div>
-                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Tên dịp sử dụng *</label>
-                <input type="text" id="inputTenDip" placeholder="VD: Tốt nghiệp, Chúc mừng 20/10..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required />
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">
+                    Tên dịp sử dụng <span class="text-error">*</span>
+                </label>
+                <input type="text" name="tenDip" id="addInputTenDip" required maxlength="100"
+                       placeholder="VD: Sinh Nhật, Khai Trương, Lễ Tình Nhân 14/2..."
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary border border-outline-variant/40" />
+                <span id="addTenDipError" class="text-xs text-error mt-1 hidden"></span>
             </div>
 
             <div>
                 <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Mô tả chủ đề dịp</label>
-                <textarea id="inputMoTaDip" rows="3" placeholder="Nhập mô tả ý nghĩa và đối tượng dành cho dịp này..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40"></textarea>
+                <textarea name="moTa" rows="3" maxlength="1000"
+                          placeholder="Mô tả ý nghĩa, thông điệp và nhóm đối tượng của dịp hoa này..."
+                          class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary border border-outline-variant/40"></textarea>
             </div>
 
             <div>
-                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Trạng thái hiển thị</label>
-                <select id="selectTrangThaiDip" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40">
-                    <option value="1">Hiển thị (Kích hoạt trên website)</option>
-                    <option value="0">Tạm ẩn</option>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Trạng thái sử dụng</label>
+                <select name="trangThai" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary border border-outline-variant/40 cursor-pointer">
+                    <option value="true" selected>Hoạt động (Cho phép dùng khi tạo mẫu sản phẩm mới)</option>
+                    <option value="false">Ngừng hoạt động (Không dùng cho mẫu sản phẩm mới)</option>
                 </select>
+                <span class="text-xs text-secondary mt-1 block">Lưu ý: Dịp ở trạng thái ngừng hoạt động sẽ không hiển thị trong danh sách chọn khi tạo mẫu hoa mới.</span>
             </div>
 
             <!-- Modal Footer -->
             <div class="flex items-center justify-end gap-space-sm pt-space-md border-t border-surface-container-high">
-                <button type="button" onclick="closeDipSuDungModal()" class="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-all">
+                <button type="button" onclick="closeAddModal()" class="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-all">
                     Hủy bỏ
                 </button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-md flex items-center gap-1.5">
+                <button type="submit" id="btnSubmitAdd" class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:opacity-90 transition-all shadow-md flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-[18px]">save</span>
-                    <span>Lưu dịp sử dụng</span>
+                    <span>Lưu dịp mới</span>
                 </button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- ============================================================== -->
+<!-- Popup Modal: CHỈNH SỬA DỊP SỬ DỤNG                             -->
+<!-- ============================================================== -->
+<div id="editDipSuDungModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
+    <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden flex flex-col">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-space-lg py-space-md bg-surface-container-low border-b border-surface-container-high">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">edit</span>
+                <h3 id="modalEditDipTitle" class="font-headline-sm text-headline-sm text-on-surface font-semibold">Chỉnh Sửa Dịp Sử Dụng</h3>
+            </div>
+            <button type="button" onclick="closeEditModal()" class="text-secondary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <!-- Modal Body (POST Form) -->
+        <form asp-area="Admin" asp-controller="DipSuDung" asp-action="Edit" method="post" id="formEditDipSuDung" class="p-space-lg space-y-space-md font-body-md text-body-md">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="maDip" id="editInputMaDip" />
+
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">
+                    Tên dịp sử dụng <span class="text-error">*</span>
+                </label>
+                <input type="text" name="tenDip" id="editInputTenDip" required maxlength="100"
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary border border-outline-variant/40" />
+                <span id="editTenDipError" class="text-xs text-error mt-1 hidden"></span>
+            </div>
+
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Mô tả chủ đề dịp</label>
+                <textarea name="moTa" id="editInputMoTa" rows="3" maxlength="1000"
+                          class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary border border-outline-variant/40"></textarea>
+            </div>
+
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Trạng thái sử dụng</label>
+                <select name="trangThai" id="editSelectTrangThai" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary border border-outline-variant/40 cursor-pointer">
+                    <option value="true">Hoạt động (Cho phép dùng khi tạo mẫu sản phẩm mới)</option>
+                    <option value="false">Ngừng hoạt động (Không dùng cho mẫu sản phẩm mới)</option>
+                </select>
+                <span class="text-xs text-secondary mt-1 block">Lưu ý: Nếu chuyển sang Ngừng hoạt động, các mẫu sản phẩm mới sẽ không thể chọn dịp này.</span>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-end gap-space-sm pt-space-md border-t border-surface-container-high">
+                <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-all">
+                    Hủy bỏ
+                </button>
+                <button type="submit" id="btnSubmitEdit" class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:opacity-90 transition-all shadow-md flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    <span>Cập nhật</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- Popup Modal: XÁC NHẬN XÓA DỊP SỬ DỤNG                         -->
+<!-- ============================================================== -->
+<div id="deleteDipSuDungModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
+    <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col animate-scale-up">
+        <div class="p-space-lg flex flex-col items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-[32px]">warning</span>
+            </div>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Xác Nhận Xóa Dịp Sử Dụng</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant mb-4">
+                Bạn có chắc chắn muốn xóa dịp sử dụng <strong id="deleteTenDipText" class="text-on-surface"></strong>?
+            </p>
+
+            <div id="deleteWarningBox" class="w-full p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-left mb-4 flex items-start gap-2">
+                <span class="material-symbols-outlined text-[18px] text-amber-600 shrink-0">info</span>
+                <span>
+                    <strong>Quy tắc bảo toàn dữ liệu:</strong> Dịp này đang có <span id="deleteSoMauHoaText" class="font-semibold">0</span> mẫu sản phẩm liên kết. Hệ thống sẽ tự động chuyển sang <strong>Ngừng hoạt động</strong> (không thể dùng cho mẫu sản phẩm mới) thay vì xóa vật lý.
+                </span>
+            </div>
+
+            <form asp-area="Admin" asp-controller="DipSuDung" asp-action="Delete" method="post" class="w-full flex items-center justify-center gap-space-sm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="deleteInputMaDip" />
+                <button type="button" onclick="closeDeleteModal()" class="w-1/2 px-4 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-all">
+                    Hủy bỏ
+                </button>
+                <button type="submit" class="w-1/2 px-4 py-2.5 rounded-xl bg-rose-600 text-white font-title-sm text-title-sm hover:bg-rose-700 transition-all shadow-md flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                    <span>Xác nhận xóa</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+    // ================= Thao tác Modal Thêm mới =================
     function openAddModal() {
-        document.getElementById('modalDipSuDungTitle').innerText = 'Thêm Dịp Sử Dụng Mới';
-        document.getElementById('inputTenDip').value = '';
-        document.getElementById('inputMoTaDip').value = '';
-        document.getElementById('selectTrangThaiDip').value = '1';
-        document.getElementById('dipSuDungModal').classList.remove('hidden');
+        document.getElementById('addInputTenDip').value = '';
+        document.getElementById('addTenDipError').classList.add('hidden');
+        document.getElementById('addDipSuDungModal').classList.remove('hidden');
     }
 
-    function openEditModal(code, name, desc, status) {
-        document.getElementById('modalDipSuDungTitle').innerText = 'Chỉnh Sửa Dịp Sử Dụng #' + code;
-        document.getElementById('inputTenDip').value = name;
-        document.getElementById('inputMoTaDip').value = desc;
-        document.getElementById('selectTrangThaiDip').value = status;
-        document.getElementById('dipSuDungModal').classList.remove('hidden');
+    function closeAddModal() {
+        document.getElementById('addDipSuDungModal').classList.add('hidden');
     }
 
-    function closeDipSuDungModal() {
-        document.getElementById('dipSuDungModal').classList.add('hidden');
+    // ================= Thao tác Modal Chỉnh sửa =================
+    function openEditModal(maDip, tenDip, moTa, trangThai) {
+        document.getElementById('modalEditDipTitle').innerText = 'Chỉnh Sửa Dịp Sử Dụng #DIP-' + String(maDip).padStart(2, '0');
+        document.getElementById('editInputMaDip').value = maDip;
+        document.getElementById('editInputTenDip').value = tenDip;
+        document.getElementById('editInputMoTa').value = moTa || '';
+        document.getElementById('editSelectTrangThai').value = (trangThai === '1' || trangThai === true || trangThai === 'True') ? 'true' : 'false';
+        document.getElementById('editTenDipError').classList.add('hidden');
+        document.getElementById('editDipSuDungModal').classList.remove('hidden');
     }
 
-    function handleDipSuDungSubmit(e) {
-        e.preventDefault();
-        alert('Lưu dịp sử dụng thành công!');
-        closeDipSuDungModal();
+    function closeEditModal() {
+        document.getElementById('editDipSuDungModal').classList.add('hidden');
     }
+
+    // ================= Thao tác Modal Xóa =================
+    function openDeleteModal(maDip, tenDip, soMauHoa) {
+        document.getElementById('deleteInputMaDip').value = maDip;
+        document.getElementById('deleteTenDipText').innerText = tenDip;
+        document.getElementById('deleteSoMauHoaText').innerText = soMauHoa;
+
+        var warningBox = document.getElementById('deleteWarningBox');
+        if (soMauHoa > 0) {
+            warningBox.classList.remove('hidden');
+        } else {
+            warningBox.classList.add('hidden');
+        }
+
+        document.getElementById('deleteDipSuDungModal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteDipSuDungModal').classList.add('hidden');
+    }
+
+    // ================= Kiểm tra trùng tên Dịp Realtime AJAX =================
+    const addInputTen = document.getElementById('addInputTenDip');
+    const addError = document.getElementById('addTenDipError');
+    const btnSubmitAdd = document.getElementById('btnSubmitAdd');
+
+    addInputTen.addEventListener('blur', function () {
+        const val = this.value.trim();
+        if (!val) return;
+
+        fetch(`/Admin/DipSuDung/KiemTraTenDip?tenDip=${encodeURIComponent(val)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.hopLe) {
+                    addError.innerText = data.thongBao;
+                    addError.classList.remove('hidden');
+                    btnSubmitAdd.disabled = true;
+                } else {
+                    addError.classList.add('hidden');
+                    btnSubmitAdd.disabled = false;
+                }
+            })
+            .catch(() => {});
+    });
+
+    const editInputTen = document.getElementById('editInputTenDip');
+    const editError = document.getElementById('editTenDipError');
+    const btnSubmitEdit = document.getElementById('btnSubmitEdit');
+
+    editInputTen.addEventListener('blur', function () {
+        const val = this.value.trim();
+        const id = document.getElementById('editInputMaDip').value;
+        if (!val) return;
+
+        fetch(`/Admin/DipSuDung/KiemTraTenDip?tenDip=${encodeURIComponent(val)}&maDip=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.hopLe) {
+                    editError.innerText = data.thongBao;
+                    editError.classList.remove('hidden');
+                    btnSubmitEdit.disabled = true;
+                } else {
+                    editError.classList.add('hidden');
+                    btnSubmitEdit.disabled = false;
+                }
+            })
+            .catch(() => {});
+    });
 </script>

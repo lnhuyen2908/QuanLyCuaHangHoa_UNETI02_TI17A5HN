@@ -1,11 +1,29 @@
-﻿@{
-    ViewData["Title"] = "Không có quyền truy cập";
+@*
+    Họ và tên: Lã Ngọc Huyền
+    Mã sinh viên: 23103100271
+    Nội dung thực hiện: Giao diện Từ chối truy cập (403 Forbidden) - hiển thị thông báo "Chỉ có admin mới được quyền truy cập vào trang này".
+*@
+
+@{
+    ViewData["Title"] = "Từ Chối Truy Cập";
+    string thongBao = TempData["Loi"] as string ?? "Chỉ có admin mới được quyền truy cập vào trang này";
 }
 
 <div class="max-w-xl mx-auto py-space-xl px-margin-mobile text-center space-y-space-md">
-    <span class="material-symbols-outlined text-error text-[56px]">block</span>
-    <h1 class="font-headline-lg text-headline-lg text-on-surface">Không có quyền truy cập</h1>
-    <p class="font-body-md text-body-md text-on-surface-variant">Tài khoản của bạn không được phép xem trang này.</p>
-    <a asp-area="User" asp-controller="Home" asp-action="Index"
-       class="inline-flex px-space-lg py-3 rounded-full bg-primary text-on-primary font-title-sm text-title-sm">Về trang chủ</a>
+    <div class="w-20 h-20 mx-auto rounded-full bg-rose-50 text-rose-600 flex items-center justify-center shadow-sm">
+        <span class="material-symbols-outlined text-[44px]">block</span>
+    </div>
+    <h1 class="font-headline-lg text-headline-lg text-on-surface font-semibold">Từ Chối Truy Cập</h1>
+    <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-medium">
+        @thongBao
+    </div>
+    <div class="pt-4 flex items-center justify-center gap-3">
+        <a href="/Admin/Home" class="inline-flex px-space-lg py-2.5 rounded-full bg-primary text-on-primary font-title-sm text-title-sm shadow-sm hover:opacity-90 transition-all">
+            Về bảng điều khiển Admin
+        </a>
+        <a asp-area="User" asp-controller="Home" asp-action="Index"
+           class="inline-flex px-space-lg py-2.5 rounded-full bg-surface-container text-on-surface font-title-sm text-title-sm hover:bg-surface-container-high transition-all">
+            Về trang chủ
+        </a>
+    </div>
 </div>

@@ -1,7 +1,5 @@
 ﻿// Họ và tên: Đặng Thị Mai Hương
 // Mã sinh viên: 23103100293
-// Họ và tên: Đặng Thị Mai Hương
-// Mã sinh viên: 23103100293
 // Nội dung thực hiện: Truyền danh sách khách hàng, bộ lọc và thống kê sang View.
 
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;

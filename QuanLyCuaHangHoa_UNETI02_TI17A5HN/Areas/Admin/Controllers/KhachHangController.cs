@@ -189,5 +189,119 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 : "Đã khóa khách hàng thành công.";
             return RedirectToAction(nameof(Index));
         }
+
+        // POST: /Admin/KhachHang/Create (Thêm mới khách hàng kèm tạo tài khoản đồng bộ)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [PhanQuyen(VaiTroConst.Admin)]
+        public async Task<IActionResult> Create(KhachHangCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var loi = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage;
+                TempData["ThongBao"] = loi ?? "Dữ liệu nhập vào chưa hợp lệ.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var tenDangNhap = model.TenDangNhap.Trim();
+            var email = model.Email.Trim();
+            var sdt = model.SoDienThoai.Trim();
+
+            // Kiểm tra trùng username
+            if (await _context.TaiKhoans.AnyAsync(t => t.TenDangNhap.ToLower() == tenDangNhap.ToLower()))
+            {
+                TempData["ThongBao"] = $"Tên đăng nhập '{tenDangNhap}' đã tồn tại trong hệ thống!";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Kiểm tra trùng email
+            if (await _context.TaiKhoans.AnyAsync(t => t.Email.ToLower() == email.ToLower()) ||
+                await _context.KhachHangs.AnyAsync(k => k.Email.ToLower() == email.ToLower()))
+            {
+                TempData["ThongBao"] = $"Email '{email}' đã được sử dụng!";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Kiểm tra trùng số điện thoại
+            if (await _context.KhachHangs.AnyAsync(k => k.SoDienThoai == sdt))
+            {
+                TempData["ThongBao"] = $"Số điện thoại '{sdt}' đã được sử dụng!";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // 1. Tạo Tài khoản Khách hàng
+            var taiKhoan = new TaiKhoan
+            {
+                TenDangNhap = tenDangNhap,
+                MatKhau = model.MatKhau,
+                HoTen = model.HoTen.Trim(),
+                Email = email,
+                VaiTro = VaiTroConst.KhachHang,
+                TrangThai = true
+            };
+            _context.TaiKhoans.Add(taiKhoan);
+            await _context.SaveChangesAsync();
+
+            // 2. Tạo Hồ sơ Khách hàng liên kết
+            var khachHang = new KhachHang
+            {
+                MaTaiKhoan = taiKhoan.MaTaiKhoan,
+                HoTen = taiKhoan.HoTen,
+                SoDienThoai = sdt,
+                Email = email,
+                DiaChi = string.IsNullOrWhiteSpace(model.DiaChi) ? null : model.DiaChi.Trim(),
+                TrangThai = true
+            };
+            _context.KhachHangs.Add(khachHang);
+            await _context.SaveChangesAsync();
+
+            TempData["ThongBao"] = $"Thêm mới khách hàng '{khachHang.HoTen}' thành công!";
+            return RedirectToAction(nameof(Index));
+        }
+
+        // POST: /Admin/KhachHang/Delete (Xóa khách hàng kèm xóa tài khoản đồng bộ)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [PhanQuyen(VaiTroConst.Admin)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var kh = await _context.KhachHangs
+                .Include(k => k.TaiKhoan)
+                .FirstOrDefaultAsync(k => k.MaKhachHang == id);
+
+            if (kh == null)
+            {
+                TempData["ThongBao"] = "Không tìm thấy khách hàng cần xóa!";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Kiểm tra nếu khách hàng đã phát sinh đơn đặt hoa
+            var coDon = await _context.DonDatHoas.AnyAsync(d => d.MaKhachHang == id);
+            if (coDon)
+            {
+                TempData["ThongBao"] = $"Khách hàng '{kh.HoTen}' đã có đơn đặt hàng trong hệ thống, không thể xóa để bảo toàn dữ liệu! Vui lòng dùng chức năng Khóa.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                var tk = kh.TaiKhoan;
+                _context.KhachHangs.Remove(kh);
+
+                if (tk != null)
+                {
+                    _context.TaiKhoans.Remove(tk);
+                }
+
+                await _context.SaveChangesAsync();
+                TempData["ThongBao"] = $"Đã xóa khách hàng '{kh.HoTen}' và tài khoản liên kết thành công!";
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ThongBao"] = "Không thể xóa do khách hàng có dữ liệu liên kết khác trong hệ thống. Vui lòng chọn Khóa.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

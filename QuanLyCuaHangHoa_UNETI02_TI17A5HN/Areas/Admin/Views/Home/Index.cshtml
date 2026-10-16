@@ -4,7 +4,27 @@
     ViewBag.Breadcrumb = "Bảng điều khiển hệ thống";
 }
 
-<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-xl">
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
+    <!-- Thông báo kết quả / cảnh báo quyền truy cập -->
+    @if (TempData["Loi"] != null)
+    {
+        <div class="flex items-center gap-3 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 shadow-sm animate-fade-in">
+            <span class="material-symbols-outlined text-[24px] text-rose-600">block</span>
+            <div class="flex flex-col">
+                <span class="font-title-sm text-title-sm font-bold text-rose-900">Từ chối truy cập</span>
+                <span class="font-body-md text-body-md font-medium">@TempData["Loi"]</span>
+            </div>
+        </div>
+    }
+
+    @if (TempData["ThanhCong"] != null)
+    {
+        <div class="flex items-center gap-2 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 shadow-sm animate-fade-in">
+            <span class="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+            <span class="font-body-md text-body-md font-medium">@TempData["ThanhCong"]</span>
+        </div>
+    }
+
     <!-- Top Banner & Quick Status Bar -->
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-xs">
         <div>
