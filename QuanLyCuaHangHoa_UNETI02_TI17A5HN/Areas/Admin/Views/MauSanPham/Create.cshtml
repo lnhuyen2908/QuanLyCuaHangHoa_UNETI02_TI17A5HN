@@ -48,11 +48,18 @@
                         <!-- Occasions -->
                         <div class="md:col-span-6 space-y-1.5">
                             <label class="block font-title-sm text-title-sm text-on-surface">Dịp sử dụng *</label>
-                            <select class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low focus:bg-surface text-on-surface font-body-md text-body-md focus:outline-none shadow-sm cursor-pointer">
-                                <option value="sinh-nhat">Sinh Nhật</option>
-                                <option value="khai-truong">Khai Trương</option>
-                                <option value="ky-niem">Kỷ Niệm / Tình Yêu</option>
-                                <option value="chuc-mung">Chúc Mừng</option>
+                            <select name="MaDip" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low focus:bg-surface text-on-surface font-body-md text-body-md focus:outline-none shadow-sm cursor-pointer">
+                                @if (ViewBag.DanhSachDip is IEnumerable<QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.DipSuDung> dsDip && dsDip.Any())
+                                {
+                                    foreach (var dip in dsDip)
+                                    {
+                                        <option value="@dip.MaDip">@dip.TenDip</option>
+                                    }
+                                }
+                                else
+                                {
+                                    <option value="">-- Chưa có dịp nào hoạt động --</option>
+                                }
                             </select>
                         </div>
                     </div>
