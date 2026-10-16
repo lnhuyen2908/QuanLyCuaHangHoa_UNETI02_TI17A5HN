@@ -1,14 +1,44 @@
+@*
+    Họ và tên: Lã Ngọc Huyền
+    Mã sinh viên: 23103100271
+    Nội dung thực hiện: Giao diện Quản trị Tài khoản: hiển thị dữ liệu từ DB, đếm thống kê, lọc/tìm kiếm, Form POST thêm mới có kiểm tra trùng tên đăng nhập, modal chỉnh sửa thông tin, Form POST khóa/mở khóa.
+*@
+
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
+@using System.Text.Encodings.Web
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.TaiKhoanAdminIndexViewModel
+
 @{
     ViewBag.Title = "Quản Lý Tài Khoản & Phân Quyền";
     ViewBag.ActiveMenu = "TaiKhoan";
     ViewBag.Breadcrumb = "Cấu hình hệ thống";
+    var maDangNhapHienTai = Context.Session.GetMaTaiKhoan();
 }
 
 <div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
     <!-- Header Section -->
     @await Html.PartialAsync("_AdminPageHeader")
 
-    <!-- Metric Cards Grid -->
+    <!-- Thông báo kết quả thao tác -->
+    @if (TempData["ThanhCong"] != null)
+    {
+        <div class="flex items-center gap-2 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 shadow-sm animate-fade-in">
+            <span class="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+            <span class="font-body-md text-body-md font-medium">@TempData["ThanhCong"]</span>
+        </div>
+    }
+
+    @if (TempData["Loi"] != null)
+    {
+        <div class="flex items-center gap-2 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 shadow-sm animate-fade-in">
+            <span class="material-symbols-outlined text-[20px] text-rose-600">error</span>
+            <span class="font-body-md text-body-md font-medium">@TempData["Loi"]</span>
+        </div>
+    }
+
+    <!-- Metric Cards Grid (Dữ liệu thực từ Database) -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter">
         <div class="relative overflow-hidden p-space-lg rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
@@ -18,76 +48,110 @@
                 </div>
             </div>
             <div class="mt-4 flex flex-col">
-                <span class="font-display-lg text-display-lg text-on-surface">1,296</span>
+                <span class="font-display-lg text-display-lg text-on-surface">@Model.TongTaiKhoan.ToString("N0")</span>
                 <div class="flex items-center gap-1.5 mt-1 font-body-sm text-body-sm text-tertiary">
-                    <span class="material-symbols-outlined text-[16px]">trending_up</span>
-                    <span class="font-semibold">+18 người dùng</span>
-                    <span class="text-outline">tuần này</span>
+                    <span class="material-symbols-outlined text-[16px]">verified</span>
+                    <span class="font-semibold">Toàn hệ thống</span>
                 </div>
             </div>
         </div>
 
         <div class="relative overflow-hidden p-space-lg rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Nhân sự Atelier</span>
+                <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Quản trị viên (Admin)</span>
                 <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed-variant">
+                    <span class="material-symbols-outlined text-[20px]">shield_person</span>
+                </div>
+            </div>
+            <div class="mt-4 flex flex-col">
+                <span class="font-display-lg text-display-lg text-primary">@Model.TongAdmin.ToString("N0")</span>
+                <div class="flex items-center gap-1 mt-1 font-body-sm text-body-sm text-on-surface-variant">
+                    <span class="font-medium text-on-surface">Quản trị tối cao</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden p-space-lg rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Nhân sự (Florist/Shipper)</span>
+                <div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
                     <span class="material-symbols-outlined text-[20px]">badge</span>
                 </div>
             </div>
             <div class="mt-4 flex flex-col">
-                <span class="font-display-lg text-display-lg text-primary">14</span>
-                <div class="flex items-center gap-1 mt-1 font-body-sm text-body-sm text-on-surface-variant">
-                    <span class="font-medium text-on-surface">4 Admin</span>
-                    <span>•</span>
-                    <span class="font-medium text-on-surface">6 Florist</span>
-                    <span>•</span>
-                    <span class="font-medium text-on-surface">4 Shipper</span>
+                <span class="font-display-lg text-display-lg text-on-surface">@Model.TongNhanVien.ToString("N0")</span>
+                <div class="flex items-center gap-1.5 mt-1 font-body-sm text-body-sm text-on-surface-variant">
+                    <span class="font-medium text-on-surface">Vận hành cửa hàng</span>
                 </div>
             </div>
         </div>
 
         <div class="relative overflow-hidden p-space-lg rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Tài khoản Khách hàng</span>
+                <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Khách hàng</span>
                 <div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
                     <span class="material-symbols-outlined text-[20px]">diamond</span>
                 </div>
             </div>
             <div class="mt-4 flex flex-col">
-                <span class="font-display-lg text-display-lg text-on-surface">1,282</span>
-                <div class="flex items-center gap-1.5 mt-1 font-body-sm text-body-sm text-on-surface-variant">
-                    <span class="px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-md text-label-md font-medium">386 Club VIP</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="relative overflow-hidden p-space-lg rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
-            <div class="flex items-center justify-between">
-                <span class="font-label-md text-label-md uppercase tracking-wider text-secondary">Bảo mật hệ thống</span>
-                <div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
-                    <span class="material-symbols-outlined text-[20px]">verified_user</span>
-                </div>
-            </div>
-            <div class="mt-4 flex flex-col">
-                <span class="font-display-lg text-display-lg text-tertiary">100%</span>
+                <span class="font-display-lg text-display-lg text-tertiary">@Model.TongKhachHang.ToString("N0")</span>
                 <div class="flex items-center gap-1.5 mt-1 font-body-sm text-body-sm text-on-surface-variant">
                     <span class="w-2 h-2 rounded-full bg-tertiary"></span>
-                    <span>Bảo mật Session &amp; RBAC</span>
+                    <span>Tài khoản mua hàng</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Filter Component -->
-    @await Html.PartialAsync("_AdminFilterBar")
+    <!-- Filter Component: Form GET tìm kiếm và lọc dữ liệu -->
+    <form asp-area="Admin" asp-controller="TaiKhoan" asp-action="Index" method="get"
+          class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+        <div class="flex items-center gap-space-xs bg-surface-container px-space-md py-2 rounded-xl flex-1 max-w-lg">
+            <span class="material-symbols-outlined text-[20px] text-on-surface-variant">search</span>
+            <input type="text" name="tuKhoa" value="@Model.TuKhoa" placeholder="Tìm theo tên đăng nhập, họ tên, email..."
+                   class="bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none w-full" />
+        </div>
+        <div class="flex flex-wrap items-center gap-space-sm">
+            <!-- Lọc Vai Trò -->
+            <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
+                <span class="material-symbols-outlined text-[18px]">badge</span>
+                <select name="vaiTro" class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+                    <option value="" selected="@(string.IsNullOrEmpty(Model.VaiTro))">Tất cả vai trò</option>
+                    <option value="@VaiTroConst.Admin" selected="@(Model.VaiTro == VaiTroConst.Admin)">Quản trị viên (Admin)</option>
+                    <option value="@VaiTroConst.NhanVien" selected="@(Model.VaiTro == VaiTroConst.NhanVien)">Nhân viên</option>
+                    <option value="@VaiTroConst.KhachHang" selected="@(Model.VaiTro == VaiTroConst.KhachHang)">Khách hàng</option>
+                </select>
+            </div>
+            <!-- Lọc Trạng Thái -->
+            <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
+                <span class="material-symbols-outlined text-[18px]">filter_list</span>
+                <select name="trangThai" class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+                    <option value="" selected="@(Model.TrangThai == null)">Tất cả trạng thái</option>
+                    <option value="true" selected="@(Model.TrangThai == true)">Đang hoạt động</option>
+                    <option value="false" selected="@(Model.TrangThai == false)">Đã khóa</option>
+                </select>
+            </div>
+            <button type="submit" class="flex items-center gap-space-xs bg-primary text-on-primary px-4 py-2 rounded-xl font-title-sm text-title-sm hover:opacity-90 transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">search</span>
+                <span>Tìm kiếm</span>
+            </button>
+            <a asp-area="Admin" asp-controller="TaiKhoan" asp-action="Index"
+               class="flex items-center gap-space-xs bg-surface-container text-on-surface-variant px-3 py-2 rounded-xl font-title-sm text-title-sm hover:bg-surface-container-high transition-all">
+                <span class="material-symbols-outlined text-[18px]">refresh</span>
+                <span class="hidden sm:inline">Làm mới</span>
+            </a>
+        </div>
+    </form>
 
     <!-- Account Data Table Container -->
-    <div class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden">
+    <div class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden flex flex-col">
         <!-- Table Top Action Bar -->
         <div class="p-space-md bg-surface-container-lowest flex items-center justify-between gap-space-sm border-b border-surface-container">
             <div class="flex items-center gap-space-sm">
                 <span class="font-headline-sm text-headline-sm text-on-surface">Danh Sách Tài Khoản</span>
-                <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">1,296 tài khoản</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md font-semibold">
+                    @Model.DanhSach.TongSoBanGhi.ToString("N0") kết quả
+                </span>
             </div>
             <button type="button" onclick="openAddModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-sm">
                 <span class="material-symbols-outlined text-[18px]">person_add</span>
@@ -99,6 +163,7 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-surface-container text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+                        <th class="py-3.5 px-4 font-semibold">Mã</th>
                         <th class="py-3.5 px-4 font-semibold">Tên đăng nhập</th>
                         <th class="py-3.5 px-4 font-semibold">Họ và tên</th>
                         <th class="py-3.5 px-4 font-semibold">Email</th>
@@ -108,144 +173,325 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-surface-container text-on-surface font-body-sm text-body-sm">
-                    <tr class="hover:bg-surface-container-low/60 transition-colors">
-                        <td class="py-4 px-4 font-mono text-primary font-bold">admin</td>
-                        <td class="py-4 px-4 font-title-sm text-title-sm">Nguyễn Văn Quản Trị</td>
-                        <td class="py-4 px-4 text-on-surface-variant">admin@nhom2atelier.vn</td>
-                        <td class="py-4 px-4">
-                            <span class="px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-md text-label-md font-bold">Quản trị viên (Admin)</span>
-                        </td>
-                        <td class="py-4 px-4 text-center">
-                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
-                        </td>
-                        <td class="py-4 px-space-lg text-right">
-                            <button type="button" onclick="openEditModal('admin', 'Nguyễn Văn Quản Trị', 'admin@nhom2atelier.vn', 'Quản trị viên (Admin)', '1')" class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all" title="Phân quyền &amp; Sửa">
-                                <span class="material-symbols-outlined text-[18px]">manage_accounts</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-surface-container-low/60 transition-colors">
-                        <td class="py-4 px-4 font-mono text-primary font-bold">florist_mai</td>
-                        <td class="py-4 px-4 font-title-sm text-title-sm">Lê Thị Mai (Master Florist)</td>
-                        <td class="py-4 px-4 text-on-surface-variant">maiflorist@nhom2atelier.vn</td>
-                        <td class="py-4 px-4">
-                            <span class="px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md font-semibold">Thợ cắm hoa (Florist)</span>
-                        </td>
-                        <td class="py-4 px-4 text-center">
-                            @await Html.PartialAsync("_AdminStatusBadge", "Hoạt động")
-                        </td>
-                        <td class="py-4 px-space-lg text-right">
-                            <button type="button" onclick="openEditModal('florist_mai', 'Lê Thị Mai (Master Florist)', 'maiflorist@nhom2atelier.vn', 'Thợ cắm hoa (Florist)', '1')" class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all" title="Phân quyền &amp; Sửa">
-                                <span class="material-symbols-outlined text-[18px]">manage_accounts</span>
-                            </button>
-                        </td>
-                    </tr>
+                    @if (Model.DanhSach.DuLieu.Any())
+                    {
+                        @foreach (var tk in Model.DanhSach.DuLieu)
+                        {
+                            <tr class="hover:bg-surface-container-low/60 transition-colors">
+                                <td class="py-4 px-4 font-mono text-outline font-semibold">#@tk.MaTaiKhoan</td>
+                                <td class="py-4 px-4 font-mono text-primary font-bold">@tk.TenDangNhap</td>
+                                <td class="py-4 px-4 font-title-sm text-title-sm">@tk.HoTen</td>
+                                <td class="py-4 px-4 text-on-surface-variant">@tk.Email</td>
+                                <td class="py-4 px-4">
+                                    @if (tk.VaiTro == VaiTroConst.Admin)
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-md text-label-md font-bold">Quản trị viên (Admin)</span>
+                                    }
+                                    else if (tk.VaiTro == VaiTroConst.NhanVien)
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md font-semibold">Nhân viên</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface font-label-md text-label-md font-medium">Khách hàng</span>
+                                    }
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    @await Html.PartialAsync("_AdminStatusBadge", tk.TrangThai ? "Hoạt động" : "Đã khóa")
+                                </td>
+                                <td class="py-4 px-space-lg text-right">
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        <!-- Nút Sửa mở modal -->
+                                        <button type="button"
+                                                onclick="openEditModal(@tk.MaTaiKhoan, '@tk.TenDangNhap', '@Html.Raw(JavaScriptEncoder.Default.Encode(tk.HoTen))', '@tk.Email', '@tk.VaiTro', '@(tk.KhachHang?.SoDienThoai ?? "")', '@Html.Raw(JavaScriptEncoder.Default.Encode(tk.KhachHang?.DiaChi ?? ""))')"
+                                                class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all"
+                                                title="Chỉnh sửa thông tin &amp; vai trò">
+                                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        </button>
+
+                                        <!-- Form POST Khóa / Mở khóa -->
+                                        @if (tk.MaTaiKhoan == maDangNhapHienTai)
+                                        {
+                                            <span class="p-1.5 rounded-lg text-outline cursor-not-allowed opacity-40" title="Không thể tự khóa tài khoản của bạn">
+                                                <span class="material-symbols-outlined text-[18px]">lock</span>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <form asp-area="Admin" asp-controller="TaiKhoan" asp-action="KhoaMoKhoa" method="post" class="inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@tk.MaTaiKhoan" />
+                                                <button type="submit"
+                                                        onclick="return confirm('Bạn có chắc chắn muốn @(tk.TrangThai ? "KHÓA" : "MỞ KHÓA") tài khoản @tk.TenDangNhap?');"
+                                                        class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-surface-container transition-all"
+                                                        title="@(tk.TrangThai ? "Khóa tài khoản" : "Mở khóa tài khoản")">
+                                                    <span class="material-symbols-outlined text-[18px]">@(tk.TrangThai ? "lock" : "lock_open")</span>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="py-space-xl px-space-lg text-center text-on-surface-variant font-body-md">
+                                Không tìm thấy tài khoản nào phù hợp với bộ lọc hiện tại.
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
 
-        @await Html.PartialAsync("_AdminPagination")
+        <!-- Phân trang động -->
+        <div class="p-space-md border-t border-surface-container">
+            @await Html.PartialAsync("_AdminPagination", new PaginationViewModel
+            {
+                TrangHienTai = Model.DanhSach.TrangHienTai,
+                TongSoTrang = Model.DanhSach.TongSoTrang,
+                TongSoBanGhi = Model.DanhSach.TongSoBanGhi,
+                SoBanGhiMoiTrang = Model.DanhSach.SoBanGhiMoiTrang,
+                Area = "Admin",
+                Controller = "TaiKhoan",
+                Action = "Index",
+                BoLoc = new Dictionary<string, string?>
+                {
+                    ["tuKhoa"] = Model.TuKhoa,
+                    ["vaiTro"] = Model.VaiTro,
+                    ["trangThai"] = Model.TrangThai?.ToString().ToLowerInvariant()
+                }
+            })
+        </div>
     </div>
 </div>
 
-<!-- Popup Modal: Thêm / Chỉnh Sửa Tài Khoản -->
-<div id="taiKhoanModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
+<!-- ========================================== -->
+<!-- POPUP MODAL 1: THÊM TÀI KHOẢN MỚI (POST)    -->
+<!-- ========================================== -->
+<div id="addModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
     <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden flex flex-col">
-        <!-- Modal Header -->
+        <!-- Header -->
         <div class="flex items-center justify-between px-space-lg py-space-md bg-surface-container-low border-b border-surface-container-high">
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-primary text-[22px]">person_add</span>
-                <h3 id="modalTaiKhoanTitle" class="font-headline-sm text-headline-sm text-on-surface font-semibold">Thêm Tài Khoản Mới</h3>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Thêm Tài Khoản Mới</h3>
             </div>
-            <button type="button" onclick="closeTaiKhoanModal()" class="text-secondary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container transition-colors">
+            <button type="button" onclick="closeAddModal()" class="text-secondary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container transition-colors">
                 <span class="material-symbols-outlined text-[20px]">close</span>
             </button>
         </div>
 
-        <!-- Modal Body -->
-        <form id="taiKhoanForm" onsubmit="handleTaiKhoanSubmit(event)" class="p-space-lg space-y-space-md font-body-md text-body-md">
+        <!-- Form POST Thật -->
+        <form asp-area="Admin" asp-controller="TaiKhoan" asp-action="Create" method="post" class="p-space-lg space-y-space-md font-body-md text-body-md">
+            @Html.AntiForgeryToken()
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
                 <div>
                     <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Tên đăng nhập *</label>
-                    <input type="text" id="inputTenDangNhap" placeholder="VD: florist_nhom2" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required />
+                    <input type="text" name="TenDangNhap" id="createTenDangNhap" onblur="checkDuplicateUsername(this.value)" placeholder="VD: florist_mai" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required minlength="4" maxlength="50" />
+                    <span id="usernameCheckMsg" class="text-xs mt-1 block"></span>
                 </div>
                 <div>
                     <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Họ và tên *</label>
-                    <input type="text" id="inputHoTen" placeholder="VD: Nguyễn Văn A" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required />
+                    <input type="text" name="HoTen" placeholder="VD: Lê Thị Mai" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required maxlength="100" />
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
                 <div>
                     <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Email *</label>
-                    <input type="email" id="inputEmail" placeholder="user@nhom2atelier.vn" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40" required />
+                    <input type="email" name="Email" placeholder="user@nhom2atelier.vn" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none border border-outline-variant/40" required />
                 </div>
                 <div>
                     <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Mật khẩu khởi tạo *</label>
-                    <input type="password" id="inputMatKhau" placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40" />
+                    <input type="password" name="MatKhau" placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none border border-outline-variant/40" required minlength="6" />
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
                 <div>
-                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Vai trò phân quyền</label>
-                    <select id="selectVaiTro" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40">
-                        <option value="Quản trị viên (Admin)">Quản trị viên (Admin)</option>
-                        <option value="Thợ cắm hoa (Florist)">Thợ cắm hoa (Florist)</option>
-                        <option value="Nhân viên giao hàng">Nhân viên giao hàng (Shipper)</option>
-                        <option value="Khách hàng VIP">Khách hàng VIP</option>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Vai trò phân quyền *</label>
+                    <select name="VaiTro" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none border border-outline-variant/40" required>
+                        <option value="@VaiTroConst.Admin">Quản trị viên (Admin)</option>
+                        <option value="@VaiTroConst.NhanVien" selected>Nhân viên (Florist / Shipper)</option>
+                        <option value="@VaiTroConst.KhachHang">Khách hàng</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Trạng thái tài khoản</label>
-                    <select id="selectTrangThaiTK" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40">
-                        <option value="1">Kích hoạt (Hoạt động)</option>
-                        <option value="0">Khóa tài khoản</option>
-                    </select>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Số điện thoại (Nếu là Khách hàng)</label>
+                    <input type="text" name="SoDienThoai" placeholder="VD: 0987654321" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none border border-outline-variant/40" />
                 </div>
             </div>
 
-            <!-- Modal Footer -->
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Địa chỉ liên hệ (Tùy chọn)</label>
+                <input type="text" name="DiaChi" placeholder="VD: 123 Hai Bà Trưng, Hà Nội" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none border border-outline-variant/40" />
+            </div>
+
+            <!-- Footer -->
             <div class="flex items-center justify-end gap-space-sm pt-space-md border-t border-surface-container-high">
-                <button type="button" onclick="closeTaiKhoanModal()" class="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-all">
+                <button type="button" onclick="closeAddModal()" class="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm transition-all">
                     Hủy bỏ
                 </button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-md flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-[18px]">save</span>
-                    <span>Lưu tài khoản</span>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-sm hover:bg-primary-container transition-all shadow-md flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">person_add</span>
+                    <span>Tạo tài khoản</span>
                 </button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- ========================================== -->
+<!-- POPUP MODAL 2: CHỈNH SỬA TÀI KHOẢN (POST)   -->
+<!-- ========================================== -->
+<div id="editModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
+    <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-space-lg py-space-md bg-surface-container-low border-b border-surface-container-high">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">manage_accounts</span>
+                <h3 id="editModalTitle" class="font-headline-sm text-headline-sm text-on-surface font-semibold">Chỉnh Sửa Tài Khoản</h3>
+            </div>
+            <button type="button" onclick="closeEditModal()" class="text-secondary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <!-- Form POST Thật -->
+        <form asp-area="Admin" asp-controller="TaiKhoan" asp-action="Edit" method="post" class="p-space-lg space-y-space-md font-body-md text-body-md">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="MaTaiKhoan" id="editMaTaiKhoan" />
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Tên đăng nhập (Cố định)</label>
+                    <input type="text" id="editTenDangNhap" readonly class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-high text-secondary font-mono font-bold border border-outline-variant/30 cursor-not-allowed" />
+                </div>
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Họ và tên *</label>
+                    <input type="text" name="HoTen" id="editHoTen" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required maxlength="100" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Email *</label>
+                    <input type="email" name="Email" id="editEmail" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none border border-outline-variant/40" required />
+                </div>
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Vai trò phân quyền *</label>
+                    <select name="VaiTro" id="editVaiTro" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none border border-outline-variant/40" required>
+                        <option value="@VaiTroConst.Admin">Quản trị viên (Admin)</option>
+                        <option value="@VaiTroConst.NhanVien">Nhân viên (Florist / Shipper)</option>
+                        <option value="@VaiTroConst.KhachHang">Khách hàng</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Số điện thoại</label>
+                    <input type="text" name="SoDienThoai" id="editSoDienThoai" placeholder="VD: 0987654321" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none border border-outline-variant/40" />
+                </div>
+                <div>
+                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Địa chỉ</label>
+                    <input type="text" name="DiaChi" id="editDiaChi" placeholder="VD: 123 Hai Bà Trưng, Hà Nội" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none border border-outline-variant/40" />
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Đổi mật khẩu mới (Tùy chọn)</label>
+                <input type="password" name="MatKhauMoi" placeholder="Để trống nếu giữ nguyên mật khẩu cũ" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none border border-outline-variant/40" minlength="6" />
+                <span class="text-xs text-outline mt-1 block">Chỉ nhập khi muốn thiết lập lại mật khẩu cho tài khoản này (tối thiểu 6 ký tự).</span>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex items-center justify-between gap-space-sm pt-space-md border-t border-surface-container-high">
+                <button type="button" onclick="confirmDeleteAccount()" class="px-5 py-2.5 rounded-xl bg-error-container text-on-error-container hover:bg-error hover:text-on-error font-title-sm transition-all shadow-sm flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                    <span>Xóa tài khoản</span>
+                </button>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-sm hover:bg-primary-container transition-all shadow-md flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    <span>Lưu thay đổi</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Form POST Xóa Tài Khoản Ẩn -->
+<form id="deleteAccountForm" asp-area="Admin" asp-controller="TaiKhoan" asp-action="Delete" method="post" class="hidden">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" id="deleteAccountMaTaiKhoan" />
+</form>
+
 <script>
+    // Xử lý mở / đóng Modal Thêm mới
     function openAddModal() {
-        document.getElementById('modalTaiKhoanTitle').innerText = 'Thêm Tài Khoản Mới';
-        document.getElementById('inputTenDangNhap').value = '';
-        document.getElementById('inputHoTen').value = '';
-        document.getElementById('inputEmail').value = '';
-        document.getElementById('inputMatKhau').value = '';
-        document.getElementById('taiKhoanModal').classList.remove('hidden');
+        document.getElementById('createTenDangNhap').value = '';
+        document.getElementById('usernameCheckMsg').innerText = '';
+        document.getElementById('addModal').classList.remove('hidden');
     }
 
-    function openEditModal(username, fullname, email, role, status) {
-        document.getElementById('modalTaiKhoanTitle').innerText = 'Chỉnh Sửa Tài Khoản (' + username + ')';
-        document.getElementById('inputTenDangNhap').value = username;
-        document.getElementById('inputHoTen').value = fullname;
-        document.getElementById('inputEmail').value = email;
-        document.getElementById('selectVaiTro').value = role;
-        document.getElementById('selectTrangThaiTK').value = status;
-        document.getElementById('taiKhoanModal').classList.remove('hidden');
+    function closeAddModal() {
+        document.getElementById('addModal').classList.add('hidden');
     }
 
-    function closeTaiKhoanModal() {
-        document.getElementById('taiKhoanModal').classList.add('hidden');
+    // Xử lý mở / đóng Modal Sửa
+    function openEditModal(id, username, fullname, email, role, phone, address) {
+        document.getElementById('editModalTitle').innerText = 'Chỉnh Sửa Tài Khoản (' + username + ')';
+        document.getElementById('editMaTaiKhoan').value = id;
+        document.getElementById('editTenDangNhap').value = username;
+        document.getElementById('editHoTen').value = fullname;
+        document.getElementById('editEmail').value = email;
+        document.getElementById('editVaiTro').value = role;
+        document.getElementById('editSoDienThoai').value = phone || '';
+        document.getElementById('editDiaChi').value = address || '';
+        document.getElementById('editModal').classList.remove('hidden');
     }
 
-    function handleTaiKhoanSubmit(e) {
-        e.preventDefault();
-        alert('Lưu thông tin tài khoản thành công!');
-        closeTaiKhoanModal();
+    function closeEditModal() {
+        document.getElementById('editModal').classList.add('hidden');
+    }
+
+    // Xác nhận và thực hiện Xóa tài khoản
+    function confirmDeleteAccount() {
+        const id = document.getElementById('editMaTaiKhoan').value;
+        const username = document.getElementById('editTenDangNhap').value;
+        if (!id) return;
+
+        if (confirm(`Bạn có chắc chắn muốn XÓA VĨNH VIỄN tài khoản "${username}" không?\n\nLưu ý: Hành động này không thể hoàn tác!`)) {
+            document.getElementById('deleteAccountMaTaiKhoan').value = id;
+            document.getElementById('deleteAccountForm').submit();
+        }
+    }
+
+    // Kiểm tra trùng tên đăng nhập Realtime bằng AJAX
+    async function checkDuplicateUsername(username) {
+        const msgEl = document.getElementById('usernameCheckMsg');
+        if (!username || username.trim().length < 4) {
+            msgEl.innerText = '';
+            return;
+        }
+
+        try {
+            const res = await fetch(`/Admin/TaiKhoan/KiemTraTenDangNhap?tenDangNhap=${encodeURIComponent(username.trim())}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.hopLe) {
+                    msgEl.className = 'text-xs mt-1 block text-emerald-600 font-medium';
+                    msgEl.innerText = '✓ ' + data.thongBao;
+                } else {
+                    msgEl.className = 'text-xs mt-1 block text-rose-600 font-medium';
+                    msgEl.innerText = '✕ ' + data.thongBao;
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        }
     }
 </script>
