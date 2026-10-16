@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
 {
@@ -62,12 +64,41 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
                 }
             }
 
-            // Bước 2: Đã đăng nhập nhưng sai vai trò -> 403 -> trang từ chối truy cập
+            // Bước 2: Đã đăng nhập nhưng sai vai trò -> 403 -> thông báo từ chối truy cập
             if (_vaiTroChoPhep.Length > 0 && !session.CoVaiTro(_vaiTroChoPhep))
             {
-                context.Result = laAjax
-                    ? new StatusCodeResult(StatusCodes.Status403Forbidden)
-                    : new RedirectToActionResult("TuChoiTruyCap", "TaiKhoan", new { area = "User" });
+                if (laAjax)
+                {
+                    context.Result = new StatusCodeResult(StatusCodes.Status403Forbidden);
+                    return;
+                }
+
+                // Gán thông báo lỗi vào TempData
+                try
+                {
+                    var factory = http.RequestServices.GetService<ITempDataDictionaryFactory>();
+                    var tempData = factory?.GetTempData(http);
+                    if (tempData != null)
+                    {
+                        tempData["Loi"] = "Chỉ có admin mới được quyền truy cập vào trang này";
+                    }
+                }
+                catch
+                {
+                    // Bỏ qua lỗi nếu không lấy được TempDataFactory
+                }
+
+                // Nếu là nhân viên truy cập trang dành riêng cho Admin (như trang Tài khoản)
+                var vaiTroHienTai = session.GetVaiTro();
+                if (vaiTroHienTai == VaiTroConst.NhanVien)
+                {
+                    // Chuyển hướng về bảng điều khiển Admin và hiện thông báo lỗi
+                    context.Result = new RedirectToActionResult("Index", "Home", new { area = "Admin" });
+                    return;
+                }
+
+                context.Result = new RedirectToActionResult("TuChoiTruyCap", "TaiKhoan", new { area = "User" });
+                return;
             }
 
             // Hợp lệ (200): không gán context.Result -> request chạy tiếp vào Action
