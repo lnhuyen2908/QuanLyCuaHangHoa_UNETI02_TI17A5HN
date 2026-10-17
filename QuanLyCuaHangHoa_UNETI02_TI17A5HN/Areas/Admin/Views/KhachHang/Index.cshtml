@@ -18,11 +18,6 @@
         <div class="bg-primary-fixed text-on-primary-fixed-variant px-space-lg py-space-md rounded-2xl shadow-sm">@TempData["ThongBao"]</div>
     }
 
-    @if (TempData["ThongBao"] != null)
-    {
-        <div class="bg-primary-fixed text-on-primary-fixed-variant p-space-md rounded-xl shadow-sm">@TempData["ThongBao"]</div>
-    }
-
     <!-- Giữ nguyên kiểu Bento 4 ô, thay dữ liệu mẫu bằng thống kê thực -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
         <div class="relative overflow-hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between">
@@ -60,9 +55,20 @@
         Area = "Admin",
         Controller = "KhachHang",
         Action = "Index",
+
         TuKhoa = Model.TuKhoa,
         TrangThai = Model.TrangThai,
-        SapXep = Model.SapXep
+        SapXep = Model.SapXep,
+
+        Placeholder = "Tìm theo họ tên, số điện thoại, email...",
+
+        SapXepOptions = new()
+    {
+        new() { Value = "name_asc", Text = "Tên (A-Z)" },
+        new() { Value = "name_desc", Text = "Tên (Z-A)" },
+        new() { Value = "date_new", Text = "Mã KH mới nhất" },
+        new() { Value = "date_old", Text = "Mã KH cũ nhất" }
+    }
     })
 
     <div class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden flex flex-col">
@@ -98,7 +104,7 @@
                     {
                         <tr class="hover:bg-surface-container-low/60 transition-colors">
                             <td class="py-space-md pl-space-lg pr-space-sm font-mono text-primary font-bold">KH-@kh.MaKhachHang.ToString("D3")</td>
-                            <td class="py-space-md px-space-md"><div class="font-title-sm text-title-sm text-on-surface">@kh.HoTen</div><div class="text-secondary font-body-sm text-body-sm">Username: @kh.TaiKhoan?.TenDangNhap</div></td>
+                            <td class="py-space-md px-space-md"><div class="font-title-sm text-title-sm text-on-surface">@kh.HoTen</div><div class="text-secondary font-body-sm text-body-sm">Username: @(kh.TaiKhoan?.TenDangNhap ?? "Chưa có tài khoản")</div></td>
                             <td class="py-space-md px-space-md font-mono text-on-surface">@kh.SoDienThoai</td>
                             <td class="py-space-md px-space-md text-on-surface-variant">@kh.Email</td>
                             <td class="py-space-md px-space-md text-on-surface-variant">@(string.IsNullOrWhiteSpace(kh.DiaChi) ? "Chưa cập nhật" : kh.DiaChi)</td>

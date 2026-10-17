@@ -1,4 +1,29 @@
+@using System.Text.Json
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
+
+@{
+    var gioHangJson = Context.Session.GetString("GioHang");
+
+    var gioHang = new List<CartItem>();
+
+    if (!string.IsNullOrEmpty(gioHangJson))
+    {
+        try
+        {
+            gioHang = JsonSerializer.Deserialize<List<CartItem>>(gioHangJson)
+                      ?? new List<CartItem>();
+        }
+        catch (JsonException)
+        {
+            gioHang = new List<CartItem>();
+        }
+    }
+
+    int soLuongGioHang = gioHang.Sum(x => x.SoLuong);
+}
+
+
 <header class="fixed top-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] transition-all">
     <!-- Top announcement bar -->
     <div class="bg-primary-container text-on-primary-container px-margin-mobile md:px-margin lg:px-margin-desktop py-1.5 text-center font-label-md text-label-md tracking-wider">
@@ -306,9 +331,18 @@
             }
 
             <!-- Cart -->
-            <a aria-label="Giỏ hàng" class="relative p-2 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center" href="/User/Cart">
+            <a aria-label="Giỏ hàng"
+               class="relative p-2 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center"
+               href="/User/Cart">
+
                 <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
-                <span class="absolute top-1 right-1 w-4 h-4 bg-tertiary text-on-tertiary font-label-md text-[10px] rounded-full flex items-center justify-center font-medium leading-none">3</span>
+
+                @if (soLuongGioHang > 0)
+                {
+                    <span class="absolute top-1 right-1 min-w-4 h-4 px-1 bg-tertiary text-on-tertiary font-label-md text-[10px] rounded-full flex items-center justify-center font-medium leading-none">
+                        @(soLuongGioHang > 99 ? "99+" : soLuongGioHang.ToString())
+                    </span>
+                }
             </a>
         </div>
     </div>
