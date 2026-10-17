@@ -104,44 +104,21 @@
     </div>
 
     <!-- Filter Component: Form GET tìm kiếm và lọc dữ liệu -->
-    <form asp-area="Admin" asp-controller="TaiKhoan" asp-action="Index" method="get"
-          class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
-        <div class="flex items-center gap-space-xs bg-surface-container px-space-md py-2 rounded-xl flex-1 max-w-lg">
-            <span class="material-symbols-outlined text-[20px] text-on-surface-variant">search</span>
-            <input type="text" name="tuKhoa" value="@Model.TuKhoa" placeholder="Tìm theo tên đăng nhập, họ tên, email..."
-                   class="bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none w-full" />
-        </div>
-        <div class="flex flex-wrap items-center gap-space-sm">
-            <!-- Lọc Vai Trò -->
-            <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
-                <span class="material-symbols-outlined text-[18px]">badge</span>
-                <select name="vaiTro" class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
-                    <option value="" selected="@(string.IsNullOrEmpty(Model.VaiTro))">Tất cả vai trò</option>
-                    <option value="@VaiTroConst.Admin" selected="@(Model.VaiTro == VaiTroConst.Admin)">Quản trị viên (Admin)</option>
-                    <option value="@VaiTroConst.NhanVien" selected="@(Model.VaiTro == VaiTroConst.NhanVien)">Nhân viên</option>
-                    <option value="@VaiTroConst.KhachHang" selected="@(Model.VaiTro == VaiTroConst.KhachHang)">Khách hàng</option>
-                </select>
-            </div>
-            <!-- Lọc Trạng Thái -->
-            <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
-                <span class="material-symbols-outlined text-[18px]">filter_list</span>
-                <select name="trangThai" class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
-                    <option value="" selected="@(Model.TrangThai == null)">Tất cả trạng thái</option>
-                    <option value="true" selected="@(Model.TrangThai == true)">Đang hoạt động</option>
-                    <option value="false" selected="@(Model.TrangThai == false)">Đã khóa</option>
-                </select>
-            </div>
-            <button type="submit" class="flex items-center gap-space-xs bg-primary text-on-primary px-4 py-2 rounded-xl font-title-sm text-title-sm hover:opacity-90 transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[18px]">search</span>
-                <span>Tìm kiếm</span>
-            </button>
-            <a asp-area="Admin" asp-controller="TaiKhoan" asp-action="Index"
-               class="flex items-center gap-space-xs bg-surface-container text-on-surface-variant px-3 py-2 rounded-xl font-title-sm text-title-sm hover:bg-surface-container-high transition-all">
-                <span class="material-symbols-outlined text-[18px]">refresh</span>
-                <span class="hidden sm:inline">Làm mới</span>
-            </a>
-        </div>
-    </form>
+    @await Html.PartialAsync("_AdminFilterBar", new AdminFilterViewModel
+    {
+        Area = "Admin",
+        Controller = "TaiKhoan",
+        Action = "Index",
+
+        TuKhoa = Model.TuKhoa,
+        TrangThai = Model.TrangThai,
+        VaiTro = Model.VaiTro,
+
+        Placeholder = "Tìm theo tên đăng nhập, họ tên, email...",
+
+        HienThiTrangThai = true,
+        HienThiVaiTro = true
+    })
 
     <!-- Account Data Table Container -->
     <div class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden flex flex-col">
