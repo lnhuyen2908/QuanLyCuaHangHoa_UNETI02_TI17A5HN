@@ -228,6 +228,19 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
                     TrangThai = acc.TrangThai
                 });
             }
+            // Tạo hồ sơ khách hàng cho tài khoản bị khóa
+            var tkBiKhoa = taiKhoans
+                .First(t => t.TenDangNhap == "khoa01");
+
+            khachHangs.Add(new KhachHang
+            {
+                MaTaiKhoan = tkBiKhoa.MaTaiKhoan,
+                HoTen = tkBiKhoa.HoTen,
+                Email = tkBiKhoa.Email,
+                SoDienThoai = "0900000099",
+                DiaChi = "Hà Nội",
+                TrangThai = false
+            });
 
             db.HoaTuois.AddRange(hoaTuois);
             db.MauSanPhams.AddRange(mauSanPhams);

@@ -9,12 +9,15 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
     public class KhachHangCreateViewModel
     {
         [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
-        [StringLength(50, MinimumLength = 4, ErrorMessage = "Tên đăng nhập từ 4-50 ký tự")]
-        [RegularExpression(@"^[a-zA-Z0-9_]+$", ErrorMessage = "Tên đăng nhập chỉ gồm chữ, số và dấu gạch dưới")]
+        [StringLength(50, MinimumLength = 4,
+            ErrorMessage = "Tên đăng nhập từ 4-50 ký tự")]
+        [RegularExpression(@"^[a-zA-Z0-9_]+$",
+            ErrorMessage = "Tên đăng nhập chỉ gồm chữ, số và dấu gạch dưới")]
         public string TenDangNhap { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Mật khẩu không được để trống")]
-        [StringLength(255, MinimumLength = 6, ErrorMessage = "Mật khẩu tối thiểu 6 ký tự")]
+        [StringLength(255, MinimumLength = 6,
+            ErrorMessage = "Mật khẩu tối thiểu 6 ký tự")]
         public string MatKhau { get; set; } = "123456";
 
         [Required(ErrorMessage = "Họ tên khách hàng là bắt buộc")]
@@ -23,8 +26,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
         public string HoTen { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
-        [StringLength(15, ErrorMessage = "Số điện thoại tối đa 15 ký tự")]
-        [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+        [RegularExpression(@"^0[0-9]{9}$",
+            ErrorMessage = "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0")]
         [Display(Name = "Số điện thoại")]
         public string SoDienThoai { get; set; } = string.Empty;
 

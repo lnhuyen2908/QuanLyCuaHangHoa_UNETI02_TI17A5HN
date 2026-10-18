@@ -1,44 +1,120 @@
-@* Họ và tên: Đặng Thị Mai Hương
-Mã sinh viên: 23103100293
-Nội dung thực hiện: Thanh tìm kiếm/lọc/sắp xếp dùng chung cho Admin*@
+@*
+    Họ và tên: Đặng Thị Mai Hương
+    Mã sinh viên: 23103100293
+    Nội dung thực hiện: Thanh tìm kiếm/lọc/sắp xếp dùng chung cho Admin
+*@
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.AdminFilterViewModel
 
-@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
-@{
-    var filter = ViewData.Model as AdminFilterViewModel;
-}
-@if (filter != null)
+@if (Model != null)
 {
-    <form asp-area="@filter.Area" asp-controller="@filter.Controller" asp-action="@filter.Action" method="get"
+    <form asp-area="@Model.Area"
+          asp-controller="@Model.Controller"
+          asp-action="@Model.Action"
+          method="get"
           class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm mb-space-lg flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+
+        <!-- Tìm kiếm -->
         <div class="flex items-center gap-space-xs bg-surface-container px-space-md py-2 rounded-xl flex-1 max-w-lg">
             <span class="material-symbols-outlined text-[20px] text-on-surface-variant">search</span>
-            <input type="text" name="tuKhoa" value="@filter.TuKhoa" placeholder="Tìm theo họ tên, số điện thoại, email..."
+
+            <input type="text"
+                   name="tuKhoa"
+                   value="@Model.TuKhoa"
+                   placeholder="@Model.Placeholder"
                    class="bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none w-full" />
         </div>
+
         <div class="flex flex-wrap items-center gap-space-sm">
-            <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
-                <span class="material-symbols-outlined text-[18px]">filter_list</span>
-                <select name="trangThai" class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
-                    <option value="" selected="@(filter.TrangThai == null)">Tất cả trạng thái</option>
-                    <option value="true" selected="@(filter.TrangThai == true)">Đang hoạt động</option>
-                    <option value="false" selected="@(filter.TrangThai == false)">Đã khóa</option>
-                </select>
-            </div>
-            <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
-                <span class="material-symbols-outlined text-[18px]">sort</span>
-                <select name="sapXep" class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
-                    <option value="name_asc" selected="@(filter.SapXep == "name_asc")">Tên (A-Z)</option>
-                    <option value="name_desc" selected="@(filter.SapXep == "name_desc")">Tên (Z-A)</option>
-                    <option value="date_new" selected="@(filter.SapXep == "date_new")">Mã KH mới nhất</option>
-                    <option value="date_old" selected="@(filter.SapXep == "date_old")">Mã KH cũ nhất</option>
-                </select>
-            </div>
-            <button type="submit" class="flex items-center gap-space-xs bg-primary text-on-primary px-3 py-2 rounded-xl font-title-sm text-title-sm hover:opacity-90 transition-all">
-                <span class="material-symbols-outlined text-[18px]">search</span> Tìm kiếm
+
+            
+            <!-- Lọc vai trò (chỉ hiện ở trang có yêu cầu) -->
+            @if (Model.HienThiVaiTro)
+            {
+                <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[18px]">badge</span>
+
+                    <select name="vaiTro"
+                            class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+
+                        <option value="" selected="@(string.IsNullOrEmpty(Model.VaiTro))">
+                            Tất cả vai trò
+                        </option>
+
+                        <option value="@VaiTroConst.Admin" selected="@(Model.VaiTro == VaiTroConst.Admin)">
+                            Quản trị viên (Admin)
+                        </option>
+
+                        <option value="@VaiTroConst.NhanVien" selected="@(Model.VaiTro == VaiTroConst.NhanVien)">
+                            Nhân viên
+                        </option>
+
+                        <option value="@VaiTroConst.KhachHang" selected="@(Model.VaiTro == VaiTroConst.KhachHang)">
+                            Khách hàng
+                        </option>
+                    </select>
+                </div>
+            }
+
+            <!-- Lọc trạng thái -->
+            @if (Model.HienThiTrangThai)
+            {
+                <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[18px]">filter_list</span>
+
+                    <select name="trangThai"
+                            class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+
+                        <option value="" selected="@(Model.TrangThai == null)">
+                            Tất cả trạng thái
+                        </option>
+
+                        <option value="true" selected="@(Model.TrangThai == true)">
+                            Đang hoạt động
+                        </option>
+
+                        <option value="false" selected="@(Model.TrangThai == false)">
+                            Đã khóa
+                        </option>
+                    </select>
+                </div>
+            }
+
+            <!-- Sắp xếp -->
+            @if (Model.SapXepOptions != null && Model.SapXepOptions.Any())
+            {
+                <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[18px]">sort</span>
+
+                    <select name="sapXep"
+                            class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+
+                        @foreach (var option in Model.SapXepOptions)
+                        {
+                            <option value="@option.Value"
+                                    selected="@(Model.SapXep == option.Value)">
+                                @option.Text
+                            </option>
+                        }
+                    </select>
+                </div>
+            }
+
+            <!-- Nút tìm kiếm -->
+            <button type="submit"
+                    class="flex items-center gap-space-xs bg-primary text-on-primary px-3 py-2 rounded-xl font-title-sm text-title-sm hover:opacity-90 transition-all">
+                <span class="material-symbols-outlined text-[18px]">search</span>
+                Tìm kiếm
             </button>
-            <a asp-area="@filter.Area" asp-controller="@filter.Controller" asp-action="@filter.Action"
+
+            <!-- Nút làm mới -->
+            <a asp-area="@Model.Area"
+               asp-controller="@Model.Controller"
+               asp-action="@Model.Action"
                class="flex items-center gap-space-xs bg-surface-container text-on-surface-variant px-3 py-2 rounded-xl font-title-sm text-title-sm hover:bg-surface-container-high transition-all">
-                <span class="material-symbols-outlined text-[18px]">refresh</span><span class="hidden sm:inline">Làm mới</span>
+
+                <span class="material-symbols-outlined text-[18px]">refresh</span>
+                <span class="hidden sm:inline">Làm mới</span>
             </a>
         </div>
     </form>
