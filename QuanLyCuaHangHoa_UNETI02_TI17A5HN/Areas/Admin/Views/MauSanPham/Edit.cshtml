@@ -1,0 +1,363 @@
+﻿@* Họ và tên: Nguyễn Thị Phương Anh
+Mã sinh viên: 23103100267
+Nội dung thực hiện: Giao diện chỉnh sửa thông tin mẫu sản phẩm*@
+
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.MauSanPhamFormViewModel
+
+@{
+    ViewBag.Title = "Chỉnh Sửa Mẫu Sản Phẩm";
+    ViewBag.ActiveMenu = "MauSanPham";
+    ViewBag.Breadcrumb = "Chỉnh sửa mẫu sản phẩm";
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-lg">
+    @await Html.PartialAsync("_AdminPageHeader")
+<form asp-area="Admin"
+          asp-controller="MauSanPham"
+          asp-action="Edit"
+          method="post"
+          enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All"
+             class="mb-4 rounded-xl border border-red-300 bg-red-50 p-4 text-red-700">
+        </div>
+
+        <input type="hidden" asp-for="MaMau" />
+        <input type="hidden" asp-for="HinhAnh" />
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+            <!-- LEFT COLUMN: Product information and flower composition -->
+            <div class="lg:col-span-7 min-w-0 space-y-space-lg flex flex-col">
+                <section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+                    <div class="flex items-center justify-between pb-space-xs border-b border-surface-container">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-[19px]">spa</span>
+                            </span>
+                            <div>
+                                <h2 class="font-headline-sm text-headline-sm text-on-surface">Chỉnh Sửa Thông Tin Mẫu Sản Phẩm</h2>
+                                <p class="font-body-sm text-body-sm text-secondary">Cập nhật định danh, kiểu sản phẩm và dịp sử dụng</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-space-md pt-space-xs">
+                        <div class="space-y-1.5">
+                            <label asp-for="TenMau" class="block font-title-sm text-title-sm text-on-surface">Tên mẫu sản phẩm *</label>
+                            <input asp-for="TenMau" required
+                                   class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low focus:bg-surface text-on-surface font-title-sm text-title-sm focus:outline-none shadow-sm" />
+                            <span asp-validation-for="TenMau" class="text-error text-sm"></span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+                            <div class="space-y-1.5">
+                                <label asp-for="KieuSanPham" class="block font-title-sm text-title-sm text-on-surface">Kiểu sản phẩm *</label>
+                                <select asp-for="KieuSanPham" required
+                                        class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface">
+                                    <option value="">-- Chọn kiểu sản phẩm --</option>
+                                    <option value="Bó hoa">Bó hoa</option>
+                                    <option value="Giỏ hoa">Giỏ hoa</option>
+                                    <option value="Hộp hoa">Hộp hoa</option>
+                                    <option value="Kệ hoa">Kệ hoa</option>
+                                    <option value="Mẫu khác">Mẫu khác</option>
+                                </select>
+                                <span asp-validation-for="KieuSanPham" class="text-error text-sm"></span>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label asp-for="MaDip" class="block font-title-sm text-title-sm text-on-surface">Dịp sử dụng *</label>
+                                <select asp-for="MaDip" required
+                                        class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface">
+                                    <option value="">-- Chọn dịp sử dụng --</option>
+                                    @if (ViewBag.DanhSachDip is IEnumerable<QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.DipSuDung> dsDip)
+                                    {
+                                        foreach (var dip in dsDip)
+                                        {
+                                            <option value="@dip.MaDip">@dip.TenDip</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="MaDip" class="text-error text-sm"></span>
+                            </div>
+                        </div>
+
+                        <div class="w-full min-w-0 space-y-1.5">
+                            <label asp-for="MoTa" class="block w-full font-title-sm text-title-sm text-on-surface">Mô tả nghệ thuật &amp; thông điệp</label>
+                            <textarea asp-for="MoTa" rows="4"
+                                      placeholder="Nhập cảm hứng thiết kế, màu sắc chủ đạo và lời chúc..."
+                                      class="block w-full min-w-0 p-3.5 rounded-lg bg-surface-container-low text-on-surface resize-y"></textarea>
+                            <span asp-validation-for="MoTa" class="text-error text-sm"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+                    <div class="flex flex-wrap items-center justify-between gap-3 pb-space-xs border-b border-surface-container">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-[19px]">receipt_long</span>
+                            </span>
+                            <div>
+                                <h2 class="font-headline-sm text-headline-sm text-on-surface">Cấu Hình Thành Phần Hoa</h2>
+                                <p class="font-body-sm text-body-sm text-secondary">Thêm, xóa và cập nhật số lượng hoa trong mẫu</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btnThemHoaEdit"
+                                class="rounded-lg bg-primary px-4 py-2 text-on-primary font-medium hover:opacity-90">
+                            + Thêm loại hoa
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-lg bg-surface-container-low">
+                        <table class="w-full text-left text-on-surface">
+                            <thead>
+                                <tr class="bg-surface-container text-secondary text-sm">
+                                    <th class="px-3 py-3">Hoa tươi thành phần</th>
+                                    <th class="px-2 py-3 text-center">ĐVT</th>
+                                    <th class="px-2 py-3 text-center">Số lượng TC</th>
+                                    <th class="px-3 py-3 text-right">Đơn giá</th>
+                                    <th class="px-3 py-3 text-right">Thành tiền</th>
+                                    <th class="px-2 py-3 text-center">Ghi chú</th>
+                                    <th class="px-2 py-3 text-center">Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dsThanhPhanHoaEdit" class="divide-y divide-surface-container">
+                                @for (var i = 0; i < Model.ChiTietMaus.Count; i++)
+                                {
+                                    <tr class="dong-hoa-edit">
+                                        <td class="px-3 py-3 min-w-48">
+                                            <input type="hidden" name="ChiTietMaus[@i].MaChiTietMau"
+                                                   value="@Model.ChiTietMaus[i].MaChiTietMau" />
+                                            <select name="ChiTietMaus[@i].MaHoa"
+                                                    class="select-hoa-edit w-full px-3 py-2 rounded-lg bg-surface-container-lowest text-on-surface"
+                                                    required>
+                                                <option value="">-- Chọn hoa --</option>
+                                                @foreach (var hoa in Model.DanhSachHoa)
+                                                {
+                                                    <option value="@hoa.Value"
+                                                            selected="@(hoa.Value == Model.ChiTietMaus[i].MaHoa.ToString())">
+                                                        @hoa.Text
+                                                    </option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td class="don-vi-edit px-2 py-3 text-center text-secondary">—</td>
+                                        <td class="px-2 py-3 text-center">
+                                            <input name="ChiTietMaus[@i].SoLuongTieuChuan"
+                                                   value="@Model.ChiTietMaus[i].SoLuongTieuChuan"
+                                                   type="number" min="1" max="9999" required
+                                                   class="so-luong-edit w-20 px-2 py-2 rounded-lg bg-surface-container-lowest text-center" />
+                                        </td>
+                                        <td class="don-gia-edit px-3 py-3 text-right text-secondary">—</td>
+                                        <td class="thanh-tien-edit px-3 py-3 text-right font-semibold text-primary">—</td>
+                                        <td class="px-2 py-3 min-w-32">
+                                            <input name="ChiTietMaus[@i].GhiChu"
+                                                   value="@Model.ChiTietMaus[i].GhiChu"
+                                                   class="ghi-chu-edit w-full px-2 py-2 rounded-lg bg-surface-container-lowest"
+                                                   placeholder="Ghi chú" />
+                                        </td>
+                                        <td class="px-2 py-3 text-center">
+                                            <button type="button" class="btnXoaHoaEdit text-red-600 hover:text-red-800" title="Xóa dòng">✕</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-sm text-secondary">Một loại hoa chỉ được chọn một lần trong cùng mẫu. Đơn giá và thành tiền sẽ hiển thị khi dữ liệu hoa có thông tin giá tương ứng.</p>
+                </section>
+            </div>
+
+            <!-- RIGHT COLUMN: Price, status and image -->
+            <div class="lg:col-span-5 min-w-0 space-y-space-lg">
+                <section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+                    <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-surface-container pb-space-xs">Bảng Giá &amp; Trạng Thái</h3>
+
+                    <div class="space-y-space-md">
+                        <div>
+                            <label asp-for="GiaCoBan" class="block font-title-sm text-title-sm text-on-surface mb-1">Giá cơ bản (VNĐ) *</label>
+                            <input asp-for="GiaCoBan" type="number" min="0" required
+                                   class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-primary font-headline-sm font-bold focus:outline-none" />
+                            <span asp-validation-for="GiaCoBan" class="text-error text-sm"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="TrangThai" class="block font-title-sm text-title-sm text-on-surface mb-1">Trạng thái bán</label>
+                            <select asp-for="TrangThai"
+                                    class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface">
+                                <option value="true">Mở bán</option>
+                                <option value="false">Tạm ngưng</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block font-title-sm text-title-sm text-on-surface mb-1">Hình ảnh đại diện mẫu</label>
+                            <div class="border-2 border-dashed border-outline-variant rounded-xl p-space-lg text-center bg-surface-container-low hover:bg-surface-container transition-colors">
+                                @if (!string.IsNullOrWhiteSpace(Model.HinhAnh))
+                                {
+                                    <img id="previewAnh" src="@Model.HinhAnh" alt="Ảnh mẫu hiện tại"
+                                         class="mt-2 mb-4 mx-auto max-h-56 rounded-xl object-contain" />
+                                }
+                                else
+                                {
+                                    <img id="previewAnh" src="#" alt="Ảnh xem trước"
+                                         class="hidden mt-2 mb-4 mx-auto max-h-56 rounded-xl object-contain" />
+                                }
+                                <label for="TepAnh" class="block cursor-pointer">
+                                    <span class="material-symbols-outlined text-[36px] text-primary">add_a_photo</span>
+                                    <p class="font-body-sm text-body-sm text-secondary mt-1">Chọn ảnh mới nếu muốn thay ảnh hiện tại (PNG, JPG, WEBP)</p>
+                                    <input type="file" id="TepAnh" name="TepAnh"
+                                           accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                           class="mt-3 block w-full text-sm" onchange="previewMauAnh(this)" />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-space-md flex gap-space-sm">
+                        <a asp-area="Admin" asp-controller="MauSanPham" asp-action="Index"
+                           class="flex-1 py-3 text-center rounded-xl bg-surface-container text-on-surface font-title-sm hover:bg-surface-container-high transition-all">Hủy bỏ</a>
+                        <button type="submit"
+                                class="flex-1 py-3 text-center rounded-xl bg-primary text-on-primary font-title-sm hover:bg-primary-container transition-all shadow-sm">Cập nhật mẫu sản phẩm</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Danh sách hoa lấy từ Model.DanhSachHoa do controller nạp từ cơ sở dữ liệu.
+        const danhSachHoaEdit = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            Model.DanhSachHoa.Select(h => new { value = h.Value, text = h.Text }).ToList()
+        ));
+
+        const tbodyHoaEdit = document.getElementById("dsThanhPhanHoaEdit");
+
+        function thongTinHoaEdit(maHoa) {
+            const hoa = danhSachHoaEdit.find(h => String(h.value) === String(maHoa));
+            if (!hoa) return null;
+
+            // Text hiện tại của SelectListItem thường có dạng "Tên hoa | Đơn vị".
+            const parts = (hoa.text || "").split("|").map(x => x.trim());
+            const gia = parts.length >= 3 ? Number(parts[2].replace(/[^0-9,.-]/g, "").replace(",", ".")) : NaN;
+
+            return {
+                ten: parts[0] || hoa.text || "",
+                donVi: parts.length >= 2 ? parts[1] : "—",
+                donGia: Number.isFinite(gia) ? gia : null
+            };
+        }
+
+        function capNhatChiTietHoaEdit() {
+            const rows = [...tbodyHoaEdit.querySelectorAll(".dong-hoa-edit")];
+
+            rows.forEach((row, index) => {
+                const select = row.querySelector(".select-hoa-edit");
+                const soLuongInput = row.querySelector(".so-luong-edit");
+                const idInput = row.querySelector('input[name$=".MaChiTietMau"]');
+                const ghiChuInput = row.querySelector(".ghi-chu-edit");
+
+                if (idInput) idInput.name = `ChiTietMaus[${index}].MaChiTietMau`;
+                select.name = `ChiTietMaus[${index}].MaHoa`;
+                soLuongInput.name = `ChiTietMaus[${index}].SoLuongTieuChuan`;
+                ghiChuInput.name = `ChiTietMaus[${index}].GhiChu`;
+
+                const hoa = thongTinHoaEdit(select.value);
+                const soLuong = Math.max(0, Number(soLuongInput.value) || 0);
+
+                row.querySelector(".don-vi-edit").textContent = hoa ? hoa.donVi : "—";
+                row.querySelector(".don-gia-edit").textContent =
+                    hoa && hoa.donGia !== null ? hoa.donGia.toLocaleString("vi-VN") + " đ" : "—";
+                row.querySelector(".thanh-tien-edit").textContent =
+                    hoa && hoa.donGia !== null
+                        ? (hoa.donGia * soLuong).toLocaleString("vi-VN") + " đ"
+                        : "—";
+            });
+        }
+
+        document.getElementById("btnThemHoaEdit").addEventListener("click", () => {
+            const row = document.createElement("tr");
+            row.className = "dong-hoa-edit";
+
+            const options = danhSachHoaEdit.map(h =>
+                `<option value="${String(h.value ?? "").replace(/"/g, "&quot;")}">${String(h.text ?? "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</option>`
+            ).join("");
+
+            row.innerHTML = `
+                <td class="px-3 py-3 min-w-48">
+                    <input type="hidden" class="ma-chi-tiet-edit" name="ChiTietMaus[0].MaChiTietMau" value="" />
+                    <select class="select-hoa-edit w-full px-3 py-2 rounded-lg bg-surface-container-lowest text-on-surface" required>
+                        <option value="">-- Chọn hoa --</option>${options}
+                    </select>
+                </td>
+                <td class="don-vi-edit px-2 py-3 text-center text-secondary">—</td>
+                <td class="px-2 py-3 text-center">
+                    <input type="number" class="so-luong-edit w-20 px-2 py-2 rounded-lg bg-surface-container-lowest text-center"
+                           value="1" min="1" max="9999" required />
+                </td>
+                <td class="don-gia-edit px-3 py-3 text-right text-secondary">—</td>
+                <td class="thanh-tien-edit px-3 py-3 text-right font-semibold text-primary">—</td>
+                <td class="px-2 py-3 min-w-32">
+                    <input class="ghi-chu-edit w-full px-2 py-2 rounded-lg bg-surface-container-lowest" placeholder="Ghi chú" />
+                </td>
+                <td class="px-2 py-3 text-center">
+                    <button type="button" class="btnXoaHoaEdit text-red-600 hover:text-red-800" title="Xóa dòng">✕</button>
+                </td>`;
+
+            tbodyHoaEdit.appendChild(row);
+            capNhatChiTietHoaEdit();
+        });
+
+        tbodyHoaEdit.addEventListener("click", event => {
+            if (!event.target.closest(".btnXoaHoaEdit")) return;
+
+            if (tbodyHoaEdit.querySelectorAll(".dong-hoa-edit").length <= 1) {
+                alert("Mẫu phải có ít nhất một thành phần hoa.");
+                return;
+            }
+
+            event.target.closest(".dong-hoa-edit").remove();
+            capNhatChiTietHoaEdit();
+        });
+
+        tbodyHoaEdit.addEventListener("change", event => {
+            if (!event.target.classList.contains("select-hoa-edit")) return;
+
+            const selects = [...tbodyHoaEdit.querySelectorAll(".select-hoa-edit")];
+            const selectedValues = selects.map(s => s.value).filter(v => v !== "");
+
+            if (new Set(selectedValues).size !== selectedValues.length) {
+                alert("Loại hoa này đã được chọn ở dòng khác.");
+                event.target.value = "";
+            }
+
+            capNhatChiTietHoaEdit();
+        });
+
+        tbodyHoaEdit.addEventListener("input", event => {
+            if (event.target.classList.contains("so-luong-edit")) {
+                capNhatChiTietHoaEdit();
+            }
+        });
+
+        capNhatChiTietHoaEdit();
+
+        function previewMauAnh(input) {
+            const preview = document.getElementById('previewAnh');
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+                if (!allowed.includes(file.type)) {
+                    alert('Chỉ được chọn ảnh JPG, PNG hoặc WEBP.');
+                    input.value = '';
+                    return;
+                }
+                preview.src = URL.createObjectURL(file);
+                preview.classList.remove('hidden');
+            }
+        }
+    </script>
+}
