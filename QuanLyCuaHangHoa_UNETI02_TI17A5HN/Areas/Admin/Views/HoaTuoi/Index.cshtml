@@ -1,3 +1,12 @@
+@*
+    Họ và tên: Nguyễn Thị Phương Anh
+    MSSV: 23103100267
+    Nội dung thực hiện: Hiển thị giao diện và xử lý tương tác với người dùng.
+*@
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.HoaTuoiListViewModel
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
+@using System.Text.Json
+
 @{
     ViewBag.Title = "Quản Lý Hoa Tươi";
     ViewBag.ActiveMenu = "HoaTuoi";
@@ -18,7 +27,7 @@
                 </div>
             </div>
             <div class="mt-space-md flex items-baseline gap-space-xs">
-                <span class="font-display-lg text-display-lg text-on-surface">48</span>
+                <span class="font-display-lg text-display-lg text-on-surface">@(ViewBag.TongLoaiHoa)</span>
                 <span class="font-body-sm text-body-sm text-on-surface-variant">giống hoa</span>
             </div>
             <div class="mt-2 text-on-surface-variant font-body-sm text-body-sm flex items-center gap-1">
@@ -37,7 +46,7 @@
                 </div>
             </div>
             <div class="mt-space-md flex items-baseline gap-space-xs">
-                <span class="font-display-lg text-display-lg text-tertiary">42</span>
+                <span class="font-display-lg text-display-lg text-tertiary">@(ViewBag.DangSuDung)</span>
                 <span class="font-body-sm text-body-sm text-on-surface-variant">sẵn có</span>
             </div>
             <div class="mt-2 flex items-center gap-1.5">
@@ -54,7 +63,7 @@
                 </div>
             </div>
             <div class="mt-space-md flex items-baseline gap-space-xs">
-                <span class="font-display-lg text-display-lg text-on-surface">06</span>
+                <span class="font-display-lg text-display-lg text-on-surface">@(ViewBag.TamNgungNhap.ToString("D2"))</span>
                 <span class="font-body-sm text-body-sm text-on-surface-variant">hết mùa</span>
             </div>
             <div class="mt-2 text-on-surface-variant font-body-sm text-body-sm">
@@ -70,7 +79,7 @@
                 </div>
             </div>
             <div class="mt-space-md flex items-baseline gap-space-xs">
-                <span class="font-headline-lg text-headline-lg text-on-surface">68.500</span>
+                <span class="font-headline-lg text-headline-lg text-on-surface">@(((decimal)ViewBag.GiaThamKhaoTB).ToString("N0"))</span>
                 <span class="font-title-sm text-title-sm text-on-surface-variant">₫/cành</span>
             </div>
             <div class="mt-2 text-on-surface-variant font-body-sm text-body-sm">
@@ -79,16 +88,17 @@
         </div>
     </div>
 
-    <!-- Filter Component -->
-    @await Html.PartialAsync("_AdminFilterBar")
+    <!-- Filter Component dùng chung -->
+    @await Html.PartialAsync("_AdminFilterBar", ViewData["AdminFilter"])
 
     <!-- Data Table Container -->
     <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
-        <!-- Table Top Action Bar -->
         <div class="p-space-md bg-surface-container-lowest flex items-center justify-between gap-space-sm border-b border-surface-container">
             <div class="flex items-center gap-space-sm">
                 <span class="font-headline-sm text-headline-sm text-on-surface">Kho Nguyên Liệu Hoa Tươi</span>
-                <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">48 giống hoa</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">
+                    @Model.DanhSachHoa.TongSoBanGhi giống hoa
+                </span>
             </div>
             <button type="button" onclick="openAddModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-sm">
                 <span class="material-symbols-outlined text-[18px]">add_circle</span>
@@ -111,76 +121,81 @@
                     </tr>
                 </thead>
                 <tbody class="font-body-md text-body-md divide-y divide-surface-container">
-                    <tr class="hover:bg-surface-container-low/70 transition-colors">
-                        <td class="py-space-md px-space-md font-mono text-body-sm text-primary font-semibold">HT-001</td>
-                        <td class="py-space-md px-space-md">
-                            <div class="font-title-sm text-title-sm text-on-surface">Hoa Hồng Ohara Pháp</div>
-                            <div class="font-body-sm text-body-sm text-on-surface-variant italic">Rosa 'Pink O'Hara'</div>
-                        </td>
-                        <td class="py-space-md px-space-md font-body-sm text-on-surface">Hoa hồng</td>
-                        <td class="py-space-md px-space-md">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container font-label-md text-label-md text-on-surface">
-                                <span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
-                                <span>Hồng phấn</span>
-                            </span>
-                        </td>
-                        <td class="py-space-md px-space-md text-on-surface-variant">Cành</td>
-                        <td class="py-space-md px-space-md text-right font-title-sm text-title-sm font-semibold text-primary">65.000₫</td>
-                        <td class="py-space-md px-space-md text-center">
-                            @await Html.PartialAsync("_AdminStatusBadge", "Đang dùng")
-                        </td>
-                        <td class="py-space-md px-space-md text-center">
-                            <div class="flex items-center justify-center gap-1">
-                                <button type="button" onclick="openEditModal('HT-001', 'Hoa Hồng Ohara Pháp', 'Hoa hồng', 'Hồng phấn', 'Cành', '65000', '1')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                                </button>
-                                <button type="button" onclick="alert('Đã xóa mặt hàng hoa tươi!')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">delete</span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-surface-container-low/70 transition-colors">
-                        <td class="py-space-md px-space-md font-mono text-body-sm text-primary font-semibold">HT-002</td>
-                        <td class="py-space-md px-space-md">
-                            <div class="font-title-sm text-title-sm text-on-surface">Tulip Kép Trắng Hà Lan</div>
-                            <div class="font-body-sm text-body-sm text-on-surface-variant italic">Tulipa gesneriana</div>
-                        </td>
-                        <td class="py-space-md px-space-md font-body-sm text-on-surface">Tulip</td>
-                        <td class="py-space-md px-space-md">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container font-label-md text-label-md text-on-surface">
-                                <span class="w-2.5 h-2.5 rounded-full bg-slate-200 border border-slate-300 shrink-0"></span>
-                                <span>Trắng tinh khôi</span>
-                            </span>
-                        </td>
-                        <td class="py-space-md px-space-md text-on-surface-variant">Cành</td>
-                        <td class="py-space-md px-space-md text-right font-title-sm text-title-sm font-semibold text-primary">85.000₫</td>
-                        <td class="py-space-md px-space-md text-center">
-                            @await Html.PartialAsync("_AdminStatusBadge", "Đang dùng")
-                        </td>
-                        <td class="py-space-md px-space-md text-center">
-                            <div class="flex items-center justify-center gap-1">
-                                <button type="button" onclick="openEditModal('HT-002', 'Tulip Kép Trắng Hà Lan', 'Tulip', 'Trắng tinh khôi', 'Cành', '85000', '1')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                                </button>
-                                <button type="button" onclick="alert('Đã xóa mặt hàng hoa tươi!')" class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">delete</span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                    @if (Model.DanhSachHoa.DuLieu.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="8" class="py-space-xl px-space-md text-center text-secondary">
+                                Chưa có dữ liệu hoa tươi hoặc không tìm thấy kết quả phù hợp.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var hoa in Model.DanhSachHoa.DuLieu)
+                        {
+                            <tr class="hover:bg-surface-container-low/70 transition-colors">
+                                <td class="py-space-md px-space-md font-mono text-body-sm text-primary font-semibold">
+                                    HT-@hoa.MaHoa.ToString("D3")
+                                </td>
+                                <td class="py-space-md px-space-md">
+                                    <div class="font-title-sm text-title-sm text-on-surface">@hoa.TenHoa</div>
+                                    <div class="font-body-sm text-body-sm text-on-surface-variant italic">
+                                        @(string.IsNullOrWhiteSpace(hoa.MoTa) ? "Hoa tươi" : hoa.MoTa)
+                                    </div>
+                                </td>
+                                <td class="py-space-md px-space-md font-body-sm text-on-surface">@hoa.LoaiHoa?.TenLoaiHoa</td>
+                                <td class="py-space-md px-space-md">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container font-label-md text-label-md text-on-surface">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
+                                        <span>@hoa.MauSac</span>
+                                    </span>
+                                </td>
+                                <td class="py-space-md px-space-md text-on-surface-variant">@hoa.DonViTinh</td>
+                                <td class="py-space-md px-space-md text-right font-title-sm text-primary font-semibold">
+                                    @hoa.DonGiaThamKhao.ToString("N0")₫
+                                </td>
+                                <td class="py-space-md px-space-md text-center">
+                                    @await Html.PartialAsync("_AdminStatusBadge", hoa.TrangThai ? "Đang dùng" : "Ngừng hoạt động")
+                                </td>
+                                <td class="py-space-md px-space-md text-center">
+                                    <div class="flex items-center justify-center gap-1">
+                                        <button type="button"
+                                                onclick='openEditModal(@hoa.MaHoa, @Html.Raw(JsonSerializer.Serialize(hoa.TenHoa)), @hoa.MaLoaiHoa, @Html.Raw(JsonSerializer.Serialize(hoa.MauSac)), @Html.Raw(JsonSerializer.Serialize(hoa.DonViTinh)), @hoa.DonGiaThamKhao, @hoa.TrangThai.ToString().ToLowerInvariant(), @Html.Raw(JsonSerializer.Serialize(hoa.MoTa ?? "")))'
+                                                class="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
+                                                title="Chỉnh sửa">
+                                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        </button>
+
+                                        <button type="button"
+                                                class="btn-delete-hoa p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors"
+                                                title="Xóa hoa tươi"
+                                                data-id="@hoa.MaHoa"
+                                                data-ten="@hoa.TenHoa"
+                                                data-loai="@(hoa.LoaiHoa?.TenLoaiHoa ?? "")"
+                                                data-mau="@hoa.MauSac"
+                                                data-donvi="@hoa.DonViTinh"
+                                                data-gia="@hoa.DonGiaThamKhao"
+                                                data-trangthai="@(hoa.TrangThai ? "Đang dùng" : "Ngừng hoạt động")"
+                                                data-mota="@hoa.MoTa">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        </button>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
         </div>
 
-        @await Html.PartialAsync("_AdminPagination")
+        @await Html.PartialAsync("_AdminPagination", ViewData["Pagination"])
     </div>
 </div>
 
-<!-- Popup Modal: Thêm / Chỉnh Sửa Hoa Tươi -->
+<!-- Popup Modal: giữ nguyên giao diện, kết nối POST thật -->
 <div id="hoaTuoiModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto transition-all">
     <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden flex flex-col">
-        <!-- Modal Header -->
         <div class="flex items-center justify-between px-space-lg py-space-md bg-surface-container-low border-b border-surface-container-high">
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-primary text-[22px]">spa</span>
@@ -191,80 +206,330 @@
             </button>
         </div>
 
-        <!-- Modal Body -->
-        <form id="hoaTuoiForm" onsubmit="handleHoaTuoiSubmit(event)" class="p-space-lg space-y-space-md font-body-md text-body-md">
+        <form id="hoaTuoiForm" asp-area="Admin" asp-controller="HoaTuoi" asp-action="Create" method="post"
+              class="p-space-lg space-y-space-md font-body-md text-body-md">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="inputMaHoa" name="maHoa" />
+
             <div>
-                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Tên hoa tươi *</label>
-                <input type="text" id="inputTenHoaTuoi" placeholder="VD: Hoa Hồng Ohara Pháp, Tulip Hà Lan..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required />
+                <label for="inputTenHoaTuoi" class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Tên hoa tươi *</label>
+                <input type="text" id="inputTenHoaTuoi" name="tenHoa" maxlength="100" placeholder="VD: Hoa Hồng Ohara Pháp, Tulip Hà Lan..."
+                       class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/40" required />
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
                 <div>
-                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Loại hoa chủ đạo</label>
-                    <select id="selectLoaiHoaTuoi" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40">
-                        <option value="Hoa hồng">Hoa hồng</option>
-                        <option value="Tulip">Tulip</option>
-                        <option value="Cẩm tú cầu">Cẩm tú cầu</option>
-                        <option value="Hoa Baby">Hoa Baby</option>
-                        <option value="Mẫu đơn">Mẫu đơn</option>
+                    <label for="selectLoaiHoaTuoi" class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Loại hoa chủ đạo *</label>
+                    <select id="selectLoaiHoaTuoi" name="maLoaiHoa" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40" required>
+                        @foreach (var loai in Model.DanhSachLoaiHoa)
+                        {
+                            <option value="@loai.Value">@loai.Text</option>
+                        }
                     </select>
                 </div>
                 <div>
-                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Màu sắc chủ đạo</label>
-                    <input type="text" id="inputMauSacHoaTuoi" placeholder="VD: Hồng phấn, Đỏ nhung..." class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40" />
+                    <label for="inputMauSacHoaTuoi" class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Màu sắc chủ đạo *</label>
+                    <input type="text" id="inputMauSacHoaTuoi" name="mauSac" maxlength="50" placeholder="VD: Hồng phấn, Đỏ nhung..."
+                           class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40" required />
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
                 <div>
-                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Đơn vị tính</label>
-                    <input type="text" id="inputDonViHoaTuoi" value="Cành" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40" />
+                    <label for="inputDonViHoaTuoi" class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Đơn vị tính *</label>
+                    <input type="text" id="inputDonViHoaTuoi" name="donViTinh" value="Cành" maxlength="30"
+                           class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40" required />
                 </div>
                 <div>
-                    <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Đơn giá tham khảo (VNĐ) *</label>
-                    <input type="number" id="inputGiaHoaTuoi" placeholder="65000" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-primary font-headline-sm font-bold focus:outline-none border border-primary/40" required />
+                    <label for="inputGiaHoaTuoi" class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Đơn giá tham khảo (VNĐ) *</label>
+                    <input type="number" id="inputGiaHoaTuoi" name="donGiaThamKhao" min="0" step="0.01" placeholder="65000"
+                           class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-primary font-headline-sm font-bold focus:outline-none border border-primary/40" required />
                 </div>
             </div>
 
             <div>
-                <label class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Trạng thái kho hàng</label>
-                <select id="selectTrangThaiHoaTuoi" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40">
-                    <option value="1">Đang dùng (Sẵn có trong kho)</option>
-                    <option value="0">Tạm ngưng nhập (Hết mùa)</option>
+                <label for="inputMoTaHoaTuoi" class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Mô tả</label>
+                <textarea id="inputMoTaHoaTuoi" name="moTa" maxlength="1000" rows="3"
+                          class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40"></textarea>
+            </div>
+
+            <div>
+                <label for="selectTrangThaiHoaTuoi" class="block font-title-sm text-title-sm text-on-surface mb-1 font-semibold">Trạng thái kho hàng</label>
+                <select id="selectTrangThaiHoaTuoi" name="trangThai" class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none border border-outline-variant/40">
+                    <option value="true">Đang dùng (Sẵn có trong kho)</option>
+                    <option value="false">Tạm ngưng nhập (Hết mùa)</option>
                 </select>
             </div>
 
-            <!-- Modal Footer -->
             <div class="flex items-center justify-end gap-space-sm pt-space-md border-t border-surface-container-high">
-                <button type="button" onclick="closeHoaTuoiModal()" class="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-all">
-                    Hủy bỏ
-                </button>
+                <button type="button" onclick="closeHoaTuoiModal()" class="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-title-sm text-title-sm transition-all">Hủy bỏ</button>
                 <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-md flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-[18px]">save</span>
-                    <span>Lưu hoa tươi</span>
+                    <span id="hoaTuoiSubmitText">Lưu hoa tươi</span>
                 </button>
             </div>
         </form>
     </div>
 </div>
 
+
+
+
+<!-- Modal xác nhận xóa hoa tươi -->
+<div id="deleteHoaModal"
+     class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-3">
+
+    <div class="bg-surface-container-lowest rounded-2xl shadow-2xl
+        w-full max-w-2xl max-h-[90vh]
+        flex flex-col overflow-hidden">
+
+        <!-- Tiêu đề cố định -->
+        <div class="shrink-0 flex items-center justify-between
+            px-5 py-3 bg-surface-container-low
+            border-b border-surface-container-high">
+
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-error text-[22px]">
+                    delete
+                </span>
+                <h3 class="font-headline-sm text-on-surface font-semibold">
+                    Xác Nhận Xóa Hoa Tươi
+                </h3>
+            </div>
+
+            <button type="button"
+                    onclick="closeDeleteModal()"
+                    class="text-secondary hover:text-on-surface
+                p-1.5 rounded-full hover:bg-surface-container">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Nội dung modal -->
+        <div class="flex-1 min-h-0 overflow-y-auto p-4 space-y-3">
+
+            <div class="rounded-lg bg-error/10 border border-error/20
+                px-3 py-2 flex items-start gap-2">
+                <span class="material-symbols-outlined text-error shrink-0">
+                    warning
+                </span>
+                <p class="text-on-surface text-sm">
+                    Bạn có chắc chắn muốn xóa hoa tươi này khỏi hệ thống?
+                    Nếu hoa đang được sử dụng trong dữ liệu khác, hệ thống sẽ
+                    không xóa và sẽ thông báo lý do.
+                </p>
+            </div>
+
+            <!-- Mã hoa và tên hoa -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-sm font-semibold text-on-surface mb-1">
+                        Mã hoa
+                    </label>
+                    <div id="deleteMaHoa"
+                         class="rounded-lg bg-surface-container-low
+                        border border-outline-variant/40 px-3 py-2">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-on-surface mb-1">
+                        Tên hoa tươi
+                    </label>
+                    <div id="deleteTenHoa"
+                         class="rounded-lg bg-surface-container-low
+                        border border-outline-variant/40 px-3 py-2">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-on-surface mb-1">
+                        Loại hoa
+                    </label>
+                    <div id="deleteLoaiHoa"
+                         class="rounded-lg bg-surface-container-low
+                        border border-outline-variant/40 px-3 py-2">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-on-surface mb-1">
+                        Màu sắc
+                    </label>
+                    <div id="deleteMauSac"
+                         class="rounded-lg bg-surface-container-low
+                        border border-outline-variant/40 px-3 py-2">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-on-surface mb-1">
+                        Đơn vị tính
+                    </label>
+                    <div id="deleteDonViTinh"
+                         class="rounded-lg bg-surface-container-low
+                        border border-outline-variant/40 px-3 py-2">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-on-surface mb-1">
+                        Đơn giá tham khảo (VNĐ)
+                    </label>
+                    <div id="deleteDonGia"
+                         class="rounded-lg bg-surface-container-low
+                        border border-outline-variant/40 px-3 py-2
+                        text-primary font-semibold">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-on-surface mb-1">
+                    Mô tả
+                </label>
+                <div id="deleteMoTa"
+                     class="rounded-lg bg-surface-container-low
+                    border border-outline-variant/40 px-3 py-2
+                    whitespace-pre-wrap break-words">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-on-surface mb-1">
+                    Trạng thái kho hàng
+                </label>
+                <div id="deleteTrangThai"
+                     class="rounded-lg bg-surface-container-low
+                    border border-outline-variant/40 px-3 py-2">
+                </div>
+            </div>
+        </div>
+
+        <!-- Nút luôn hiển thị ở cuối modal -->
+        <form asp-area="Admin"
+              asp-controller="HoaTuoi"
+              asp-action="Delete"
+              method="post"
+              class="shrink-0 px-4 py-3 border-t border-surface-container-high
+            bg-surface-container-lowest">
+
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="deleteInputMaHoa" name="id" />
+
+            <div class="flex items-center justify-end gap-3">
+                <button type="button"
+                        onclick="closeDeleteModal()"
+                        class="px-5 py-2.5 rounded-xl bg-surface-container
+                    hover:bg-surface-container-high text-on-surface
+                    font-semibold transition-all">
+                    Hủy bỏ
+                </button>
+
+                <button type="submit"
+                        class="px-5 py-2.5 rounded-xl bg-error text-white
+                    font-semibold hover:opacity-90 transition-all
+                    shadow-md flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">
+                        delete
+                    </span>
+                    <span>Xác nhận xóa</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- Popup thông báo kết quả thao tác -->
+<div id="resultHoaModal"
+     class="hidden fixed inset-0 z-[70] flex items-center justify-center
+    bg-on-surface/50 backdrop-blur-sm p-4">
+
+    <div class="w-full max-w-md bg-surface-container-lowest
+        rounded-2xl shadow-2xl overflow-hidden">
+
+        <div class="flex items-center justify-between px-5 py-4
+            bg-surface-container-low border-b border-surface-container-high">
+            <div class="flex items-center gap-2">
+                <span id="resultHoaIcon"
+                      class="material-symbols-outlined text-[25px]">
+                    info
+                </span>
+
+                <h3 id="resultHoaTitle"
+                    class="font-headline-sm text-on-surface font-semibold">
+                    Thông báo
+                </h3>
+            </div>
+
+            <button type="button"
+                    onclick="closeResultHoaModalAndRestoreForm()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div class="p-6">
+            <p id="resultHoaMessage"
+               class="text-on-surface leading-relaxed whitespace-pre-line">
+            </p>
+
+            <div class="flex justify-end mt-6">
+                <button type="button"
+                        onclick="closeResultHoaModalAndRestoreForm()"
+                        class="px-6 py-2.5 rounded-xl bg-primary text-on-primary
+                    font-semibold hover:opacity-90 transition-all">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     function openAddModal() {
+        sessionStorage.setItem('hoaTuoiFormMode', 'create');
+        sessionStorage.removeItem('hoaTuoiEditData');
+        const form = document.getElementById('hoaTuoiForm');
+        form.action = '@Url.Action("Create", "HoaTuoi", new { area = "Admin" })';
         document.getElementById('modalHoaTuoiTitle').innerText = 'Thêm Hoa Tươi Mới';
+        document.getElementById('hoaTuoiSubmitText').innerText = 'Lưu hoa tươi';
+        document.getElementById('inputMaHoa').value = '';
         document.getElementById('inputTenHoaTuoi').value = '';
         document.getElementById('inputMauSacHoaTuoi').value = '';
+        document.getElementById('inputDonViHoaTuoi').value = 'Cành';
         document.getElementById('inputGiaHoaTuoi').value = '';
+        document.getElementById('inputMoTaHoaTuoi').value = '';
+        document.getElementById('selectTrangThaiHoaTuoi').value = 'true';
+        const loaiHoa = document.getElementById('selectLoaiHoaTuoi');
+        if (loaiHoa.options.length > 0) loaiHoa.selectedIndex = 0;
         document.getElementById('hoaTuoiModal').classList.remove('hidden');
     }
 
-    function openEditModal(code, name, type, color, unit, price, status) {
-        document.getElementById('modalHoaTuoiTitle').innerText = 'Chỉnh Sửa Hoa Tươi #' + code;
-        document.getElementById('inputTenHoaTuoi').value = name;
-        document.getElementById('selectLoaiHoaTuoi').value = type;
-        document.getElementById('inputMauSacHoaTuoi').value = color;
-        document.getElementById('inputDonViHoaTuoi').value = unit;
-        document.getElementById('inputGiaHoaTuoi').value = price;
-        document.getElementById('selectTrangThaiHoaTuoi').value = status;
+    function openEditModal(maHoa, tenHoa, maLoaiHoa, mauSac, donViTinh, donGia, trangThai, moTa) {
+        sessionStorage.setItem('hoaTuoiFormMode', 'edit');
+        sessionStorage.setItem('hoaTuoiEditData', JSON.stringify({
+            maHoa,
+            tenHoa,
+            maLoaiHoa,
+            mauSac,
+            donViTinh,
+            donGia,
+            trangThai,
+            moTa
+        }));
+        const form = document.getElementById('hoaTuoiForm');
+        form.action = '@Url.Action("Edit", "HoaTuoi", new { area = "Admin" })';
+        document.getElementById('modalHoaTuoiTitle').innerText = 'Chỉnh Sửa Hoa Tươi #' + maHoa;
+        document.getElementById('hoaTuoiSubmitText').innerText = 'Cập nhật hoa tươi';
+        document.getElementById('inputMaHoa').value = maHoa;
+        document.getElementById('inputTenHoaTuoi').value = tenHoa ?? '';
+        document.getElementById('selectLoaiHoaTuoi').value = String(maLoaiHoa);
+        document.getElementById('inputMauSacHoaTuoi').value = mauSac ?? '';
+        document.getElementById('inputDonViHoaTuoi').value = donViTinh ?? '';
+        document.getElementById('inputGiaHoaTuoi').value = donGia;
+        document.getElementById('inputMoTaHoaTuoi').value = moTa ?? '';
+        document.getElementById('selectTrangThaiHoaTuoi').value = String(trangThai);
         document.getElementById('hoaTuoiModal').classList.remove('hidden');
     }
 
@@ -272,9 +537,112 @@
         document.getElementById('hoaTuoiModal').classList.add('hidden');
     }
 
-    function handleHoaTuoiSubmit(e) {
-        e.preventDefault();
-        alert('Lưu hoa tươi thành công!');
-        closeHoaTuoiModal();
+    
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('deleteHoaModal');
+
+        if (!modal) {
+            console.error('Không tìm thấy modal deleteHoaModal');
+            return;
+        }
+
+        document.querySelectorAll('.btn-delete-hoa').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const id = this.dataset.id;
+
+                document.getElementById('deleteInputMaHoa').value = id;
+                document.getElementById('deleteMaHoa').textContent =
+                    'HT-' + String(id).padStart(3, '0');
+                document.getElementById('deleteTenHoa').textContent =
+                    this.dataset.ten || '';
+                document.getElementById('deleteLoaiHoa').textContent =
+                    this.dataset.loai || '';
+                document.getElementById('deleteMauSac').textContent =
+                    this.dataset.mau || '';
+                document.getElementById('deleteDonViTinh').textContent =
+                    this.dataset.donvi || '';
+                document.getElementById('deleteDonGia').textContent =
+                    Number(this.dataset.gia || 0).toLocaleString('vi-VN') + ' ₫';
+                document.getElementById('deleteTrangThai').textContent =
+                    this.dataset.trangthai || '';
+                document.getElementById('deleteMoTa').textContent =
+                    this.dataset.mota || 'Không có mô tả';
+
+                modal.classList.remove('hidden');
+            });
+        });
+
+        window.closeDeleteModal = function () {
+            modal.classList.add('hidden');
+        };
+    });
+
+    
+    function closeResultHoaModal() {
+    document.getElementById('resultHoaModal').classList.add('hidden');
+}
+
+    function closeResultHoaModalAndRestoreForm() {
+        closeResultHoaModal();
+
+        const form = document.getElementById('hoaTuoiForm');
+        if (!form) return;
+
+        const formMode = sessionStorage.getItem('hoaTuoiFormMode');
+
+        if (formMode === 'edit') {
+            const editData = sessionStorage.getItem('hoaTuoiEditData');
+
+            if (editData) {
+                const data = JSON.parse(editData);
+
+                openEditModal(
+                    data.maHoa,
+                    data.tenHoa,
+                    data.maLoaiHoa,
+                    data.mauSac,
+                    data.donViTinh,
+                    data.donGia,
+                    data.trangThai,
+                    data.moTa
+                );
+            }
+        } else if (formMode === 'create') {
+            openAddModal();
+        }
+
+        sessionStorage.removeItem('hoaTuoiFormMode');
+        sessionStorage.removeItem('hoaTuoiEditData');
     }
+
+    function showResultHoaModal(title, message, success) {
+        const modal = document.getElementById('resultHoaModal');
+        const icon = document.getElementById('resultHoaIcon');
+
+        document.getElementById('resultHoaTitle').textContent = title;
+        document.getElementById('resultHoaMessage').textContent = message;
+
+        icon.textContent = success ? 'check_circle' : 'error';
+        icon.className = success
+            ? 'material-symbols-outlined text-[25px] text-green-600'
+            : 'material-symbols-outlined text-[25px] text-red-600';
+
+        modal.classList.remove('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMessage = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                        TempData["Error"]?.ToString()));
+
+        const successMessage = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                        TempData["Success"]?.ToString()));
+
+        if (errorMessage) {
+            showResultHoaModal('Không thể thực hiện thao tác', errorMessage, false);
+        } else if (successMessage) {
+            showResultHoaModal('Thành công', successMessage, true);
+        }
+    });
+
 </script>
