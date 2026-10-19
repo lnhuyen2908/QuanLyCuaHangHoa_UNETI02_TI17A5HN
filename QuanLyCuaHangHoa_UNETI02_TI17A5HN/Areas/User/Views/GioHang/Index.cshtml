@@ -63,6 +63,30 @@
                     </span>
                 </div>
 
+                @* Form kiểm thử độc lập. Xóa khi module sản phẩm đã có nút Thêm vào giỏ. *@
+                <div class="rounded-xl border border-outline-variant bg-surface-container-low p-space-md space-y-space-sm">
+                    <p class="font-title-sm text-on-surface">Kiểm thử thêm mẫu hoa vào giỏ</p>
+                    <p class="font-body-sm text-on-surface-variant">
+                        Nhập mã mẫu hoa đang hoạt động đã tồn tại trong CSDL.
+                    </p>
+                    <form action="/User/Cart/Add" method="post" class="flex flex-wrap items-end gap-3">
+                        @Html.AntiForgeryToken()
+                        <div class="flex flex-col gap-1">
+                            <label for="testMaMau" class="font-body-sm text-on-surface">Mã mẫu hoa</label>
+                            <input id="testMaMau" name="maMau" type="number" min="1" required
+                                   class="w-36 rounded-lg p-2 bg-surface-container-lowest text-on-surface border border-outline-variant" />
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label for="testSoLuong" class="font-body-sm text-on-surface">Số lượng</label>
+                            <input id="testSoLuong" name="soLuong" type="number" value="1" min="1" required
+                                   class="w-24 rounded-lg p-2 bg-surface-container-lowest text-on-surface border border-outline-variant" />
+                        </div>
+                        <button type="submit" class="px-4 py-2 rounded-full bg-primary text-on-primary font-label-md hover:bg-primary-container transition-colors">
+                            Thử thêm vào giỏ
+                        </button>
+                    </form>
+                </div>
+
                 @if (Model.Count == 0)
                 {
                     <div class="py-12 text-center space-y-4">
@@ -85,7 +109,7 @@
                     {
                         <div class="cart-item group relative flex flex-col md:flex-row gap-space-md p-space-md bg-surface-container-low rounded-xl transition-all duration-300 hover:shadow-md">
 
-                            <!-- Thông tin mẫu hoa -->
+                            <!-- Thông tin mẫu hoa (tên, ảnh, giá sẽ tích hợp từ CSDL sau) -->
                             <div class="flex-1 flex flex-col justify-between space-y-space-sm min-w-0">
 
                                 <div class="space-y-space-xs">
@@ -129,7 +153,7 @@
                                         </button>
                                     </form>
 
-                                    <form asp-area="User" asp-controller="GioHang" asp-action="Remove" method="post">
+                                    <form action="/User/Cart/Remove" method="post">
 
                                         @Html.AntiForgeryToken()
 

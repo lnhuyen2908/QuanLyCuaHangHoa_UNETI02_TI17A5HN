@@ -4,9 +4,11 @@
 // Bao gồm: hiển thị, thêm, sửa số lượng và xóa mẫu hoa khỏi giỏ hàng.
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels;
 using System.Text.Json;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 {
@@ -16,8 +18,27 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
     [PhanQuyen]
     public class GioHangController : Controller
     {
-        // Key dùng chung để lưu và đọc giỏ hàng từ Session.
-        private const string CartSessionKey = "GioHang";
+        // DbContext và constructor
+        private readonly AppDbContext _context;
+
+        public GioHangController(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        // Session Key
+        private string CartSessionKey
+        {
+            get
+            {
+                var maTaiKhoan = HttpContext.Session.GetMaTaiKhoan();
+
+                if (!maTaiKhoan.HasValue)
+                    throw new InvalidOperationException(
+                        "Bạn cần đăng nhập để sử dụng giỏ hàng.");
+                return $"GioHang_{maTaiKhoan.Value}";
+            }
+        }
 
         // Đọc danh sách sản phẩm từ Session.
         private List<CartItem> GetCart()
@@ -56,7 +77,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
         // POST: /User/Cart/Add
         [HttpPost("Add")]
         [ValidateAntiForgeryToken]
-        public IActionResult Add(int maMau, int soLuong = 1)
+        public async Task<IActionResult> Add(int maMau, int soLuong = 1)
         {
             // Kiểm tra dữ liệu đầu vào.
             if (maMau <= 0 || soLuong <= 0)
@@ -70,7 +91,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             // 2. Mẫu hoa đang hoạt động.
             // Không được cho phép thêm sản phẩm khi chưa kiểm tra.
 
-            if (!KiemTraMauHoa(maMau))
+            if (!await KiemTraMauHoa(maMau))
             {
                 TempData["Error"] = "Mẫu hoa không tồn tại hoặc đã ngừng hoạt động.";
                 return RedirectToAction(nameof(Index));
@@ -112,7 +133,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
         // POST: /User/Cart/Update
         [HttpPost("Update")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int maMau, int soLuong)
+        public async Task<IActionResult> Update(int maMau, int soLuong)
         {
             // Không chấp nhận số lượng bằng 0 hoặc âm.
             if (maMau <= 0 || soLuong <= 0)
@@ -121,7 +142,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            if (!KiemTraMauHoa(maMau))
+            if (!await KiemTraMauHoa(maMau))
             {
                 TempData["Error"] = "Mẫu hoa không tồn tại hoặc đã ngừng hoạt động.";
                 return RedirectToAction(nameof(Index));
@@ -174,19 +195,11 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Kiểm tra mẫu hoa trước khi thêm hoặc cập nhật.
-        private bool KiemTraMauHoa(int maMau)
+        // Kiểm tra mẫu hoa từ database
+        private async Task<bool> KiemTraMauHoa(int maMau)
         {
-            // TODO: Thay bằng truy vấn DbContext thực tế.
-            //
-            // Ví dụ về mặt ý tưởng:
-            // return _context.MauSanPhams.Any(
-            //     x => x.MaMau == maMau && x.DangHoatDong
-            // );
-
-            // Tạm thời từ chối để không cho phép thêm
-            // sản phẩm khi chưa kiểm tra được CSDL.
-            return false;
+            return await _context.MauSanPhams
+                .AnyAsync(m => m.MaMau == maMau && m.TrangThai);
         }
     }
 }
