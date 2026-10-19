@@ -1,7 +1,6 @@
 // Họ và tên: Đặng Thị Mai Hương
 // Mã sinh viên: 23103100293
-// Nội dung thực hiện: Xây dựng chức năng quản lý giỏ hàng bằng Session.
-// Bao gồm: hiển thị, thêm, sửa số lượng và xóa mẫu hoa khỏi giỏ hàng.
+// Nội dung thực hiện: Quản lý giỏ Session có kiểm tra DB, cập nhật số lượng, xóa và hiển thị tổng tiền.
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +8,7 @@ using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels;
 using System.Text.Json;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 {
@@ -18,188 +18,100 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
     [PhanQuyen]
     public class GioHangController : Controller
     {
-        // DbContext và constructor
-        private readonly AppDbContext _context;
-
-        public GioHangController(AppDbContext context)
+        private readonly AppDbContext _db;
+        private readonly GioHangService _cart;
+        public GioHangController(AppDbContext db, GioHangService cart)
         {
-            _context = context;
+            _db = db;
+            _cart = cart;
         }
 
-        // Session Key
-        private string CartSessionKey
-        {
-            get
-            {
-                var maTaiKhoan = HttpContext.Session.GetMaTaiKhoan();
+        // MaTaiKhoan được lấy từ phiên đăng nhập, không nhận từ form phía client.
+        private int Account
+            => HttpContext.Session.GetMaTaiKhoan() ?? throw new InvalidOperationException("Cần đăng nhập.");
 
-                if (!maTaiKhoan.HasValue)
-                    throw new InvalidOperationException(
-                        "Bạn cần đăng nhập để sử dụng giỏ hàng.");
-                return $"GioHang_{maTaiKhoan.Value}";
-            }
-        }
+        // GET: đọc giỏ của tài khoản hiện tại và hiển thị dữ liệu sản phẩm lấy từ DB.
+        [HttpGet(""), HttpGet("Index")]
+        public async Task<IActionResult> Index()
+            => View("~/Areas/User/Views/GioHang/Index.cshtml", await _cart.DisplayAsync(HttpContext.Session, Account));
 
-        // Đọc danh sách sản phẩm từ Session.
-        private List<CartItem> GetCart()
-        {
-            var json = HttpContext.Session.GetString(CartSessionKey);
-            if (string.IsNullOrEmpty(json))
-                return new List<CartItem>();
-
-            try
-            {
-                return JsonSerializer.Deserialize<List<CartItem>>(json)
-                       ?? new List<CartItem>();
-            }
-            catch (JsonException)
-            {
-                return new List<CartItem>();
-            }
-        }
-
-        // Lưu danh sách sản phẩm vào Session.
-        private void SaveCart(List<CartItem> cart)
-        {
-            var json = JsonSerializer.Serialize(cart);
-            HttpContext.Session.SetString(CartSessionKey, json);
-        }
-
-        // GET: /User/Cart hoặc /User/GioHang
-        [HttpGet("")]
-        [HttpGet("Index")]
-        public IActionResult Index()
-        {
-            var cart = GetCart();
-            return View("~/Areas/User/Views/GioHang/Index.cshtml", cart);
-        }
-
-        // POST: /User/Cart/Add
-        [HttpPost("Add")]
-        [ValidateAntiForgeryToken]
+        // POST /User/Cart/Add: chỉ thêm mẫu còn bán, giới hạn số lượng tối đa 100/mẫu.
+        [HttpPost("Add"), ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int maMau, int soLuong = 1)
         {
-            // Kiểm tra dữ liệu đầu vào.
-            if (maMau <= 0 || soLuong <= 0)
+            if (maMau <= 0 || soLuong is < 1 or > 100)
             {
-                TempData["Error"] = "Mã mẫu hoa hoặc số lượng không hợp lệ.";
+                TempData["Error"] = "Mã mẫu hoặc số lượng không hợp lệ (tối đa 100).";
                 return RedirectToAction(nameof(Index));
             }
 
-            // Bắt buộc bổ sung truy vấn CSDL để xác nhận:
-            // 1. Mẫu hoa có tồn tại.
-            // 2. Mẫu hoa đang hoạt động.
-            // Không được cho phép thêm sản phẩm khi chưa kiểm tra.
-
-            if (!await KiemTraMauHoa(maMau))
+            if (!await _db.MauSanPhams.AnyAsync(x => x.MaMau == maMau && x.TrangThai))
             {
-                TempData["Error"] = "Mẫu hoa không tồn tại hoặc đã ngừng hoạt động.";
+                TempData["Error"] = "Mẫu hoa đã ngừng bán hoặc không tồn tại.";
                 return RedirectToAction(nameof(Index));
             }
 
-            var cart = GetCart();
-
-            // Kiểm tra mẫu hoa đã có trong giỏ chưa.
-            var item = cart.FirstOrDefault(x => x.MaMau == maMau);
+            // Có sẵn trong giỏ thì cộng số lượng; chưa có thì tạo dòng CartItem mới.
+            var items = _cart.Read(HttpContext.Session, Account);
+            var item = items.FirstOrDefault(x => x.MaMau == maMau);
 
             if (item == null)
             {
-                // Nếu chưa có thì thêm mới.
-                cart.Add(new CartItem
-                {
-                    MaMau = maMau,
-                    SoLuong = soLuong
-                });
+                items.Add(new CartItem { MaMau = maMau, SoLuong = soLuong });
+            }
+            else if (item.SoLuong + soLuong <= 100)
+            {
+                item.SoLuong += soLuong;
             }
             else
             {
-                // Tránh tràn số nguyên khi cộng số lượng.
-                if (item.SoLuong > int.MaxValue - soLuong)
-                {
-                    TempData["Error"] = "Số lượng sản phẩm vượt quá giới hạn.";
-                    return RedirectToAction(nameof(Index));
-                }
-
-                // Nếu đã có thì cộng thêm số lượng.
-                item.SoLuong += soLuong;
+                TempData["Error"] = "Tối đa 100 sản phẩm mỗi mẫu.";
+                return RedirectToAction(nameof(Index));
             }
 
-            SaveCart(cart);
-
-            TempData["Success"] = "Đã thêm mẫu hoa vào giỏ hàng.";
+            // Session chỉ được ghi lại sau khi toàn bộ điều kiện thêm đều hợp lệ.
+            _cart.Save(HttpContext.Session, Account, items);
+            TempData["Success"] = "Đã thêm vào giỏ hàng.";
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: /User/Cart/Update
-        [HttpPost("Update")]
-        [ValidateAntiForgeryToken]
+        // POST /User/Cart/Update: thay thế số lượng (không cộng dồn) cho mẫu đang bán.
+        [HttpPost("Update"), ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int maMau, int soLuong)
         {
-            // Không chấp nhận số lượng bằng 0 hoặc âm.
-            if (maMau <= 0 || soLuong <= 0)
+            var items = _cart.Read(HttpContext.Session, Account);
+            var item = items.FirstOrDefault(x => x.MaMau == maMau);
+
+            if (item == null
+                || soLuong is < 1 or > 100
+                || !await _db.MauSanPhams.AnyAsync(x => x.MaMau == maMau && x.TrangThai))
             {
-                TempData["Error"] = "Số lượng phải lớn hơn 0.";
+                TempData["Error"] = "Không thể cập nhật mẫu hoa hoặc số lượng.";
                 return RedirectToAction(nameof(Index));
             }
 
-            if (!await KiemTraMauHoa(maMau))
-            {
-                TempData["Error"] = "Mẫu hoa không tồn tại hoặc đã ngừng hoạt động.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var cart = GetCart();
-            var item = cart.FirstOrDefault(x => x.MaMau == maMau);
-            if (item == null)
-            {
-                TempData["Error"] = "Không tìm thấy mẫu hoa trong giỏ hàng.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            // Cập nhật số lượng mới.
             item.SoLuong = soLuong;
-            SaveCart(cart);
-            TempData["Success"] = "Đã cập nhật số lượng sản phẩm.";
+            _cart.Save(HttpContext.Session, Account, items);
+            TempData["Success"] = "Đã cập nhật số lượng.";
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: /User/Cart/Remove
-        [HttpPost("Remove")]
-        [ValidateAntiForgeryToken]
+        // POST /User/Cart/Remove: bỏ một mẫu ra khỏi giỏ; không đụng tới DB đơn hàng.
+        [HttpPost("Remove"), ValidateAntiForgeryToken]
         public IActionResult Remove(int maMau)
         {
-            var cart = GetCart();
-            // Xóa mẫu hoa theo mã mẫu.
-            int soLuongDaXoa =
-                cart.RemoveAll(x => x.MaMau == maMau);
-
-            if (soLuongDaXoa == 0)
-            {
-                TempData["Error"] = "Không tìm thấy mẫu hoa trong giỏ hàng.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            SaveCart(cart);
-            TempData["Success"] = "Đã xóa mẫu hoa khỏi giỏ hàng.";
+            var items = _cart.Read(HttpContext.Session, Account);
+            items.RemoveAll(x => x.MaMau == maMau);
+            _cart.Save(HttpContext.Session, Account, items);
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: /User/Cart/Clear
-        // Phục vụ nút "Xóa toàn bộ giỏ hàng" đang có trên View.
-        [HttpPost("Clear")]
-        [ValidateAntiForgeryToken]
+        // POST /User/Cart/Clear: xóa toàn bộ giỏ Session của tài khoản hiện tại.
+        [HttpPost("Clear"), ValidateAntiForgeryToken]
         public IActionResult Clear()
         {
-            HttpContext.Session.Remove(CartSessionKey);
-            TempData["Success"] = "Đã xóa toàn bộ giỏ hàng.";
+            _cart.Clear(HttpContext.Session, Account);
             return RedirectToAction(nameof(Index));
-        }
-
-        // Kiểm tra mẫu hoa từ database
-        private async Task<bool> KiemTraMauHoa(int maMau)
-        {
-            return await _context.MauSanPhams
-                .AnyAsync(m => m.MaMau == maMau && m.TrangThai);
         }
     }
 }

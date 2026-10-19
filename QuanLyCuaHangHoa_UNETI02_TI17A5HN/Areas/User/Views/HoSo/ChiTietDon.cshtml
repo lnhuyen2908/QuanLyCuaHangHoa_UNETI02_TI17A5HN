@@ -1,0 +1,87 @@
+﻿@* Họ và tên: Đặng Thị Mai Hương
+ Mã sinh viên: 23103100293
+ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và hành động POST hợp lệ. *@
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.DonDatHoaDetailViewModel
+@* Chỉ hiển thị đơn của tài khoản đang đăng nhập; Controller kiểm tra sở hữu bằng Session. *@
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hoa";
+    var d = Model.Don;
+}
+
+<div class="max-w-5xl mx-auto p-6 space-y-5">
+
+    <a href="/User/Profile#orders" class="text-primary underline">← Trở về lịch sử đơn</a>
+
+    <!-- Thông tin chung của đơn -->
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm p-6 space-y-3">
+        <h1 class="font-headline-md text-2xl">Đơn #@d.MaDon.ToString("D4")</h1>
+
+        <p>
+            Trạng thái: <strong class="text-primary">@d.TrangThai</strong>
+            • Đặt lúc @d.NgayDat.ToString("dd/MM/yyyy HH:mm")
+        </p>
+        <p>Người nhận: @d.NguoiNhan (@d.SoDienThoaiNguoiNhan)</p>
+        <p>
+            Hình thức: @d.HinhThucNhan
+            • Dự kiến: @d.ThoiGianNhanGiao.ToString("dd/MM/yyyy HH:mm")
+        </p>
+        <p>Địa chỉ: @(d.DiaChiGiao ?? "Nhận tại cửa hàng")</p>
+        <p>Lời nhắn: @d.LoiNhan</p>
+
+        @if (d.TrangThai == TrangThaiDon.DaHuy)
+        {
+            <p class="text-error">Lý do hủy: @d.LyDoHuy</p>
+        }
+    </div>
+
+    <!-- Chi tiết sản phẩm & thanh toán -->
+    <div class="bg-surface-container-lowest rounded-xl p-6 space-y-3">
+        <h2 class="font-headline-sm text-xl">Chi tiết sản phẩm</h2>
+
+        @* Hiển thị cả mẫu có sẵn và dòng thiết kế riêng (MaMau == null). *@
+        @foreach (var c in d.ChiTietDonHoas)
+        {
+            <div class="flex justify-between border-b pb-2">
+                <div>
+                    <strong>@(c.MauSanPham?.TenMau ?? "Hoa thiết kế riêng")</strong>
+                    <p class="text-sm text-secondary">@c.YeuCauRieng</p>
+                    <p>@c.SoLuong × @c.DonGia.ToString("N0")₫</p>
+                    @if (c.MaMau == null && !c.DaChotGia)
+                    {
+                        <p class="text-error">Đang chờ báo giá</p>
+                    }
+                </div>
+                <span>@c.ThanhTien.ToString("N0")₫</span>
+            </div>
+        }
+
+        <div class="flex justify-between">
+            <strong>Tổng tiền</strong>
+            <strong>@d.TongTien.ToString("N0")₫</strong>
+        </div>
+        <div class="flex justify-between">
+            <span>Đã thanh toán</span>
+            <span>@Model.DaThanhToan.ToString("N0")₫</span>
+        </div>
+        <div class="flex justify-between">
+            <span>Còn lại</span>
+            <span>@Model.ConLai.ToString("N0")₫</span>
+        </div>
+    </div>
+
+    <!-- Lịch sử xử lý -->
+    <div class="bg-surface-container-lowest rounded-xl p-6">
+        <h2 class="font-headline-sm text-xl mb-3">Lịch sử xử lý</h2>
+
+        @* Timeline giúp khách biết trạng thái và ghi chú mới nhất của đơn. *@
+        @foreach (var item in d.LichSuXuLyDons.OrderBy(x => x.ThoiGian))
+        {
+            <p class="border-b py-2">
+                @item.ThoiGian.ToString("dd/MM/yyyy HH:mm")
+                • @item.TrangThaiMoi — @item.GhiChu
+            </p>
+        }
+    </div>
+</div>
