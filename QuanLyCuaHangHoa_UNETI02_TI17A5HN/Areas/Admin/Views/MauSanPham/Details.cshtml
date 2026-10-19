@@ -1,0 +1,188 @@
+﻿@*
+    Người thực hiện: Nguyễn Thị Phương Anh
+    Msv:23103100267
+    Nội dung: Hiển thị chi tiết mẫu sản phẩm và danh sách hoa thành phần.
+*@
+
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.MauSanPhamFormViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết mẫu sản phẩm";
+    var danhSachHoa = Model.DanhSachHoa?.ToDictionary(
+        x => x.Value ?? "",
+        x => x.Text ?? ""
+    ) ?? new Dictionary<string, string>();
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-lg">
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <!-- Nút thao tác đặt ngay đầu nội dung chi tiết -->
+    <div class="flex flex-wrap items-center justify-end gap-3">
+        <a asp-area="Admin"
+           asp-controller="MauSanPham"
+           asp-action="Index"
+           class="inline-flex items-center justify-center rounded-xl border border-surface-container bg-surface-container-lowest px-5 py-3 font-medium text-on-surface transition hover:bg-surface-container">
+            ← Quay lại danh sách
+        </a>
+        <a asp-area="Admin"
+           asp-controller="MauSanPham"
+           asp-action="Edit"
+           asp-route-id="@Model.MaMau"
+           class="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-3 font-semibold text-on-primary shadow-sm transition hover:opacity-90">
+            ✎ Chỉnh sửa mẫu
+        </a>
+    </div>
+
+    <!-- Thẻ thông tin chính -->
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+        <section class="overflow-hidden rounded-2xl border border-surface-container bg-surface-container-lowest shadow-sm xl:col-span-9">
+            <div class="border-b border-surface-container bg-surface-container-low px-6 py-5">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <p class="text-sm text-secondary">MÃ MẪU #@Model.MaMau</p>
+                        <h2 class="mt-1 text-2xl font-semibold text-on-surface">@Model.TenMau</h2>
+                    </div>
+                    @if (Model.TrangThai)
+                    {
+                        <span class="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-800">
+                            <span class="h-2 w-2 rounded-full bg-green-600"></span> Đang mở bán
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="inline-flex items-center gap-2 rounded-full bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700">
+                            <span class="h-2 w-2 rounded-full bg-gray-500"></span> Tạm ngưng bán
+                        </span>
+                    }
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-5">
+                <div class="md:col-span-2">
+                    @if (!string.IsNullOrWhiteSpace(Model.HinhAnh))
+                    {
+                        <div class="rounded-2xl border border-surface-container bg-surface-container-low p-3">
+                            <img src="@Model.HinhAnh" alt="@Model.TenMau"
+                                 class="h-72 w-full rounded-xl object-contain" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex h-72 items-center justify-center rounded-2xl border border-dashed border-surface-container bg-surface-container-low text-secondary">
+                            <div class="text-center">
+                                <div class="mb-2 text-4xl">🌷</div>
+                                <p>Chưa có hình ảnh mẫu</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="space-y-5 md:col-span-3">
+                    <div class="rounded-xl bg-surface-container-low p-4">
+                        <p class="text-sm text-secondary">Kiểu sản phẩm</p>
+                        <p class="mt-1 text-lg font-semibold text-on-surface">@Model.KieuSanPham</p>
+                    </div>
+                    <div class="rounded-xl bg-surface-container-low p-4">
+                        <p class="text-sm text-secondary">Dịp sử dụng</p>
+                        <p class="mt-1 text-lg font-semibold text-on-surface">
+                            @(string.IsNullOrWhiteSpace(ViewBag.TenDip as string) ? $"Mã dịp: {Model.MaDip}" : ViewBag.TenDip)
+                        </p>
+                    </div>
+                    <div>
+                        <p class="mb-2 text-sm font-semibold text-on-surface">Mô tả nghệ thuật &amp; thông điệp</p>
+                        <div class="min-h-24 rounded-xl border border-surface-container bg-surface-container-lowest p-4 leading-7 text-on-surface">
+                            @(string.IsNullOrWhiteSpace(Model.MoTa) ? "Chưa có mô tả cho mẫu sản phẩm này." : Model.MoTa)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Thẻ giá và thống kê -->
+        <section class="rounded-2xl border border-surface-container bg-surface-container-lowest p-6 shadow-sm xl:col-span-3">
+            <div class="mb-5 border-b border-surface-container pb-4">
+                <p class="text-sm font-medium uppercase tracking-wider text-primary">THÔNG TIN BÁN HÀNG</p>
+                <h2 class="mt-1 text-xl font-semibold text-on-surface">Giá &amp; trạng thái</h2>
+            </div>
+
+            <div class="rounded-xl bg-primary-container px-4 py-3">
+                <p class="text-xs text-on-primary-container">Giá cơ bản</p>
+                <p class="mt-1 text-2xl font-bold text-on-primary-container">@Model.GiaCoBan.ToString("N0") ₫</p>
+            </div>
+
+            <div class="mt-3 grid grid-cols-3 gap-2">
+                <div class="rounded-lg bg-surface-container-low px-3 py-3">
+                    <p class="text-xs text-secondary">Mã mẫu</p>
+                    <p class="mt-1 text-lg font-semibold">@Model.MaMau</p>
+                </div>
+                <div class="rounded-lg bg-surface-container-low px-3 py-3">
+                    <p class="text-xs text-secondary">Mã dịp</p>
+                    <p class="mt-1 text-lg font-semibold">@Model.MaDip</p>
+                </div>
+                <div class="rounded-lg bg-surface-container-low px-3 py-3">
+                    <p class="text-xs text-secondary">Số loại hoa</p>
+                    <p class="mt-1 text-lg font-semibold">@(Model.ChiTietMaus?.Count ?? 0)</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bảng thành phần hoa -->
+    <section class="overflow-hidden rounded-2xl border border-surface-container bg-surface-container-lowest shadow-sm">
+        <div class="flex flex-col gap-2 border-b border-surface-container bg-surface-container-low px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <p class="text-sm font-medium uppercase tracking-wider text-primary">CẤU HÌNH MẪU</p>
+                <h2 class="mt-1 text-xl font-semibold text-on-surface">Thành phần hoa</h2>
+                <p class="mt-1 text-sm text-secondary">Các loại hoa và số lượng tiêu chuẩn được sử dụng trong mẫu.</p>
+            </div>
+            <span class="inline-flex w-fit items-center rounded-full bg-primary-container px-4 py-2 text-sm font-semibold text-on-primary-container">
+                @(Model.ChiTietMaus?.Count ?? 0) thành phần
+            </span>
+        </div>
+
+        @if (Model.ChiTietMaus != null && Model.ChiTietMaus.Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-surface-container text-xs uppercase tracking-wider text-secondary">
+                            <th class="px-6 py-4">STT</th>
+                            <th class="px-6 py-4">Hoa thành phần</th>
+                            <th class="px-6 py-4 text-center">Số lượng tiêu chuẩn</th>
+                            <th class="px-6 py-4">Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-surface-container">
+                        @for (var i = 0; i < Model.ChiTietMaus.Count; i++)
+                        {
+                            var item = Model.ChiTietMaus[i];
+                            var maHoa = item.MaHoa.ToString();
+                            var tenHoa = danhSachHoa.TryGetValue(maHoa, out var ten)
+                                ? ten
+                                : $"Mã hoa: {item.MaHoa}";
+                            <tr class="transition hover:bg-surface-container-low">
+                                <td class="px-6 py-4 text-secondary">@(i + 1)</td>
+                                <td class="px-6 py-4 font-semibold text-on-surface">@tenHoa</td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="inline-flex min-w-12 justify-center rounded-lg bg-surface-container-low px-3 py-2 font-semibold">@item.SoLuongTieuChuan</span>
+                                </td>
+                                <td class="px-6 py-4 text-secondary">@(string.IsNullOrWhiteSpace(item.GhiChu) ? "—" : item.GhiChu)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="p-8">
+                <div class="rounded-xl border border-dashed border-surface-container bg-surface-container-low p-8 text-center">
+                    <p class="text-lg font-medium text-on-surface">Chưa có thành phần hoa</p>
+                    <p class="mt-1 text-sm text-secondary">Mẫu sản phẩm này chưa được cấu hình loại hoa.</p>
+                </div>
+            </div>
+        }
+
+    </section>
+</div>
