@@ -1,0 +1,165 @@
+﻿
+@* Họ và tên: Nguyễn Thị Đào
+   Mã sinh viên: 23103100245
+   Nội dung: Tuần 6 - Giao diện sửa phiếu giao nhận. *@
+
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.GiaoNhanEditViewModel
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+
+@{
+    ViewBag.Title = "Sửa phiếu giao nhận";
+    ViewBag.ActiveMenu = "GiaoNhan";
+    ViewBag.Breadcrumb = "Giao nhận / Chỉnh sửa";
+}
+
+<div class="w-full px-space-xl py-space-lg">
+    <div class="max-w-6xl mx-auto space-y-5">
+
+        <div>
+            <h1 class="text-2xl font-bold text-on-surface">
+                Sửa phiếu giao nhận
+            </h1>
+
+            <p class="text-on-surface-variant mt-2">
+                Cập nhật thông tin giao nhận trước khi bắt đầu giao.
+            </p>
+        </div>
+
+        <form asp-area="Admin"
+              asp-controller="GiaoNhan"
+              asp-action="Edit"
+              asp-route-id="@Model.MaGiaoNhan"
+              method="post"
+              class="bg-surface-container-lowest rounded-xl shadow-sm p-8 space-y-6">
+
+            @Html.AntiForgeryToken()
+
+            <input asp-for="MaGiaoNhan" type="hidden" />
+
+            <div asp-validation-summary="All"
+                 class="text-error text-sm"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div>
+                    <label class="block font-semibold mb-2">
+                        Mã giao nhận
+                    </label>
+
+                    <div class="p-3 bg-surface-container rounded-lg">
+                        GN-@Model.MaGiaoNhan.ToString("D4")
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-2">
+                        Mã đơn đặt hoa
+                    </label>
+
+                    <div class="p-3 bg-surface-container rounded-lg">
+                        #ORD-@Model.MaDon.ToString("D4")
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-2">
+                        Người nhận
+                    </label>
+
+                    <div class="p-3 bg-surface-container rounded-lg">
+                        @Model.TenNguoiNhan
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-2">
+                        Hình thức nhận
+                    </label>
+
+                    <div class="p-3 bg-surface-container rounded-lg">
+                        @Model.HinhThuc
+                    </div>
+                </div>
+
+                <div>
+                    <label asp-for="ThoiGianDuKien"
+                           class="block font-semibold mb-2">
+                        Thời gian dự kiến
+                    </label>
+
+                    <input asp-for="ThoiGianDuKien"
+                           asp-format="{0:yyyy-MM-ddTHH:mm}"
+                           type="datetime-local"
+                           class="w-full p-3 rounded-lg bg-surface-container" />
+
+                    <span asp-validation-for="ThoiGianDuKien"
+                          class="text-error text-sm"></span>
+                </div>
+
+                <div>
+                    <label asp-for="NguoiGiao"
+                           class="block font-semibold mb-2">
+                        Người giao
+                    </label>
+
+                    <input asp-for="NguoiGiao"
+                           maxlength="100"
+                           placeholder="Nhập tên người giao"
+                           class="w-full p-3 rounded-lg bg-surface-container" />
+
+                    <span asp-validation-for="NguoiGiao"
+                          class="text-error text-sm"></span>
+                </div>
+
+            </div>
+
+            @if (Model.HinhThuc == HinhThucNhanConst.GiaoTanNoi)
+            {
+                <div>
+                    <label asp-for="DiaChi"
+                           class="block font-semibold mb-2">
+                        Địa chỉ giao
+                    </label>
+
+                    <textarea asp-for="DiaChi"
+                              rows="3"
+                              maxlength="250"
+                              class="w-full p-3 rounded-lg bg-surface-container"></textarea>
+
+                    <span asp-validation-for="DiaChi"
+                          class="text-error text-sm"></span>
+                </div>
+            }
+
+            <div>
+                <label asp-for="GhiChu"
+                       class="block font-semibold mb-2">
+                    Ghi chú
+                </label>
+
+                <textarea asp-for="GhiChu"
+                          rows="3"
+                          maxlength="500"
+                          class="w-full p-3 rounded-lg bg-surface-container"></textarea>
+
+                <span asp-validation-for="GhiChu"
+                      class="text-error text-sm"></span>
+            </div>
+
+            <div class="flex flex-wrap gap-3 pt-4">
+                <button type="submit"
+                        class="px-6 py-3 bg-primary text-on-primary rounded-lg font-semibold">
+                    Lưu thay đổi
+                </button>
+
+                <a asp-area="Admin"
+                   asp-controller="GiaoNhan"
+                   asp-action="Index"
+                   class="px-6 py-3 bg-surface-container rounded-lg">
+                    Quay lại
+                </a>
+            </div>
+        </form>
+
+    </div>
+</div>

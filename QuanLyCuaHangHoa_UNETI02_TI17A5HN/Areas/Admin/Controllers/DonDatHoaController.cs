@@ -9,6 +9,9 @@ using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels;
+// BỔ SUNG MODULE 4 - Nguyễn Thị Đào (23103100245)
+// Sử dụng Service xử lý trạng thái đơn hàng.
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 {
@@ -216,5 +219,46 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             TempData["Success"] = "Đã hủy đơn hàng.";
             return RedirectToAction(nameof(Details), new { id });
         }
+
+
+        // Họ và tên: Nguyễn Thị Đào
+        // Mã sinh viên: 23103100245
+        // Nội dung thực hiện: Tuần 6 - Module 4
+        // Chuyển trạng thái đơn và ghi lịch sử xử lý.
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChuyenTrangThai(
+            int id, string? trangThaiMoi, string? ghiChu)
+        {
+            if (id <= 0)
+                return NotFound();
+
+            if (string.IsNullOrWhiteSpace(trangThaiMoi))
+            {
+                TempData["Error"] = "Bạn chưa chọn trạng thái mới.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            var maTaiKhoan = HttpContext.Session.GetMaTaiKhoan();
+
+            if (!maTaiKhoan.HasValue)
+                return Unauthorized();
+
+            var service = new TrangThaiDonService(_db);
+
+            var ketQua = await service.ChuyenAsync(
+                id,
+                trangThaiMoi,
+                maTaiKhoan.Value,
+                ghiChu);
+
+            TempData[ketQua.ThanhCong ? "Success" : "Error"]
+                = ketQua.ThongBao;
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+        // KẾT THÚC PHẦN MODULE 4 - Nguyễn Thị Đào
+
     }
 }

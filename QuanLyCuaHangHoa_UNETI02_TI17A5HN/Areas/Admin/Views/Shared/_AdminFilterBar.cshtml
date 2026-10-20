@@ -146,6 +146,47 @@
                     </div>
                 }
 
+                
+                @* Họ và tên: Nguyễn Thị Đào
+                   Mã sinh viên: 23103100245
+                   Nội dung: Bộ lọc trạng thái giao nhận - Module 4 *@
+
+                @if (Model.HienThiTrangThaiGiaoNhan)
+                {
+                    <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-[18px]">
+                            local_shipping
+                        </span>
+
+                        <select name="trangThaiGiaoNhan"
+                                class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+
+                            <option value=""
+                                    selected="@(string.IsNullOrEmpty(Model.TrangThaiGiaoNhan))">
+                                Tất cả trạng thái
+                            </option>
+
+                            <option value="@TrangThaiGiaoNhanConst.ChoXuLy"
+                                    selected="@(Model.TrangThaiGiaoNhan == TrangThaiGiaoNhanConst.ChoXuLy)">
+                                Chờ xử lý
+                            </option>
+
+                            <option value="@TrangThaiGiaoNhanConst.DangGiao"
+                                    selected="@(Model.TrangThaiGiaoNhan == TrangThaiGiaoNhanConst.DangGiao)">
+                                Đang giao
+                            </option>
+
+                            <option value="@TrangThaiGiaoNhanConst.HoanThanh"
+                                    selected="@(Model.TrangThaiGiaoNhan == TrangThaiGiaoNhanConst.HoanThanh)">
+                                Hoàn thành
+                            </option>
+
+                        </select>
+                    </div>
+                }
+
+                @* KẾT THÚC PHẦN BỔ SUNG CỦA ĐÀO *@
+
                 @if (Model.SapXepOptions != null && Model.SapXepOptions.Any())
                 {
                     <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">

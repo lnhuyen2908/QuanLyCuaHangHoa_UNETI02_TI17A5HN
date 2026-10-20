@@ -48,6 +48,14 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
 
         public decimal? GiaTu { get; set; }
         public decimal? GiaDen { get; set; }
+
+        // Họ và tên: Nguyễn Thị Đào
+        // Mã sinh viên: 23103100245
+        // Nội dung: Bổ sung bộ lọc giao nhận cho Module 4.
+        public bool HienThiTrangThaiGiaoNhan { get; set; } = false;
+        public string? TrangThaiGiaoNhan { get; set; }
+
+        // KẾT THÚC PHẦN BỔ SUNG CỦA ĐÀO
     }
 
     public class AdminSortOption
