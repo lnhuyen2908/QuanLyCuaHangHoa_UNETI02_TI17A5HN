@@ -268,7 +268,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Migrations
 
                     b.HasKey("MaGiaoNhan");
 
-                    b.HasIndex("MaDon");
+                    b.HasIndex("MaDon")
+                        .IsUnique();
 
                     b.ToTable("GiaoNhans");
                 });
