@@ -251,8 +251,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                     .SelectMany(v => v.Errors)
                     .FirstOrDefault()?.ErrorMessage;
 
-                TempData["ThongBao"] =
-                    loi ?? "Dữ liệu không hợp lệ!";
+                TempData["ThongBao"] = loi ?? "Dữ liệu không hợp lệ!";
 
                 return RedirectToAction(nameof(Index));
             }

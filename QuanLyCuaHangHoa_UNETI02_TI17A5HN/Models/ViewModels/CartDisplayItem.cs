@@ -8,6 +8,8 @@ public class CartDisplayItem
     // Mã và số lượng lấy từ Session; thông tin tên/ảnh/giá được service bổ sung từ DB.
     public int MaMau { get; set; }
     public int SoLuong { get; set; }
+    public string GiayGoiRuyBang { get; set; } = "";
+    public string LoiChuc { get; set; } = "";
     public string TenMau { get; set; } = "";
     public string? HinhAnh { get; set; }
     public decimal DonGia { get; set; }

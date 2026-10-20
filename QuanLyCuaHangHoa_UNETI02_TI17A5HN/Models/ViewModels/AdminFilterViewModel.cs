@@ -25,6 +25,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
         public string? VaiTro { get; set; }
         public bool HienThiVaiTro { get; set; } = false;
 
+        // Họ và tên: Nguyễn Thị Phương Anh
+        // Mã sinh viên: 23103100267
         // Bộ lọc riêng cho trang HoaTuoi
         public bool HienThiBoLocHoaTuoi { get; set; } = false;
 
