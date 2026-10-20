@@ -12,6 +12,9 @@ using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services;
+// Nguyễn Thị Đào - 23103100245
+// Bổ sung thư viện xử lý lỗi trùng dữ liệu SQL Server.
+using Microsoft.Data.SqlClient;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 {
@@ -310,13 +313,33 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 TrangThai = TrangThaiGiaoNhanConst.ChoXuLy
             };
 
-            _db.GiaoNhans.Add(giaoNhan);
-            await _db.SaveChangesAsync();
+            // Nội dung: Xử lý trường hợp hai nhân viên
+            // cùng tạo phiếu giao nhận cho một đơn.
+            try
+            {
+                // Thêm phiếu giao nhận vào Database.
+                _db.GiaoNhans.Add(giaoNhan);
 
-            TempData["Success"] =
-                "Tạo phiếu giao nhận thành công.";
+                await _db.SaveChangesAsync();
+
+                TempData["Success"] =
+                    "Tạo phiếu giao nhận thành công.";
+            }
+            catch (DbUpdateException ex)
+                when (ex.InnerException is SqlException sqlEx &&
+                      (sqlEx.Number == 2601 ||
+                       sqlEx.Number == 2627))
+            {
+                // SQL Server phát hiện trùng Unique Index.
+                TempData["Error"] =
+                    "Đơn này đã có phiếu giao nhận. " +
+                    "Có thể nhân viên khác vừa tạo phiếu.";
+
+                return RedirectToAction(nameof(Index));
+            }
 
             return RedirectToAction(nameof(Index));
+
         }
         // KẾT THÚC PHẦN CREATE - NGUYỄN THỊ ĐÀO
 

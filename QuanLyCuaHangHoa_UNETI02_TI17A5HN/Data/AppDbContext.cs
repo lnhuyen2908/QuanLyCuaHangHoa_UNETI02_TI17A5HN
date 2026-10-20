@@ -114,12 +114,21 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
               .HasForeignKey(l => l.NguoiThucHien)
               .OnDelete(DeleteBehavior.Restrict);
 
-            // DonDatHoa (1) - (n) GiaoNhan
+            // BỔ SUNG MODULE 4 - Nguyễn Thị Đào (23103100245)
+            // Nghiệp vụ: Mỗi đơn đặt hoa có tối đa một phiếu giao nhận.
+            // Giữ navigation WithMany của nhóm, dùng Unique Index để giới hạn số phiếu.
             mb.Entity<GiaoNhan>()
               .HasOne(g => g.DonDatHoa)
               .WithMany(d => d.GiaoNhans)
               .HasForeignKey(g => g.MaDon)
               .OnDelete(DeleteBehavior.Restrict);
+
+            // Nguyễn Thị Đào - Chặn tạo trùng phiếu giao nhận
+            mb.Entity<GiaoNhan>()
+              .HasIndex(g => g.MaDon)
+              .IsUnique();
+
+            // KẾT THÚC PHẦN BỔ SUNG MODULE 4 - Nguyễn Thị Đào
 
             // DonDatHoa (1) - (0..n) ThanhToan
             mb.Entity<ThanhToan>()
