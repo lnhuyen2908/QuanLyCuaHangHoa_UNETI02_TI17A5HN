@@ -1,5 +1,16 @@
+@*
+    Họ và tên: Lã Ngọc Huyền
+    Mã sinh viên: 23103100271
+    Nội dung thực hiện: Sidebar Quản trị: hiển thị HoTen/VaiTro từ Session, nút Đăng xuất, phân quyền menu Tài khoản.
+*@
+
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+@inject AppDbContext db
 @{
     string activeMenu = ViewBag.ActiveMenu as string ?? "";
+    string? vaiTro = Context.Session.GetVaiTro();
 }
 
 <aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low z-50 flex flex-col justify-between py-space-lg px-space-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
@@ -30,7 +41,7 @@
                     <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
                     <span>Đơn đặt hoa</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full @(activeMenu == "DonDatHoa" ? "bg-on-primary/20 text-on-primary" : "bg-primary/10 text-primary") text-[11px] font-bold">12</span>
+                <span class="px-2 py-0.5 rounded-full @(activeMenu == "DonDatHoa" ? "bg-on-primary/20 text-on-primary" : "bg-primary/10 text-primary") text-[11px] font-bold">@(db.DonDatHoas.Count(d => d.TrangThai == "Chờ xác nhận"))</span>
             </a>
 
             <!-- Module 3: Thiết kế riêng -->
@@ -113,10 +124,26 @@
             <div class="my-space-sm border-t border-surface-container"></div>
 
             <!-- Module 1: Tài khoản & Phân quyền -->
-            <a href="/Admin/TaiKhoan" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "TaiKhoan" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
-                <span class="material-symbols-outlined text-[20px]">manage_accounts</span>
-                <span>Tài khoản</span>
-            </a>
+            @if (vaiTro == VaiTroConst.Admin)
+            {
+                <a href="/Admin/TaiKhoan" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "TaiKhoan" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
+                    <span class="material-symbols-outlined text-[20px]">manage_accounts</span>
+                    <span>Tài khoản</span>
+                </a>
+            }
+            else
+            {
+                <a href="/Admin/TaiKhoan" onclick="alert('Chỉ có admin mới được quyền truy cập vào trang này');" class="flex items-center justify-between px-space-md py-2.5 rounded-lg font-title-sm text-title-sm text-on-surface-variant/70 hover:bg-surface-container hover:text-on-surface transition-all" title="Chỉ có admin mới được quyền truy cập vào trang này">
+                    <div class="flex items-center gap-space-sm">
+                        <span class="material-symbols-outlined text-[20px]">manage_accounts</span>
+                        <span>Tài khoản</span>
+                    </div>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-error-container text-on-error-container font-bold flex items-center gap-0.5">
+                        <span class="material-symbols-outlined text-[12px]">lock</span>
+                        <span>Admin</span>
+                    </span>
+                </a>
+            }
         </nav>
     </div>
 

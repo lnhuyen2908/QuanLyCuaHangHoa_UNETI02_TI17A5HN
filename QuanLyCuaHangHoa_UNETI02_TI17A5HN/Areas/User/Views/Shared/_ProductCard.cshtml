@@ -1,41 +1,122 @@
+@* Họ và tên: Nguyễn Thị Phương Anh 
+Mã sinh viên: 23103100267
+Nội dung thực hiện:  *@
+
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.MauSanPham
+
+@if (Model == null)
+{
+    return;
+}
+
 @{
-    var title = ViewData["CardTitle"] ?? "Mẫu hoa tươi cao cấp";
-    var price = ViewData["Price"] ?? "1.200.000₫";
-    var originalPrice = ViewData["OriginalPrice"] ?? "1.400.000₫";
-    var tag = ViewData["Tag"] ?? "Bán chạy";
-    var image = ViewData["Image"] ?? "https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&q=80&w=800";
+    var title = Model.TenMau;
+    var price = Model.GiaCoBan.ToString("N0") + "₫";
+    var image = Model.HinhAnh;
+    var tag = "Mẫu hoa tươi";
 }
 
 <div class="group relative bg-white dark:bg-stone-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col border border-stone-100 dark:border-stone-700">
+
     <!-- Image & Tag -->
     <div class="relative aspect-[4/5] w-full overflow-hidden bg-stone-100 dark:bg-stone-900">
-        <img src="@image" alt="@title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+
+        @if (!string.IsNullOrWhiteSpace(image))
+        {
+            <a asp-area="User"
+               asp-controller="MauSanPham"
+               asp-action="Detail"
+               asp-route-id="@Model.MaMau">
+
+                <img src="@image"
+                     alt="@title"
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            </a>
+        }
+        else
+        {
+            <a asp-area="User"
+               asp-controller="MauSanPham"
+               asp-action="Detail"
+               asp-route-id="@Model.MaMau"
+               class="w-full h-full flex items-center justify-center text-stone-400">
+
+                <span class="material-symbols-outlined text-5xl">local_florist</span>
+            </a>
+        }
+
         <div class="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
             <span class="px-3 py-1 rounded-full text-xs font-medium bg-[#8a4853] text-white shadow-sm">
                 @tag
             </span>
         </div>
-        <button class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 dark:bg-stone-800/80 backdrop-blur-md flex items-center justify-center text-stone-600 dark:text-stone-300 hover:text-[#8a4853] hover:bg-white transition-all shadow-sm">
+
+        <button type="button"
+                onclick="toggleProductWishlist(this)"
+                aria-label="Thêm vào danh sách yêu thích"
+                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 dark:bg-stone-800/80 backdrop-blur-md flex items-center justify-center text-stone-600 dark:text-stone-300 hover:text-[#8a4853] hover:bg-white transition-all shadow-sm">
+
             <span class="material-symbols-outlined text-[20px]">favorite</span>
         </button>
     </div>
 
     <!-- Content -->
     <div class="p-4 flex flex-col flex-1 justify-between">
+
         <div>
-            <div class="text-xs text-amber-700 dark:text-amber-500 font-medium mb-1">Nhóm 2 Botanical</div>
-            <h3 class="font-semibold text-stone-800 dark:text-stone-100 line-clamp-1 group-hover:text-[#8a4853] transition-colors">
-                @title
-            </h3>
-        </div>
-        <div class="mt-3 flex items-center justify-between">
-            <div class="flex items-baseline gap-2">
-                <span class="text-lg font-bold text-[#8a4853]">@price</span>
-                <span class="text-xs text-stone-400 line-through">@originalPrice</span>
+            <div class="text-xs text-amber-700 dark:text-amber-500 font-medium mb-1">
+                @Model.KieuSanPham
             </div>
-            <a href="/User/Home/Detail" class="w-8 h-8 rounded-full bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-200 flex items-center justify-center hover:bg-[#8a4853] hover:text-white transition-colors">
+
+            <h3 class="font-semibold text-stone-800 dark:text-stone-100 line-clamp-1 group-hover:text-[#8a4853] transition-colors">
+                <a asp-area="User"
+                   asp-controller="MauSanPham"
+                   asp-action="Detail"
+                   asp-route-id="@Model.MaMau">
+                    @title
+                </a>
+            </h3>
+
+            @if (Model.DipSuDung != null)
+            {
+                <p class="mt-1 text-xs text-stone-500 dark:text-stone-400 line-clamp-1">
+                    @Model.DipSuDung.TenDip
+                </p>
+            }
+        </div>
+
+        <div class="mt-3 flex items-center justify-between gap-2">
+            <div class="flex items-baseline gap-2 min-w-0">
+                <span class="text-lg font-bold text-[#8a4853]">
+                    @price
+                </span>
+            </div>
+
+            <a asp-area="User"
+               asp-controller="MauSanPham"
+               asp-action="Detail"
+               asp-route-id="@Model.MaMau"
+               title="Xem chi tiết sản phẩm"
+               class="flex-shrink-0 w-8 h-8 rounded-full bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-200 flex items-center justify-center hover:bg-[#8a4853] hover:text-white transition-colors">
+
                 <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
             </a>
         </div>
     </div>
 </div>
+
+<script>
+    function toggleProductWishlist(button) {
+        const icon = button.querySelector('.material-symbols-outlined');
+
+        if (!icon) return;
+
+        const isFavorite = icon.dataset.favorite === 'true';
+
+        icon.dataset.favorite = isFavorite ? 'false' : 'true';
+        icon.style.fontVariationSettings =
+            isFavorite ? "'FILL' 0" : "'FILL' 1";
+
+        icon.classList.toggle('text-[#8a4853]', !isFavorite);
+    }
+</script>

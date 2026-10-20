@@ -1,3 +1,7 @@
+// Họ và tên: Đặng Thị Mai Hương
+// Mã sinh viên: 23103100293
+// Nội dung thực hiện: Bổ sung danh sách đơn của chính khách, chi tiết và POST hủy có lịch sử
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data;
@@ -23,6 +27,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             _db = db;
         }
 
+        // GET hồ sơ: chỉ tải dữ liệu của tài khoản đang đăng nhập và các đơn có MaKhachHang tương ứng.
         // GET: /User/Profile or /User/HoSo
         [HttpGet("")]
         [HttpGet("Index")]
@@ -32,6 +37,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             if (!maTaiKhoan.HasValue)
                 return RedirectToAction("Login", "TaiKhoan", new { area = "User" });
 
+            // Include hồ sơ KhachHang để lấy khóa liên kết tới đơn hàng.
             var taiKhoan = await _db.TaiKhoans
                 .Include(t => t.KhachHang)
                 .FirstOrDefaultAsync(t => t.MaTaiKhoan == maTaiKhoan.Value);
@@ -45,6 +51,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             var kh = taiKhoan.KhachHang;
             var donHangs = new List<Models.Entities.DonDatHoa>();
 
+            // Không tải đơn của khách khác; chỉ đọc đơn cùng lịch sử/thanh toán/giao nhận.
             if (kh != null)
             {
                 donHangs = await _db.DonDatHoas
@@ -54,10 +61,12 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                         .ThenInclude(c => c.MauSanPham)
                     .Include(d => d.LichSuXuLyDons)
                     .Include(d => d.GiaoNhans)
+                    .Include(d => d.ThanhToans)
                     .OrderByDescending(d => d.NgayDat)
                     .ToListAsync();
             }
 
+            // Dùng một ViewModel để hiển thị hồ sơ, đơn gần nhất và tab thiết kế riêng.
             var vm = new HoSoViewModel
             {
                 MaTaiKhoan = taiKhoan.MaTaiKhoan,
@@ -168,6 +177,103 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 
             TempData["ThongBao"] = "Đổi mật khẩu thành công!";
             return Redirect("/User/Profile#security");
+        }
+
+
+        // POST hủy đơn: chỉ khách sở hữu, đơn còn chờ xác nhận và chưa có thanh toán.
+        // Action thuộc HoSoController; bản ZIP gốc có dấu ngoặc đóng lớp đặt sớm.
+        [HttpPost("HuyDon"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> HuyDon(int maDon, string? lyDo)
+        {
+            var account = HttpContext.Session.GetMaTaiKhoan();
+            if (!account.HasValue)
+            {
+                return RedirectToAction("Login", "TaiKhoan", new { area = "User" });
+            }
+
+            // Transaction đảm bảo đổi trạng thái và lưu lịch sử cùng thành công.
+            await using var tx = await _db.Database.BeginTransactionAsync();
+
+            // Điều kiện MaTaiKhoan ngăn khách đoán mã để hủy đơn của người khác.
+            var d = await _db.DonDatHoas
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.MaDon == maDon && x.KhachHang.MaTaiKhoan == account.Value);
+
+            if (d == null)
+            {
+                return NotFound();
+            }
+
+            if (d.TrangThai != TrangThaiDon.ChoXacNhan
+                || await _db.ThanhToans.AnyAsync(x => x.MaDon == maDon))
+            {
+                TempData["Loi"] = "Chỉ có thể tự hủy đơn chờ xác nhận và chưa thanh toán.";
+                return Redirect("/User/Profile#orders");
+            }
+
+            var reason = string.IsNullOrWhiteSpace(lyDo) ? "Khách yêu cầu hủy" : lyDo.Trim();
+            if (reason.Length > 500)
+            {
+                TempData["Loi"] = "Lý do hủy tối đa 500 ký tự.";
+                return Redirect("/User/Profile#orders");
+            }
+
+            // ExecuteUpdate chỉ đổi đơn còn ở trạng thái chờ, tránh ghi lịch sử hủy hai lần.
+            var count = await _db.DonDatHoas
+                .Where(x => x.MaDon == maDon && x.TrangThai == TrangThaiDon.ChoXacNhan)
+                .ExecuteUpdateAsync(set => set
+                    .SetProperty(x => x.TrangThai, TrangThaiDon.DaHuy)
+                    .SetProperty(x => x.LyDoHuy, reason));
+
+            if (count != 1)
+            {
+                TempData["Loi"] = "Đơn đã được xử lý, vui lòng tải lại.";
+                return Redirect("/User/Profile#orders");
+            }
+
+            // Truy vết thao tác hủy bằng người thực hiện, trạng thái cũ/mới và lý do.
+            _db.LichSuXuLyDons.Add(new QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.LichSuXuLyDon
+            {
+                MaDon = maDon,
+                TrangThaiCu = TrangThaiDon.ChoXacNhan,
+                TrangThaiMoi = TrangThaiDon.DaHuy,
+                ThoiGian = DateTime.Now,
+                NguoiThucHien = account.Value,
+                GhiChu = reason
+            });
+
+            await _db.SaveChangesAsync();
+            await tx.CommitAsync();
+
+            TempData["ThongBao"] = "Đã hủy đơn hàng.";
+            return Redirect("/User/Profile#orders");
+        }
+
+        // GET chi tiết: lấy kèm chi tiết, ảnh/tên mẫu, lịch sử, thanh toán và giao nhận.
+        // Điều kiện WHERE gắn MaTaiKhoan trong Session để không lộ đơn người khác.
+        // Trang chi tiết một đơn của khách đăng nhập; không cho đoán mã xem đơn người khác.
+        [HttpGet("ChiTietDon")]
+        public async Task<IActionResult> ChiTietDon(int maDon)
+        {
+            var account = HttpContext.Session.GetMaTaiKhoan();
+            if (!account.HasValue)
+            {
+                return RedirectToAction("Login", "TaiKhoan", new { area = "User" });
+            }
+
+            var d = await _db.DonDatHoas
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(x => x.ChiTietDonHoas)
+                    .ThenInclude(x => x.MauSanPham)
+                .Include(x => x.LichSuXuLyDons)
+                .Include(x => x.ThanhToans)
+                .Include(x => x.GiaoNhans)
+                .FirstOrDefaultAsync(x => x.MaDon == maDon && x.KhachHang.MaTaiKhoan == account.Value);
+
+            return d == null
+                ? NotFound()
+                : View(new DonDatHoaDetailViewModel { Don = d });
         }
     }
 }

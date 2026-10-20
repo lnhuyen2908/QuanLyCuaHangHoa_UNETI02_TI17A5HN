@@ -1,0 +1,180 @@
+﻿@* Họ và tên: Đặng Thị Mai Hương
+Mã sinh viên: 23103100293
+Nội dung thực hiện: Hiển thị dữ liệu thật, form GET lọc và POST có chống CSRF *@
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.DonDatHoaDetailViewModel
+@* Model ghép Don + ChiTiet + ThanhToan + GiaoNhan + LichSuXuLyDon. *@
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+
+@{
+    ViewBag.Title = "Chi tiết đơn đặt hoa";
+    ViewBag.ActiveMenu = "DonDatHoa";
+    ViewBag.Breadcrumb = "Bán hàng & Vận hành";
+    var d = Model.Don;
+}
+
+<div class="px-space-xl py-space-lg space-y-space-md">
+
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <a asp-action="Index" class="text-primary underline">← Trở lại danh sách đơn</a>
+
+    @if (TempData["Error"] != null)
+    {
+        <p class="p-3 rounded-xl bg-error-container text-error">@TempData["Error"]</p>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <p class="p-3 rounded-xl bg-tertiary-fixed text-tertiary">@TempData["Success"]</p>
+    }
+
+    <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-3">
+        <h2 class="font-headline-md text-2xl">Đơn #ORD-@d.MaDon.ToString("D4")</h2>
+
+        <p>
+            Trạng thái: <strong class="text-primary">@d.TrangThai</strong>
+            • Ngày đặt: @d.NgayDat.ToString("dd/MM/yyyy HH:mm")
+        </p>
+        <p>
+            Khách hàng: @d.KhachHang.HoTen
+            • Người nhận: @d.NguoiNhan (@d.SoDienThoaiNguoiNhan)
+        </p>
+        <p>
+            Hình thức: @d.HinhThucNhan
+            • Thời gian nhận dự kiến: @d.ThoiGianNhanGiao.ToString("dd/MM/yyyy HH:mm")
+        </p>
+        <p>
+            Địa chỉ: @(d.DiaChiGiao ?? "Nhận tại cửa hàng")
+            • Lời nhắn: @d.LoiNhan
+        </p>
+
+        @if (d.TrangThai == TrangThaiDon.DaHuy)
+        {
+            <p class="text-error">Lý do hủy: @d.LyDoHuy</p>
+        }
+
+        @if (Model.ChuaChotGia)
+        {
+            <p class="text-error">
+                Có sản phẩm thiết kế riêng chưa chốt giá.
+                <a href="/Admin/YeuCauThietKe" class="underline">Chốt giá tại đây</a>
+                trước khi xác nhận.
+            </p>
+        }
+
+        <div class="flex flex-wrap gap-3 pt-3 border-t">
+            @* Chỉ hiện nút Xác nhận khi chưa chuyển trạng thái và đã chốt giá thiết kế. *@
+            @if (d.TrangThai == TrangThaiDon.ChoXacNhan && !Model.ChuaChotGia)
+            {
+                <form method="post"
+                      asp-action="XacNhan"
+                      asp-route-id="@d.MaDon"
+                      onsubmit="return confirm('Xác nhận đơn này?')">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="bg-primary text-on-primary px-5 py-2 rounded-lg">
+                        Xác nhận đơn
+                    </button>
+                </form>
+            }
+
+            @* Nút Hủy sử dụng POST có token; Controller vẫn kiểm tra quyền và điều kiện ở server. *@
+            @if (d.TrangThai != TrangThaiDon.DaHuy
+              && d.TrangThai != TrangThaiDon.HoanThanh
+              && d.TrangThai != TrangThaiDon.DangGiao
+              && Model.DaThanhToan == 0)
+            {
+                <form method="post"
+                      asp-action="Huy"
+                      asp-route-id="@d.MaDon"
+                      class="flex flex-wrap gap-2"
+                      onsubmit="return confirm('Bạn chắc chắn hủy đơn này?')">
+                    @Html.AntiForgeryToken()
+                    <input name="lyDo"
+                           maxlength="500"
+                           required
+                           placeholder="Lý do hủy *"
+                           class="p-2 rounded-lg bg-surface-container border border-outline-variant" />
+                    <button type="submit" class="text-error px-4 py-2 rounded-lg border border-error">
+                        Hủy đơn
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-space-md">
+
+        <!-- Sản phẩm và thanh toán -->
+        <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-3">
+            <h3 class="font-headline-sm text-xl">Sản phẩm và thanh toán</h3>
+
+            @foreach (var ct in d.ChiTietDonHoas)
+            {
+                <div class="py-3 border-b">
+                    <strong>@(ct.MauSanPham?.TenMau ?? "Thiết kế riêng")</strong>
+                    • @ct.SoLuong × @ct.DonGia.ToString("N0")₫ = @ct.ThanhTien.ToString("N0")₫
+                    <p class="text-xs text-secondary">@ct.YeuCauRieng</p>
+                    @if (ct.MaMau == null && !ct.DaChotGia)
+                    {
+                        <p class="text-error text-xs">Chưa chốt giá</p>
+                    }
+                </div>
+            }
+
+            <p>
+                Phí giao: @d.PhiGiaoHang.ToString("N0")₫
+                • Phụ phí: @d.PhuPhi.ToString("N0")₫
+            </p>
+            <p class="flex justify-between">
+                <strong>Tổng đơn</strong>
+                <strong class="text-primary">@d.TongTien.ToString("N0")₫</strong>
+            </p>
+            <p>
+                Đã thanh toán: @Model.DaThanhToan.ToString("N0")₫
+                • Còn lại: @Model.ConLai.ToString("N0")₫
+            </p>
+
+            @* Module 4 ghi khoản thanh toán; tại đây chỉ đọc các lần thu và số tiền còn lại. *@
+            @foreach (var pay in d.ThanhToans.OrderBy(x => x.NgayThanhToan))
+            {
+                <p class="text-sm">
+                    @pay.NgayThanhToan.ToString("dd/MM/yyyy HH:mm")
+                    • @pay.PhuongThuc: @pay.SoTien.ToString("N0")₫
+                </p>
+            }
+        </div>
+
+        <!-- Lịch sử xử lý & Giao nhận -->
+        <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-3">
+            <h3 class="font-headline-sm text-xl">Lịch sử xử lý</h3>
+
+            @* Lịch sử trạng thái hiển thị theo thứ tự thời gian để truy vết thao tác. *@
+            @foreach (var l in d.LichSuXuLyDons.OrderBy(x => x.ThoiGian))
+            {
+                <div class="border-b py-2">
+                    <strong>@l.TrangThaiCu → @l.TrangThaiMoi</strong>
+                    <p class="text-secondary text-xs">
+                        @l.ThoiGian.ToString("dd/MM/yyyy HH:mm")
+                        • Người thực hiện #@l.NguoiThucHien
+                    </p>
+                    <p>@l.GhiChu</p>
+                </div>
+            }
+
+            <h3 class="font-headline-sm text-xl mt-4">Giao nhận</h3>
+
+            @foreach (var g in d.GiaoNhans)
+            {
+                <p>
+                    @g.TrangThai
+                    • @g.HinhThuc
+                    • @g.ThoiGianDuKien.ToString("dd/MM/yyyy HH:mm")
+                    • @g.NguoiGiao
+                </p>
+            }
+            @if (!d.GiaoNhans.Any())
+            {
+                <p class="text-secondary text-sm">Chưa có lịch giao nhận, Module 4 sẽ phân công.</p>
+            }
+        </div>
+    </div>
+</div>

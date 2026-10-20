@@ -228,6 +228,19 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
                     TrangThai = acc.TrangThai
                 });
             }
+            // Tạo hồ sơ khách hàng cho tài khoản bị khóa
+            var tkBiKhoa = taiKhoans
+                .First(t => t.TenDangNhap == "khoa01");
+
+            khachHangs.Add(new KhachHang
+            {
+                MaTaiKhoan = tkBiKhoa.MaTaiKhoan,
+                HoTen = tkBiKhoa.HoTen,
+                Email = tkBiKhoa.Email,
+                SoDienThoai = "0900000099",
+                DiaChi = "Hà Nội",
+                TrangThai = false
+            });
 
             db.HoaTuois.AddRange(hoaTuois);
             db.MauSanPhams.AddRange(mauSanPhams);
@@ -293,12 +306,17 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
                 bool thietKeRieng = i % 6 == 3 || i == 42;
                 if (thietKeRieng)
                 {
-                    decimal giaRieng = 1_500_000 + (i % 4) * 500_000;
+                    // Đơn chưa chốt giá phải để 0, tránh hiển thị giá mẫu như giá đã thỏa thuận.
+                    bool daChotGia = tt != TrangThaiDon.ChoXacNhan && tt != TrangThaiDon.DaHuy;
+                    decimal giaRieng = daChotGia ? 1_500_000 + (i % 4) * 500_000 : 0;
                     chiTiets.Add(new ChiTietDonHoa
                     {
-                        MaMau = null, SoLuong = 1, DonGia = giaRieng, ThanhTien = giaRieng,
+                        MaMau = null,
+                        SoLuong = 1,
+                        DonGia = giaRieng,
+                        ThanhTien = giaRieng,
                         YeuCauRieng = YeuCauRieng[i % YeuCauRieng.Length],
-                        DaChotGia = tt != TrangThaiDon.ChoXacNhan && tt != TrangThaiDon.DaHuy
+                        DaChotGia = daChotGia
                     });
                 }
                 else
