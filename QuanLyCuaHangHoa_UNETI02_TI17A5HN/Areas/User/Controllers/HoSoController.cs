@@ -62,6 +62,9 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                     .Include(d => d.LichSuXuLyDons)
                     .Include(d => d.GiaoNhans)
                     .Include(d => d.ThanhToans)
+                    // BỔ SUNG MODULE 4 - Nguyễn Thị Đào (23103100245)
+                    // Lấy đánh giá để xác định đơn đã được khách đánh giá chưa.
+                    .Include(d => d.DanhGia)
                     .OrderByDescending(d => d.NgayDat)
                     .ToListAsync();
             }

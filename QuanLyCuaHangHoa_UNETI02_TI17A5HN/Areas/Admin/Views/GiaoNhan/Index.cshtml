@@ -1,3 +1,14 @@
+
+@* Họ và tên: Nguyễn Thị Đào
+   Mã sinh viên: 23103100245
+   Nội dung: Tuần 6 - Hiển thị danh sách giao nhận
+   từ SQL Server, tìm kiếm, lọc, sắp xếp, phân trang. *@
+
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
+
+@model GiaoNhanIndexViewModel
+
 @{
     ViewBag.Title = "Quản Lý Giao & Nhận";
     ViewBag.ActiveMenu = "GiaoNhan";
@@ -5,110 +16,331 @@
 }
 
 <div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
-    <!-- Header Section -->
+
     @await Html.PartialAsync("_AdminPageHeader")
 
-    <!-- KPI Statistics Grid -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="p-4 rounded-xl bg-green-100 text-green-800">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="p-4 rounded-xl bg-red-100 text-red-800">
+            @TempData["Error"]
+        </div>
+    }
+
+    @* THỐNG KÊ GIAO NHẬN TỪ DATABASE *@
+
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-        <div class="relative overflow-hidden p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
-            <div class="flex items-start justify-between">
-                <div class="flex flex-col">
-                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Chờ điều phối</span>
-                    <div class="flex items-baseline gap-space-xs mt-space-xs">
-                        <span class="font-display-lg text-display-lg text-primary leading-none">08</span>
-                        <span class="font-label-lg text-label-lg text-on-surface-variant">đơn hoa</span>
-                    </div>
-                </div>
-                <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
-                    <span class="material-symbols-outlined text-[20px]">pending_actions</span>
-                </div>
+
+        <div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm">
+            <div class="text-outline text-sm uppercase">
+                Tổng giao nhận
+            </div>
+            <div class="font-display-lg text-display-lg text-primary mt-2">
+                @Model.TongGiaoNhan
+            </div>
+            <div class="text-secondary text-sm">
+                Tổng số phiếu trong hệ thống
             </div>
         </div>
 
-        <div class="relative overflow-hidden p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
-            <div class="flex items-start justify-between">
-                <div class="flex flex-col">
-                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Đang giao xe lạnh</span>
-                    <div class="flex items-baseline gap-space-xs mt-space-xs">
-                        <span class="font-display-lg text-display-lg text-on-surface leading-none">14</span>
-                        <span class="font-label-lg text-label-lg text-on-surface-variant">chuyến xe</span>
-                    </div>
-                </div>
-                <div class="w-10 h-10 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[20px]">ac_unit</span>
-                </div>
+        <div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm">
+            <div class="text-outline text-sm uppercase">
+                Chờ xử lý
+            </div>
+            <div class="font-display-lg text-display-lg text-primary mt-2">
+                @Model.ChoXuLy
+            </div>
+            <div class="text-secondary text-sm">
+                Phiếu chưa bắt đầu giao
             </div>
         </div>
 
-        <div class="relative overflow-hidden p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
-            <div class="flex items-start justify-between">
-                <div class="flex flex-col">
-                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Đã giao thành công</span>
-                    <div class="flex items-baseline gap-space-xs mt-space-xs">
-                        <span class="font-display-lg text-display-lg text-tertiary leading-none">42</span>
-                        <span class="font-label-lg text-label-lg text-on-surface-variant">đã nhận</span>
-                    </div>
-                </div>
-                <div class="w-10 h-10 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[20px]">task_alt</span>
-                </div>
+        <div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm">
+            <div class="text-outline text-sm uppercase">
+                Đang giao
+            </div>
+            <div class="font-display-lg text-display-lg text-primary mt-2">
+                @Model.DangGiao
+            </div>
+            <div class="text-secondary text-sm">
+                Phiếu đang vận chuyển
             </div>
         </div>
 
-        <div class="relative overflow-hidden p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
-            <div class="flex items-start justify-between">
-                <div class="flex flex-col">
-                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline">Khách nhận tại Atelier</span>
-                    <div class="flex items-baseline gap-space-xs mt-space-xs">
-                        <span class="font-display-lg text-display-lg text-on-surface leading-none">06</span>
-                        <span class="font-label-lg text-label-lg text-on-surface-variant">giữ quầy</span>
-                    </div>
-                </div>
-                <div class="w-10 h-10 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[20px]">storefront</span>
-                </div>
+        <div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm">
+            <div class="text-outline text-sm uppercase">
+                Hoàn thành
+            </div>
+            <div class="font-display-lg text-display-lg text-primary mt-2">
+                @Model.HoanThanh
+            </div>
+            <div class="text-secondary text-sm">
+                Phiếu đã hoàn tất
             </div>
         </div>
+
     </div>
 
-    <!-- Filter Component -->
-    @await Html.PartialAsync("_AdminFilterBar")
+    @* SỬ DỤNG BỘ LỌC DÙNG CHUNG CỦA HƯƠNG *@
 
-    <!-- Logistics Master Table -->
+    @await Html.PartialAsync("_AdminFilterBar", new AdminFilterViewModel
+    {
+        Area = "Admin",
+        Controller = "GiaoNhan",
+        Action = "Index",
+
+        TuKhoa = Model.TuKhoa,
+        SapXep = Model.SapXep,
+
+        HienThiTrangThai = false,
+        HienThiTrangThaiGiaoNhan = true,
+        TrangThaiGiaoNhan = Model.TrangThaiGiaoNhan,
+
+        Placeholder = "Mã đơn (#ORD-0030), tên người nhận, địa chỉ...",
+
+        SapXepOptions = new()
+        {
+            new() { Value = "date_new", Text = "Dự kiến mới nhất" },
+            new() { Value = "date_old", Text = "Dự kiến cũ nhất" },
+            new() { Value = "status", Text = "Theo trạng thái" }
+        }
+    })
+
+    @* DANH SÁCH GIAO NHẬN *@
+
     <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+
+                @*  Đào - Nội dung: Tuần 6 - Bổ sung nút tạo phiếu giao nhận. *@
+
+        <div class="p-space-md border-b border-surface-container
+                    flex flex-wrap justify-between items-center gap-4">
+
+            <div>
+                <h3 class="font-headline-sm text-xl">
+                    Danh sách giao nhận
+                </h3>
+
+                <p class="text-secondary text-sm mt-1">
+                    Tìm thấy @Model.DanhSach.TongSoBanGhi phiếu phù hợp
+                </p>
+            </div>
+
+            <a asp-area="Admin"
+               asp-controller="GiaoNhan"
+               asp-action="Create"
+               class="inline-flex items-center gap-2
+                      bg-primary text-on-primary
+                      px-5 py-3 rounded-xl
+                      font-semibold hover:opacity-90
+                      transition-all shadow-sm">
+
+                <span class="material-symbols-outlined text-[20px]">
+                    add_circle
+                </span>
+
+                Thêm phiếu giao nhận
+            </a>
+
+        </div>
+
+        @* KẾT THÚC PHẦN BỔ SUNG - Nguyễn Thị Đào *@
+
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-on-surface">
+            <table class="w-full min-w-[1440px] text-left text-on-surface">
+
                 <thead>
-                    <tr class="bg-surface-container-low font-label-md text-label-md text-secondary uppercase tracking-wider">
-                        <th class="py-space-md px-space-md">Mã giao nhận</th>
-                        <th class="py-space-md px-space-md">Mã đơn hàng</th>
-                        <th class="py-space-md px-space-md">Hình thức</th>
-                        <th class="py-space-md px-space-md">Thời gian dự kiến</th>
-                        <th class="py-space-md px-space-md">Địa chỉ giao</th>
-                        <th class="py-space-md px-space-md">Người giao (Shipper)</th>
-                        <th class="py-space-md px-space-md text-center">Trạng thái</th>
-                        <th class="py-space-md px-space-md text-right">Thao tác</th>
+                    <tr class="bg-surface-container-low text-secondary uppercase text-sm">
+                        <th class="p-4">Mã giao nhận</th>
+                        <th class="p-4">Mã đơn</th>
+                        <th class="p-4">Người nhận</th>
+                        <th class="p-4">Hình thức</th>
+                        <th class="p-4">Thời gian dự kiến</th>
+                        <th class="p-4">Địa chỉ</th>
+                        <th class="p-4">Người giao</th>
+                        <th class="p-4 text-center">Trạng thái</th>
+                        <th class="p-4 text-right min-w-[300px] whitespace-nowrap">
+                            Thao tác
+                        </th>
                     </tr>
                 </thead>
-                <tbody class="font-body-md text-body-md divide-y divide-surface-container">
-                    <tr class="hover:bg-surface-container-low/70 transition-colors">
-                        <td class="py-space-md px-space-md font-mono text-body-sm text-primary font-semibold">GN-1001</td>
-                        <td class="py-space-md px-space-md font-title-sm text-title-sm text-primary">#ORD-9021</td>
-                        <td class="py-space-md px-space-md">Giao tận nơi (Xe lạnh)</td>
-                        <td class="py-space-md px-space-md font-medium text-primary">15:00 Hôm nay</td>
-                        <td class="py-space-md px-space-md text-on-surface-variant">Quận 1, TP. Hồ Chí Minh</td>
-                        <td class="py-space-md px-space-md font-medium text-on-surface">Nguyễn Hữu Đạt (Xe A1)</td>
-                        <td class="py-space-md px-space-md text-center">
-                            @await Html.PartialAsync("_AdminStatusBadge", "Đang giao")
+
+                <tbody class="divide-y divide-surface-container">
+
+                    @foreach (var g in Model.DanhSach.DuLieu)
+                    {
+                        <tr class="hover:bg-surface-container-low transition-colors">
+
+                            <td class="p-4 font-semibold text-primary">
+                                GN-@g.MaGiaoNhan.ToString("D4")
+                            </td>
+
+                            <td class="p-4">
+                                #ORD-@g.MaDon.ToString("D4")
+                            </td>
+
+                            <td class="p-4">
+                                @(g.DonDatHoa?.NguoiNhan ?? "Chưa có tên")
+                            </td>
+
+                            <td class="p-4">
+                                @g.HinhThuc
+                            </td>
+
+                            <td class="p-4">
+                                @g.ThoiGianDuKien.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+
+                            <td class="p-4">
+                                @(string.IsNullOrWhiteSpace(g.DiaChi)
+                                    ? "Nhận tại cửa hàng"
+                                    : g.DiaChi)
+                            </td>
+
+                            <td class="p-4">
+                                @(string.IsNullOrWhiteSpace(g.NguoiGiao)
+                                    ? "Chưa phân công"
+                                    : g.NguoiGiao)
+                            </td>
+
+                            <td class="p-4 text-center">
+                                @await Html.PartialAsync(
+                                    "_AdminStatusBadge", g.TrangThai)
+                            </td>
+
+                           
+                        @* Nguyễn Thị Đào - 23103100245
+                           Bổ sung nút sửa phiếu giao nhận. *@
+
+                        <td class="p-3 text-right whitespace-nowrap">
+                            <div class="flex items-center justify-end gap-3 flex-nowrap">
+
+                                @* Nút xem đơn *@
+                                <a asp-area="Admin"
+                                   asp-controller="DonDatHoa"
+                                   asp-action="Details"
+                                   asp-route-id="@g.MaDon"
+                                   class="inline-flex w-[92px] shrink-0 items-center justify-center gap-1
+                                           h-9 rounded-lg
+                                           bg-surface-container text-on-surface
+                                           font-semibold text-sm hover:opacity-80 transition-all">
+
+                                    <span class="material-symbols-outlined text-[17px]">
+                                        visibility
+                                    </span>
+                                    Xem đơn
+                                </a>
+
+                                @* Nút sửa phiếu *@
+                                @if (g.TrangThai == TrangThaiGiaoNhanConst.ChoXuLy &&
+                                     (g.DonDatHoa.TrangThai == TrangThaiDon.DaXacNhan ||
+                                      g.DonDatHoa.TrangThai == TrangThaiDon.DangChuanBi ||
+                                      g.DonDatHoa.TrangThai == TrangThaiDon.SanSang))
+                                {
+                                    <a asp-area="Admin"
+                                       asp-controller="GiaoNhan"
+                                       asp-action="Edit"
+                                       asp-route-id="@g.MaGiaoNhan"
+                                       class="inline-flex w-[92px] shrink-0 items-center justify-center gap-1
+                                               h-9 rounded-lg
+                                               bg-primary text-on-primary
+                                               font-semibold text-sm hover:opacity-90 transition-all">
+
+                                        <span class="material-symbols-outlined text-[17px]">
+                                            edit
+                                        </span>
+                                        Sửa
+                                    </a>
+                                }
+
+                                @* Nút hoàn thành giao nhận *@
+                                @if (
+                                    (g.HinhThuc == HinhThucNhanConst.GiaoTanNoi &&
+                                     g.DonDatHoa.TrangThai == TrangThaiDon.DangGiao &&
+                                     g.TrangThai == TrangThaiGiaoNhanConst.DangGiao)
+                                    ||
+                                    (g.HinhThuc == HinhThucNhanConst.KhachDenNhan &&
+                                     g.DonDatHoa.TrangThai == TrangThaiDon.SanSang &&
+                                     g.TrangThai == TrangThaiGiaoNhanConst.ChoXuLy)
+                                )
+                                {
+                                    <form asp-area="Admin"
+                                          asp-controller="GiaoNhan"
+                                          asp-action="HoanThanh"
+                                          asp-route-id="@g.MaGiaoNhan"
+                                          method="post"
+                                          class="m-0 shrink-0"
+                                          onsubmit="return confirm('Xác nhận khách đã nhận hoa?');">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                               class="inline-flex w-[120px] items-center justify-center gap-1
+                                                       h-9 rounded-lg
+                                                       bg-green-700 text-white
+                                                       font-semibold text-sm whitespace-nowrap
+                                                       hover:bg-green-800 transition-all">
+
+                                            <span class="material-symbols-outlined text-[17px]">
+                                                check_circle
+                                            </span>
+                                            Hoàn thành
+                                        </button>
+                                    </form>
+                                }
+
+                            </div>
                         </td>
-                        <td class="py-space-md px-space-md text-right">
-                            <button class="px-3 py-1 rounded-lg bg-tertiary text-on-tertiary font-title-sm text-title-sm">Hoàn thành</button>
-                        </td>
-                    </tr>
+
+                        @* KẾT THÚC PHẦN BỔ SUNG - NGUYỄN THỊ ĐÀO *@
+
+
+                        </tr>
+                    }
+
+                    @if (!Model.DanhSach.DuLieu.Any())
+                    {
+                        <tr>
+                            <td colspan="9" class="p-8 text-center text-secondary">
+                                Không có phiếu giao nhận phù hợp.
+                            </td>
+                        </tr>
+                    }
+
                 </tbody>
             </table>
         </div>
 
-        @await Html.PartialAsync("_AdminPagination")
+        @* PHÂN TRANG DÙNG CHUNG CỦA NHÓM *@
+
+        <div class="px-space-lg pb-space-md">
+            @await Html.PartialAsync("_AdminPagination", new PaginationViewModel
+            {
+                TrangHienTai = Model.DanhSach.TrangHienTai,
+                TongSoTrang = Model.DanhSach.TongSoTrang,
+                TongSoBanGhi = Model.DanhSach.TongSoBanGhi,
+                SoBanGhiMoiTrang = Model.DanhSach.SoBanGhiMoiTrang,
+
+                Area = "Admin",
+                Controller = "GiaoNhan",
+                Action = "Index",
+
+                BoLoc = new Dictionary<string, string?>
+                {
+                    ["tuKhoa"] = Model.TuKhoa,
+                    ["trangThaiGiaoNhan"] = Model.TrangThaiGiaoNhan,
+                    ["sapXep"] = Model.SapXep
+                }
+            })
+        </div>
+
     </div>
+
 </div>
+
+@* KẾT THÚC PHẦN MODULE 4 - Nguyễn Thị Đào *@

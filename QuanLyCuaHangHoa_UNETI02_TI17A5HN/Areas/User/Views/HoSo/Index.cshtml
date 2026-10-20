@@ -421,6 +421,47 @@
                                             </span>
                                             <a class="text-primary text-xs underline" href="/User/HoSo/ChiTietDon?maDon=@don.MaDon">Xem chi tiết đơn</a>
 
+                                            
+                                            @* Họ và tên: Nguyễn Thị Đào
+                                               Mã sinh viên: 23103100245
+                                               Nội dung: Tuần 6 - Nút đánh giá đơn hoàn thành.*@
+
+                                            @if (don.TrangThai == TrangThaiDon.HoanThanh)
+                                            {
+                                                if (don.DanhGia == null)
+                                                {
+                                                    <a asp-area="User"
+                                                       asp-controller="DanhGia"
+                                                       asp-action="Create"
+                                                       asp-route-maDon="@don.MaDon"
+                                                       class="inline-flex items-center gap-1
+                                                              px-3 py-2 bg-primary text-on-primary
+                                                              rounded-lg font-semibold text-xs
+                                                              hover:opacity-90">
+
+                                                        <span class="material-symbols-outlined text-[16px]">
+                                                            star
+                                                        </span>
+
+                                                        Đánh giá
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="inline-flex items-center gap-1
+                                                                 text-green-700 text-xs font-semibold">
+
+                                                        <span class="material-symbols-outlined text-[16px]">
+                                                            verified
+                                                        </span>
+
+                                                        Đã đánh giá (@don.DanhGia.SoSao/5 sao)
+                                                    </span>
+                                                }
+                                            }
+
+                                            @* KẾT THÚC PHẦN MODULE 4 - Nguyễn Thị Đào *@
+
                                             @* Khách chỉ thấy nút Hủy cho đơn chờ xác nhận và chưa có thanh toán; POST còn kiểm tra server. *@
                                             @if (don.TrangThai == TrangThaiDon.ChoXacNhan && !don.ThanhToans.Any())
                                             {

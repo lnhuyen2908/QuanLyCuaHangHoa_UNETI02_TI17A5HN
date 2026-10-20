@@ -1,0 +1,142 @@
+﻿
+@* Họ và tên: Nguyễn Thị Đào
+   Mã sinh viên: 23103100245
+   Nội dung: Tuần 6 - Giao diện thêm phiếu giao nhận. *@
+
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.GiaoNhanCreateViewModel
+
+@{
+    ViewBag.Title = "Thêm phiếu giao nhận";
+    ViewBag.ActiveMenu = "GiaoNhan";
+    ViewBag.Breadcrumb = "Giao nhận / Thêm mới";
+}
+
+<div class="w-full px-space-xl py-space-lg">
+    <div class="max-w-6xl mx-auto space-y-5">
+
+    <div>
+        <h1 class="text-2xl font-bold text-on-surface">
+            Thêm phiếu giao nhận
+        </h1>
+
+        <p class="text-on-surface-variant mt-2">
+            Lập phiếu giao nhận cho đơn hoa đã được xác nhận.
+        </p>
+    </div>
+
+    <form asp-area="Admin"
+          asp-controller="GiaoNhan"
+          asp-action="Create"
+          method="post"
+          class="bg-surface-container-lowest rounded-xl shadow-sm p-6 space-y-5">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All"
+             class="text-error text-sm"></div>
+
+        <div>
+            <label asp-for="MaDon"
+                   class="block font-semibold mb-2">
+                Chọn đơn đặt hoa
+            </label>
+
+            <select asp-for="MaDon"
+                    asp-items="Model.DonHopLe"
+                    class="w-full rounded-lg p-3 bg-surface-container">
+                <option value="0">
+                    -- Chọn đơn chưa có phiếu giao nhận --
+                </option>
+            </select>
+
+            <span asp-validation-for="MaDon"
+                  class="text-error text-sm"></span>
+        </div>
+
+        <div class="text-sm text-on-surface-variant">
+            Hình thức giao/nhận được hệ thống tự lấy
+            từ đơn đặt hoa đã chọn.
+        </div>
+
+        <div>
+            <label asp-for="ThoiGianDuKien"
+                   class="block font-semibold mb-2">
+                Thời gian dự kiến
+            </label>
+
+            <input asp-for="ThoiGianDuKien"
+                   asp-format="{0:yyyy-MM-ddTHH:mm}"
+                   type="datetime-local"
+                   class="w-full rounded-lg p-3 bg-surface-container" />
+
+            <span asp-validation-for="ThoiGianDuKien"
+                  class="text-error text-sm"></span>
+        </div>
+
+        <div>
+            <label asp-for="DiaChi"
+                   class="block font-semibold mb-2">
+                Địa chỉ giao
+            </label>
+
+            <textarea asp-for="DiaChi"
+                      rows="3"
+                      maxlength="250"
+                      class="w-full rounded-lg p-3 bg-surface-container"></textarea>
+
+            <span asp-validation-for="DiaChi"
+                  class="text-error text-sm"></span>
+
+            <p class="text-sm text-on-surface-variant mt-1">
+                Bắt buộc khi giao tận nơi.
+                Để trống nếu dùng địa chỉ giao đã lưu trong đơn.
+            </p>
+        </div>
+
+        <div>
+            <label asp-for="NguoiGiao"
+                   class="block font-semibold mb-2">
+                Người giao
+            </label>
+
+            <input asp-for="NguoiGiao"
+                   maxlength="100"
+                   placeholder="Nhập tên người giao"
+                   class="w-full rounded-lg p-3 bg-surface-container" />
+
+            <span asp-validation-for="NguoiGiao"
+                  class="text-error text-sm"></span>
+        </div>
+
+        <div>
+            <label asp-for="GhiChu"
+                   class="block font-semibold mb-2">
+                Ghi chú
+            </label>
+
+            <textarea asp-for="GhiChu"
+                      maxlength="500"
+                      rows="3"
+                      placeholder="Nhập ghi chú giao nhận..."
+                      class="w-full rounded-lg p-3 bg-surface-container"></textarea>
+
+            <span asp-validation-for="GhiChu"
+                  class="text-error text-sm"></span>
+        </div>
+
+        <div class="flex gap-3 pt-4">
+            <button type="submit"
+                    class="px-6 py-3 bg-primary text-on-primary rounded-lg font-semibold">
+                Lưu phiếu giao nhận
+            </button>
+
+            <a asp-area="Admin"
+               asp-controller="GiaoNhan"
+               asp-action="Index"
+               class="px-6 py-3 bg-surface-container rounded-lg">
+                Quay lại
+            </a>
+        </div>
+    </form>
+    </div>
+</div>
