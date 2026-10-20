@@ -1,26 +1,16 @@
-@using System.Text.Json
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
 
 @{
-    var gioHangJson = Context.Session.GetString("GioHang");
+    var maTaiKhoan = Context.Session.GetMaTaiKhoan();
 
-    var gioHang = new List<CartItem>();
+    var gioHang = maTaiKhoan.HasValue
+        ? Context.Session.GetJson<List<CartItem>>(
+            GioHangService.Key(maTaiKhoan.Value)) ?? new List<CartItem>()
+        : new List<CartItem>();
 
-    if (!string.IsNullOrEmpty(gioHangJson))
-    {
-        try
-        {
-            gioHang = JsonSerializer.Deserialize<List<CartItem>>(gioHangJson)
-                      ?? new List<CartItem>();
-        }
-        catch (JsonException)
-        {
-            gioHang = new List<CartItem>();
-        }
-    }
-
-    int soLuongGioHang = gioHang.Sum(x => x.SoLuong);
+    var soLuongGioHang = gioHang.Count(x => x.MaMau > 0 && x.SoLuong > 0);
 }
 
 

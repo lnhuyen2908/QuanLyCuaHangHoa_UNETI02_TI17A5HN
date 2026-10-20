@@ -281,11 +281,36 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
                     <!-- Secondary Action: Add to Cart -->
-                    <a asp-area="User" asp-controller="Home" asp-action="Cart"
-                       class="py-2.5 px-space-md rounded-full bg-secondary-container text-on-secondary-container font-title-sm text-title-sm hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
-                        <span>Thêm vào giỏ hàng</span>
-                    </a>
+                    <form action="/User/Cart/Add" method="post"
+                          onsubmit="return guiVaoGio(this)">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="maMau" value="@ViewContext.RouteData.Values["id"]" />
+                        <input type="hidden" name="soLuong" />
+                        <input type="hidden" name="giayGoiRuyBang" />
+                        <input type="hidden" name="loiChuc" />
+
+                        <button type="submit" class="py-2.5 px-space-md rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
+                            <span>Thêm vào giỏ hàng</span>
+                        </button>
+                    </form>
+
+                    <script>
+                            function guiVaoGio(form) {
+                                form.elements["soLuong"].value =
+                                    document.getElementById("quantityInput").value;
+
+                                form.elements["giayGoiRuyBang"].value =
+                                    document.getElementById("selectedWrapLabel").textContent.trim();
+
+                                form.elements["loiChuc"].value =
+                                    document.querySelector("#greetingContainer textarea").value;
+
+                                return true;
+                            }
+                    </script>
+
                     <!-- Custom Bespoke Action -->
                     <a asp-area="User" asp-controller="Home" asp-action="CustomDesign"
                        class="py-2.5 px-space-md rounded-full bg-surface-container-lowest text-primary hover:bg-surface-container-low shadow-sm font-title-sm text-title-sm transition-colors flex items-center justify-center gap-2">

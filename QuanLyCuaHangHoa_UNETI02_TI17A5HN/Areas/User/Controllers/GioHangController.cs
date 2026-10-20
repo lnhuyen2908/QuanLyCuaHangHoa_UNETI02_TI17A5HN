@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels;
-using System.Text.Json;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services;
 
@@ -37,7 +36,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 
         // POST /User/Cart/Add: chỉ thêm mẫu còn bán, giới hạn số lượng tối đa 100/mẫu.
         [HttpPost("Add"), ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(int maMau, int soLuong = 1)
+        public async Task<IActionResult> Add(int maMau, int soLuong = 1, string? giayGoiRuyBang = null, string? loiChuc = null)
         {
             if (maMau <= 0 || soLuong is < 1 or > 100)
             {
@@ -57,11 +56,15 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 
             if (item == null)
             {
-                items.Add(new CartItem { MaMau = maMau, SoLuong = soLuong });
+                items.Add(new CartItem { MaMau = maMau, SoLuong = soLuong,
+                                    GiayGoiRuyBang = giayGoiRuyBang ?? "",
+                                    LoiChuc = loiChuc ?? ""});
             }
             else if (item.SoLuong + soLuong <= 100)
             {
                 item.SoLuong += soLuong;
+                item.GiayGoiRuyBang = giayGoiRuyBang ?? "";
+                item.LoiChuc = loiChuc ?? "";
             }
             else
             {
@@ -77,7 +80,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 
         // POST /User/Cart/Update: thay thế số lượng (không cộng dồn) cho mẫu đang bán.
         [HttpPost("Update"), ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int maMau, int soLuong)
+        public async Task<IActionResult> Update(int maMau, int soLuong, string? giayGoiRuyBang, string? loiChuc)
         {
             var items = _cart.Read(HttpContext.Session, Account);
             var item = items.FirstOrDefault(x => x.MaMau == maMau);
@@ -91,8 +94,11 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             }
 
             item.SoLuong = soLuong;
+            item.GiayGoiRuyBang = giayGoiRuyBang ?? "";
+            item.LoiChuc = loiChuc ?? "";
+
             _cart.Save(HttpContext.Session, Account, items);
-            TempData["Success"] = "Đã cập nhật số lượng.";
+            TempData["Success"] = "Đã cập nhật thành công";
             return RedirectToAction(nameof(Index));
         }
 

@@ -7,5 +7,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
     {
         public int MaMau { get; set; }
         public int SoLuong { get; set; }
+        public string GiayGoiRuyBang { get; set; } = "";
+        public string LoiChuc { get; set; } = "";
     }
 }
