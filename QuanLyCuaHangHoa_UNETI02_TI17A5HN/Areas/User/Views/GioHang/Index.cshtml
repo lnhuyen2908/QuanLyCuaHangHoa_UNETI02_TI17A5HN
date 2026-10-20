@@ -1,13 +1,20 @@
-@model List<QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.CartItem>
+@* Họ và tên: Đặng Thị Mai Hương
+Mã sinh viên: 23103100293
+Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và hành động POST hợp lệ. *@
+@model List<QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.CartDisplayItem>
+@* Giỏ lấy số lượng từ Session nhưng tên/ảnh/giá từ DB thông qua GioHangService. *@
+
 
 @{
     ViewData["Title"] = "Giỏ hoa của bạn - Web quản lý hoa tươi";
 }
 
 <div class="relative w-full max-w-7xl mx-auto px-margin-mobile md:px-margin lg:px-margin-desktop py-space-lg lg:py-space-xl">
+
     <!-- Hiệu ứng nền giữ theo thiết kế -->
     <div class="absolute top-10 left-1/4 w-96 h-96 bg-primary-fixed-dim/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
     <div class="absolute top-1/2 right-10 w-80 h-80 bg-secondary-fixed/40 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
     <!-- Tiêu đề -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md pb-space-lg">
         <div class="space-y-space-xs">
@@ -63,6 +70,11 @@
                     </span>
                 </div>
 
+                <a href="/User/Products" class="inline-flex items-center gap-2 text-primary font-title-sm underline">
+                    Tiếp tục chọn mẫu hoa
+                </a>
+
+                @* Nhánh hiển thị giỏ trống: không cho người dùng đi tiếp tới Checkout. *@
                 @if (Model.Count == 0)
                 {
                     <div class="py-12 text-center space-y-4">
@@ -81,26 +93,26 @@
                 }
                 else
                 {
+                    @* Lặp mỗi mẫu hoa; các nút sửa/xóa đều gọi POST thực tế. *@
                     @foreach (var item in Model)
                     {
                         <div class="cart-item group relative flex flex-col md:flex-row gap-space-md p-space-md bg-surface-container-low rounded-xl transition-all duration-300 hover:shadow-md">
 
-                            <!-- Thông tin mẫu hoa -->
+                            <img src="@(string.IsNullOrWhiteSpace(item.HinhAnh) ? "/images/mau/mau01.jpg" : item.HinhAnh)"
+                                 alt="@item.TenMau"
+                                 class="w-28 h-28 rounded-xl object-cover"
+                                 onerror="this.src='/images/mau/mau01.jpg'" />
+
                             <div class="flex-1 flex flex-col justify-between space-y-space-sm min-w-0">
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface">@item.TenMau</h3>
+                                <p class="text-primary font-semibold">
+                                    @item.DonGia.ToString("N0")₫ × @item.SoLuong = @item.ThanhTien.ToString("N0")₫
+                                </p>
 
-                                <div class="space-y-space-xs">
-                                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">
-                                        Mẫu hoa đã chọn
-                                    </span>
-
-                                    <h3 class="font-headline-sm text-headline-sm text-on-surface">
-                                        Mã mẫu: @item.MaMau
-                                    </h3>
-
-                                    <p class="font-body-sm text-body-sm text-on-surface-variant">
-                                        Tên, hình ảnh và giá bán sẽ được lấy từ CSDL.
-                                    </p>
-                                </div>
+                                @if (!item.ConBan)
+                                {
+                                    <p class="text-error text-sm">Mẫu ngừng bán; vui lòng xóa để tiếp tục đặt hàng.</p>
+                                }
 
                                 <!-- Cập nhật số lượng và xóa -->
                                 <div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-md">
@@ -121,21 +133,28 @@
                                             Số lượng
                                         </label>
 
-                                        <input type="number" name="soLuong" value="@item.SoLuong" min="1" required
+                                        <input type="number"
+                                               name="soLuong"
+                                               value="@item.SoLuong"
+                                               min="1"
+                                               required
                                                class="w-20 text-center rounded-lg p-2 bg-surface-container-lowest text-on-surface border border-outline-variant" />
 
-                                        <button type="submit" class="px-4 py-2 rounded-full bg-primary text-on-primary font-label-md hover:bg-primary-container transition-colors">
+                                        <button type="submit"
+                                                class="px-4 py-2 rounded-full bg-primary text-on-primary font-label-md hover:bg-primary-container transition-colors">
                                             Cập nhật
                                         </button>
                                     </form>
 
-                                    <form asp-area="User" asp-controller="GioHang" asp-action="Remove" method="post">
+                                    @* Xóa một dòng CartItem trong Session, không xóa sản phẩm khỏi DB. *@
+                                    <form action="/User/Cart/Remove" method="post">
 
                                         @Html.AntiForgeryToken()
 
                                         <input type="hidden" name="maMau" value="@item.MaMau" />
 
-                                        <button type="submit" onclick="return confirm('Bạn có muốn xóa mẫu hoa này khỏi giỏ hàng?')"
+                                        <button type="submit"
+                                                onclick="return confirm('Bạn có muốn xóa mẫu hoa này khỏi giỏ hàng?')"
                                                 class="hover:text-error flex items-center gap-1 text-secondary transition-colors">
 
                                             <span class="material-symbols-outlined text-[16px]">
@@ -203,18 +222,23 @@
                 <div class="h-px bg-surface-container"></div>
 
                 <p class="font-body-sm text-body-sm text-on-surface-variant">
-                    Giá bán và tổng tiền sẽ được tính từ dữ liệu sản phẩm trong hệ thống.
+                    Tạm tính: @Model.Sum(x => x.ThanhTien).ToString("N0")₫ (phí vận chuyển xác định khi xác nhận đơn).
                 </p>
 
                 @if (Model.Count > 0)
                 {
-                    <button type="button" disabled class="w-full py-3.5 px-space-lg rounded-full bg-surface-container text-on-surface-variant font-label-lg text-label-lg cursor-not-allowed">
-                        Tiến Hành Đặt Hoa &amp; Chọn Giờ Giao
-                    </button>
-
-                    <p class="font-body-sm text-body-sm text-secondary text-center">
-                        Chức năng Checkout sẽ được kết nối sau.
-                    </p>
+                    @* Chỉ mở đường sang Checkout khi tất cả mẫu trong giỏ vẫn được kinh doanh. *@
+                    @if (Model.All(x => x.ConBan))
+                    {
+                        <a href="/User/Checkout"
+                           class="block text-center w-full py-3.5 px-space-lg rounded-full bg-primary text-on-primary font-label-lg text-label-lg">
+                            Tiến Hành Đặt Hoa &amp; Chọn Giờ Giao
+                        </a>
+                    }
+                    else
+                    {
+                        <p class="text-error text-sm">Xóa mẫu đã ngừng bán để tiếp tục.</p>
+                    }
                 }
             </div>
         </div>

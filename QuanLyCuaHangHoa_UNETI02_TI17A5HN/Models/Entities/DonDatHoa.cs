@@ -90,11 +90,17 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities
 
         // Navigation Property: DonDatHoa (1) - (n) ChiTietDonHoa
         public virtual ICollection<ChiTietDonHoa> ChiTietDonHoas { get; set; } = new List<ChiTietDonHoa>();
-        
 
+        // Navigation Property: DonDatHoa (1) - (n) LichSuXuLyDon
         public virtual ICollection<LichSuXuLyDon> LichSuXuLyDons { get; set; } = new List<LichSuXuLyDon>();
+
+        // Navigation Property: DonDatHoa (1) - (n) GiaoNhan
         public virtual ICollection<GiaoNhan> GiaoNhans { get; set; } = new List<GiaoNhan>();
+
+        // Navigation Property: DonDatHoa (1) - (n) ThanhToan
         public virtual ICollection<ThanhToan> ThanhToans { get; set; } = new List<ThanhToan>();
+
+        // Một đơn hàng có tối đa một đánh giá; chưa đánh giá thì null
         public virtual DanhGia? DanhGia { get; set; }
     }
 }

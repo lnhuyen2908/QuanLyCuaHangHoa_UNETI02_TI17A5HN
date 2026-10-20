@@ -1,4 +1,9 @@
+@* Họ và tên: Đặng Thị Mai Hương
+ Mã sinh viên: 23103100293
+ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và hành động POST hợp lệ. *@
 @model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.HoSoViewModel
+@* Một View hiển thị hồ sơ, đơn hàng, yêu cầu thiết kế riêng và đổi mật khẩu. *@
+
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
 @{
@@ -7,11 +12,13 @@
 
 <!-- Decorative Ambient Underlay -->
 <div class="relative w-full overflow-hidden">
+
     <div class="absolute -top-32 right-1/4 w-96 h-96 bg-primary-fixed/30 rounded-full blur-3xl pointer-events-none -z-10"></div>
     <div class="absolute top-96 -left-20 w-80 h-80 bg-tertiary-fixed/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
 
     <!-- Container Wrap -->
     <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin lg:px-margin-desktop py-space-lg md:py-space-xl">
+
         <!-- Breadcrumb & Page Introduction Header -->
         <section class="mb-space-lg md:mb-space-xl">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
@@ -50,18 +57,23 @@
 
         <!-- Main Layout: 2 Columns -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-start">
+
             <!-- A. LEFT COLUMN: Sidebar Navigation -->
             <aside class="lg:col-span-4 space-y-space-lg">
+
                 <!-- Mini Profile Card -->
                 <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md relative overflow-hidden">
                     <div class="absolute -right-8 -top-8 w-28 h-28 bg-secondary-fixed/40 rounded-full blur-xl pointer-events-none"></div>
+
                     <div class="flex flex-col items-center text-center space-y-space-sm relative">
+
                         <!-- Avatar Frame -->
                         <div class="relative group cursor-pointer">
                             <div class="w-24 h-24 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-3xl shadow-sm ring-4 ring-surface-container transition-transform duration-300 group-hover:scale-105">
                                 <span class="material-symbols-outlined text-[48px]">person</span>
                             </div>
                         </div>
+
                         <!-- Name & Contact -->
                         <div class="space-y-0.5">
                             <h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">@Model.HoTen</h2>
@@ -72,6 +84,7 @@
                             }
                             <p class="font-label-md text-[11px] text-outline">Tài khoản: @@ @Model.TenDangNhap</p>
                         </div>
+
                         <!-- Tier Badge -->
                         <div class="inline-flex items-center gap-space-xs px-3 py-1 bg-secondary-fixed text-on-secondary-fixed rounded-full shadow-sm">
                             <span class="material-symbols-outlined text-[15px] text-primary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
@@ -82,8 +95,11 @@
 
                 <!-- Account Navigation Menu -->
                 <nav aria-label="Menu tài khoản" class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-1">
+
                     <!-- 1. Thông tin cá nhân -->
-                    <button type="button" data-tab="personal" class="tab-btn active-tab w-full flex items-center justify-between px-space-md py-3 rounded-lg bg-surface-container text-primary font-title-sm text-title-sm shadow-sm transition-all text-left cursor-pointer">
+                    <button type="button"
+                            data-tab="personal"
+                            class="tab-btn active-tab w-full flex items-center justify-between px-space-md py-3 rounded-lg bg-surface-container text-primary font-title-sm text-title-sm shadow-sm transition-all text-left cursor-pointer">
                         <div class="flex items-center gap-space-sm">
                             <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">person</span>
                             <span>Thông tin cá nhân</span>
@@ -92,7 +108,9 @@
                     </button>
 
                     <!-- 2. Lịch sử đơn hoa -->
-                    <button type="button" data-tab="orders" class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
+                    <button type="button"
+                            data-tab="orders"
+                            class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
                         <div class="flex items-center gap-space-sm">
                             <span class="material-symbols-outlined text-[20px]">local_florist</span>
                             <span>Lịch sử đơn hoa</span>
@@ -104,7 +122,9 @@
                     </button>
 
                     <!-- 3. Hoa thiết kế riêng -->
-                    <button type="button" data-tab="custom-design" class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
+                    <button type="button"
+                            data-tab="custom-design"
+                            class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
                         <div class="flex items-center gap-space-sm">
                             <span class="material-symbols-outlined text-[20px]">palette</span>
                             <span>Hoa thiết kế riêng</span>
@@ -116,7 +136,9 @@
                     </button>
 
                     <!-- 4. Sổ địa chỉ nhận hoa -->
-                    <button type="button" data-tab="addresses" class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
+                    <button type="button"
+                            data-tab="addresses"
+                            class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
                         <div class="flex items-center gap-space-sm">
                             <span class="material-symbols-outlined text-[20px]">pin_drop</span>
                             <span>Sổ địa chỉ nhận hoa</span>
@@ -125,7 +147,9 @@
                     </button>
 
                     <!-- 5. Cài đặt & Bảo mật -->
-                    <button type="button" data-tab="security" class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
+                    <button type="button"
+                            data-tab="security"
+                            class="tab-btn w-full flex items-center justify-between px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-title-sm text-title-sm text-left cursor-pointer">
                         <div class="flex items-center gap-space-sm">
                             <span class="material-symbols-outlined text-[20px]">shield</span>
                             <span>Cài đặt &amp; Bảo mật</span>
@@ -133,10 +157,15 @@
                         <span class="material-symbols-outlined text-[18px] text-outline tab-chevron">chevron_right</span>
                     </button>
 
-                    <!-- Logout Link --> 
-                    <form asp-area="User" asp-controller="TaiKhoan" asp-action="Logout" method="post" class="m-0 pt-space-xs">
+                    <!-- Logout Link -->
+                    <form asp-area="User"
+                          asp-controller="TaiKhoan"
+                          asp-action="Logout"
+                          method="post"
+                          class="m-0 pt-space-xs">
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="w-full flex items-center gap-space-sm px-space-md py-2.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/30 transition-colors font-title-sm text-title-sm text-left cursor-pointer">
+                        <button type="submit"
+                                class="w-full flex items-center gap-space-sm px-space-md py-2.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/30 transition-colors font-title-sm text-title-sm text-left cursor-pointer">
                             <span class="material-symbols-outlined text-[20px]">logout</span>
                             <span>Đăng xuất tài khoản</span>
                         </button>
@@ -150,7 +179,8 @@
                     <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
                         Bạn có yêu cầu đặc biệt về loài hoa nhập khẩu hiếm hoặc sự kiện tư gia? Chuyên viên hoa của chúng tôi luôn sẵn sàng hỗ trợ.
                     </p>
-                    <a class="inline-flex items-center gap-2 text-primary font-title-sm text-title-sm hover:underline pt-space-xs" href="tel:19008866">
+                    <a class="inline-flex items-center gap-2 text-primary font-title-sm text-title-sm hover:underline pt-space-xs"
+                       href="tel:19008866">
                         <span class="material-symbols-outlined text-[18px]">call</span>
                         <span>Hotline VIP: 1900 8866</span>
                     </a>
@@ -163,6 +193,7 @@
                 <!-- TAB 1: THÔNG TIN CÁ NHÂN -->
                 <div id="tab-personal" class="profile-tab-content space-y-space-xl">
                     <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-lg">
+
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
                             <div>
                                 <h2 class="font-headline-md text-headline-md text-on-surface">Thông Tin Cá Nhân &amp; Tài Khoản</h2>
@@ -173,18 +204,30 @@
                             </span>
                         </div>
 
-                        <form asp-area="User" asp-controller="HoSo" asp-action="CapNhatThongTin" method="post" class="space-y-space-md">
+                        @* POST cập nhật hồ sơ: Controller đồng bộ thông tin TaiKhoan và KhachHang. *@
+                        <form asp-area="User"
+                              asp-controller="HoSo"
+                              asp-action="CapNhatThongTin"
+                              method="post"
+                              class="space-y-space-md">
                             @Html.AntiForgeryToken()
 
                             <!-- Row 1: Name & Username -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                                 <div class="space-y-space-xs">
                                     <label class="font-title-sm text-title-sm text-on-surface block" for="fullname">Họ và tên quý khách</label>
-                                    <input asp-for="HoTen" class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all" id="fullname" type="text" required>
+                                    <input asp-for="HoTen"
+                                           class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all"
+                                           id="fullname"
+                                           type="text"
+                                           required>
                                 </div>
                                 <div class="space-y-space-xs">
                                     <label class="font-title-sm text-title-sm text-on-surface block">Tên đăng nhập hệ thống</label>
-                                    <input value="@Model.TenDangNhap" readonly class="w-full px-space-md py-3 rounded-lg bg-surface-container-high/60 font-body-md text-body-md text-on-surface-variant cursor-not-allowed shadow-sm" type="text">
+                                    <input value="@Model.TenDangNhap"
+                                           readonly
+                                           class="w-full px-space-md py-3 rounded-lg bg-surface-container-high/60 font-body-md text-body-md text-on-surface-variant cursor-not-allowed shadow-sm"
+                                           type="text">
                                 </div>
                             </div>
 
@@ -192,18 +235,30 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                                 <div class="space-y-space-xs">
                                     <label class="font-title-sm text-title-sm text-on-surface block" for="phone">Số điện thoại liên hệ</label>
-                                    <input asp-for="SoDienThoai" class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all" id="phone" type="tel" required>
+                                    <input asp-for="SoDienThoai"
+                                           class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all"
+                                           id="phone"
+                                           type="tel"
+                                           required>
                                 </div>
                                 <div class="space-y-space-xs">
                                     <label class="font-title-sm text-title-sm text-on-surface block" for="email">Địa chỉ Email</label>
-                                    <input asp-for="Email" class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all" id="email" type="email" required>
+                                    <input asp-for="Email"
+                                           class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all"
+                                           id="email"
+                                           type="email"
+                                           required>
                                 </div>
                             </div>
 
                             <!-- Row 3: Address -->
                             <div class="space-y-space-xs">
                                 <label class="font-title-sm text-title-sm text-on-surface block" for="address">Địa chỉ giao nhận mặc định</label>
-                                <input asp-for="DiaChi" class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all" id="address" placeholder="Nhập địa chỉ nhà riêng hoặc văn phòng..." type="text">
+                                <input asp-for="DiaChi"
+                                       class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all"
+                                       id="address"
+                                       placeholder="Nhập địa chỉ nhà riêng hoặc văn phòng..."
+                                       type="text">
                             </div>
 
                             <!-- Row 4: Member stats overview -->
@@ -224,7 +279,8 @@
 
                             <!-- Action Buttons -->
                             <div class="flex flex-wrap items-center justify-end gap-space-sm pt-space-md">
-                                <button class="px-space-xl py-2.5 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container shadow-md transition-all flex items-center gap-2 cursor-pointer" type="submit">
+                                <button class="px-space-xl py-2.5 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                                        type="submit">
                                     <span class="material-symbols-outlined text-[18px]">save</span>
                                     <span>Lưu thay đổi thông tin</span>
                                 </button>
@@ -235,7 +291,9 @@
 
                 <!-- TAB 2: LỊCH SỬ ĐƠN HOA -->
                 <div id="tab-orders" class="profile-tab-content space-y-space-xl hidden">
+
                     <!-- Current Active Order Card -->
+                    @* Khối đơn mới nhất lấy từ danh sách đơn trong DB của chính khách đăng nhập. *@
                     @if (Model.DonHangGanNhat != null)
                     {
                         var donGannhat = Model.DonHangGanNhat;
@@ -245,6 +303,7 @@
                         var moTa = ctFirst?.MauSanPham?.MoTa ?? ctFirst?.YeuCauRieng ?? "Mẫu hoa tươi thiết kế độc bản";
 
                         <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-md">
+
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
                                 <div class="space-y-0.5">
                                     <span class="font-label-lg text-label-lg text-tertiary uppercase tracking-widest font-semibold block">Cập nhật thời gian thực</span>
@@ -257,6 +316,7 @@
 
                             <!-- Order Card with Progress -->
                             <div class="p-space-lg rounded-xl bg-surface-container-low space-y-space-md">
+
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-xs border-b border-outline-variant/30">
                                     <div>
                                         <span class="font-label-md text-label-md text-secondary uppercase tracking-widest block">Mã đơn hàng</span>
@@ -272,14 +332,18 @@
 
                                 <!-- Product Item Details -->
                                 <div class="flex flex-col sm:flex-row items-center gap-space-md pt-space-xs">
-                                    <img class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover shadow-sm flex-shrink-0" alt="@tenSp" src="@anhSp" onerror="this.src='/images/mau/mau01.jpg';">
+                                    <img class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover shadow-sm flex-shrink-0"
+                                         alt="@tenSp"
+                                         src="@anhSp"
+                                         onerror="this.src='/images/mau/mau01.jpg';">
                                     <div class="flex-1 space-y-1 text-center sm:text-left">
                                         <h3 class="font-headline-sm text-headline-sm text-on-surface">@tenSp</h3>
                                         <p class="font-body-sm text-body-sm text-secondary">
                                             @moTa
                                         </p>
                                         <p class="font-body-sm text-body-sm text-on-surface-variant">
-                                            Giao tới: <strong class="text-on-surface">@(donGannhat.DiaChiGiao ?? "Nhận tại cửa hàng")</strong> • Dự kiến: <strong class="text-tertiary">@donGannhat.ThoiGianNhanGiao.ToString("HH:mm - dd/MM/yyyy")</strong>
+                                            Giao tới: <strong class="text-on-surface">@(donGannhat.DiaChiGiao ?? "Nhận tại cửa hàng")</strong>
+                                            • Dự kiến: <strong class="text-tertiary">@donGannhat.ThoiGianNhanGiao.ToString("HH:mm - dd/MM/yyyy")</strong>
                                         </p>
                                         <div class="font-headline-sm text-headline-sm text-primary font-semibold pt-1">
                                             @donGannhat.TongTien.ToString("N0")₫
@@ -320,6 +384,7 @@
                             <h2 class="font-headline-md text-headline-md text-on-surface">Toàn Bộ Lịch Sử Đặt Hoa (@Model.TongSoDonHang đơn)</h2>
                         </div>
 
+                        @* Danh sách lịch sử đơn hàng: trạng thái/giá/chi tiết đi kèm từ Controller. *@
                         @if (Model.DanhSachDonHang.Any())
                         {
                             <div class="space-y-space-md">
@@ -331,7 +396,10 @@
 
                                     <div class="p-space-md rounded-xl bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-md hover:bg-surface-container transition-all">
                                         <div class="flex items-center gap-space-md">
-                                            <img class="w-16 h-16 rounded-lg object-cover shadow-sm flex-shrink-0" alt="@tenSp" src="@anhSp" onerror="this.src='/images/mau/mau01.jpg';">
+                                            <img class="w-16 h-16 rounded-lg object-cover shadow-sm flex-shrink-0"
+                                                 alt="@tenSp"
+                                                 src="@anhSp"
+                                                 onerror="this.src='/images/mau/mau01.jpg';">
                                             <div>
                                                 <div class="flex items-center gap-2">
                                                     <span class="font-title-sm text-title-sm text-on-surface font-bold">#ORD-@don.MaDon.ToString("D4")</span>
@@ -341,7 +409,8 @@
                                                 </div>
                                                 <h3 class="font-body-md text-body-md text-on-surface font-medium">@tenSp</h3>
                                                 <p class="font-body-sm text-body-sm text-secondary">
-                                                    Ngày đặt: @don.NgayDat.ToString("dd/MM/yyyy HH:mm") • Người nhận: @don.NguoiNhan
+                                                    Ngày đặt: @don.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                                                    • Người nhận: @don.NguoiNhan
                                                 </p>
                                             </div>
                                         </div>
@@ -350,6 +419,19 @@
                                             <span class="text-xs text-secondary font-label-md">
                                                 @(don.ChiTietDonHoas.Count) sản phẩm
                                             </span>
+                                            <a class="text-primary text-xs underline" href="/User/HoSo/ChiTietDon?maDon=@don.MaDon">Xem chi tiết đơn</a>
+
+                                            @* Khách chỉ thấy nút Hủy cho đơn chờ xác nhận và chưa có thanh toán; POST còn kiểm tra server. *@
+                                            @if (don.TrangThai == TrangThaiDon.ChoXacNhan && !don.ThanhToans.Any())
+                                            {
+                                                <form method="post"
+                                                      action="/User/HoSo/HuyDon"
+                                                      onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn này?')">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="maDon" value="@don.MaDon" />
+                                                    <button type="submit" class="text-error text-xs underline">Hủy đơn</button>
+                                                </form>
+                                            }
                                         </div>
                                     </div>
                                 }
@@ -360,7 +442,8 @@
                             <div class="text-center py-12 text-secondary space-y-2">
                                 <span class="material-symbols-outlined text-[48px] text-outline">receipt_long</span>
                                 <p class="font-body-md">Quý khách chưa có đơn đặt hoa nào trong hệ thống.</p>
-                                <a href="/User/Products" class="inline-block mt-2 px-6 py-2 rounded-full bg-primary text-on-primary font-title-sm text-sm">
+                                <a href="/User/Products"
+                                   class="inline-block mt-2 px-6 py-2 rounded-full bg-primary text-on-primary font-title-sm text-sm">
                                     Khám phá bộ sưu tập hoa
                                 </a>
                             </div>
@@ -371,17 +454,20 @@
                 <!-- TAB 3: HOA THIẾT KẾ RIÊNG -->
                 <div id="tab-custom-design" class="profile-tab-content space-y-space-xl hidden">
                     <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-lg">
+
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
                             <div>
                                 <h2 class="font-headline-md text-headline-md text-on-surface">Hoa Thiết Kế Riêng Của Tôi (Bespoke)</h2>
                                 <p class="font-body-sm text-body-sm text-secondary">Quản lý các bản thảo cắm hoa độc bản được thiết kế riêng theo yêu cầu cá nhân.</p>
                             </div>
-                            <a class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors shadow-sm self-start sm:self-auto" href="/User/CustomDesign">
+                            <a class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-colors shadow-sm self-start sm:self-auto"
+                               href="/User/CustomDesign">
                                 <span class="material-symbols-outlined text-[18px]">add</span>
                                 <span>Tạo thiết kế hoa mới</span>
                             </a>
                         </div>
 
+                        @* Tab thiết kế riêng lọc từ đơn có ChiTietDonHoa.YeuCauRieng hoặc MaMau == null. *@
                         @if (Model.DonHangThietKeRieng.Any())
                         {
                             <div class="space-y-space-md">
@@ -391,6 +477,7 @@
                                     var yeuCau = ctRieng?.YeuCauRieng ?? "Yêu cầu thiết kế đặc biệt";
 
                                     <div class="p-space-lg rounded-xl bg-surface-container-low border border-primary/20 space-y-space-md relative overflow-hidden">
+
                                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-xs border-b border-outline-variant/30">
                                             <div>
                                                 <span class="font-label-md text-label-md text-secondary uppercase tracking-widest block">Mã đơn thiết kế</span>
@@ -426,7 +513,8 @@
                             <div class="text-center py-12 text-secondary space-y-2">
                                 <span class="material-symbols-outlined text-[48px] text-outline">palette</span>
                                 <p class="font-body-md">Quý khách chưa có yêu cầu thiết kế hoa riêng nào.</p>
-                                <a href="/User/CustomDesign" class="inline-block mt-2 px-6 py-2 rounded-full bg-primary text-on-primary font-title-sm text-sm">
+                                <a href="/User/CustomDesign"
+                                   class="inline-block mt-2 px-6 py-2 rounded-full bg-primary text-on-primary font-title-sm text-sm">
                                     Gửi yêu cầu thiết kế riêng
                                 </a>
                             </div>
@@ -437,6 +525,7 @@
                 <!-- TAB 4: SỔ ĐỊA CHỈ NHẬN HOA -->
                 <div id="tab-addresses" class="profile-tab-content space-y-space-xl hidden">
                     <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-lg">
+
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
                             <div>
                                 <h2 class="font-headline-md text-headline-md text-on-surface">Sổ Địa Chỉ Nhận Hoa Thân Thiết</h2>
@@ -445,6 +534,7 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+
                             <!-- Address Card 1: Default -->
                             <div class="p-space-lg rounded-xl bg-surface-container-low relative space-y-space-sm flex flex-col justify-between border border-primary/20">
                                 <div>
@@ -501,6 +591,7 @@
 
                 <!-- TAB 5: CÀI ĐẶT & BẢO MẬT -->
                 <div id="tab-security" class="profile-tab-content space-y-space-xl hidden">
+
                     <div class="flex items-center gap-space-sm border-b border-outline-variant/40 pb-space-md">
                         <span class="material-symbols-outlined text-primary text-[28px]">shield</span>
                         <div>
@@ -510,6 +601,7 @@
                     </div>
 
                     <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-lg">
+
                         <div class="flex items-center justify-between border-b border-outline-variant/40 pb-space-sm">
                             <div>
                                 <h3 class="font-headline-sm text-headline-sm text-on-surface">Đổi Mật Khẩu Đăng Nhập</h3>
@@ -518,31 +610,60 @@
                             <span class="material-symbols-outlined text-primary text-[24px]">lock_reset</span>
                         </div>
 
-                        <form asp-area="User" asp-controller="HoSo" asp-action="DoiMatKhau" method="post" class="space-y-space-md">
+                        @* POST bảo vệ bằng AntiForgeryToken; mật khẩu hiện tại được kiểm tra ở Controller. *@
+                        <form asp-area="User"
+                              asp-controller="HoSo"
+                              asp-action="DoiMatKhau"
+                              method="post"
+                              class="space-y-space-md">
                             @Html.AntiForgeryToken()
+
                             <div class="space-y-space-xs">
                                 <label class="font-title-sm text-title-sm text-on-surface block" for="current_pwd">Mật khẩu hiện tại</label>
                                 <div class="relative">
-                                    <input name="MatKhauHienTai" required class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm pr-10" id="current_pwd" placeholder="Nhập mật khẩu hiện tại" type="password">
-                                    <span class="material-symbols-outlined text-[20px] text-outline absolute right-3 top-3.5 cursor-pointer hover:text-on-surface transition-colors" onclick="togglePasswordVisibility('current_pwd')">visibility</span>
+                                    <input name="MatKhauHienTai"
+                                           required
+                                           class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm pr-10"
+                                           id="current_pwd"
+                                           placeholder="Nhập mật khẩu hiện tại"
+                                           type="password">
+                                    <span class="material-symbols-outlined text-[20px] text-outline absolute right-3 top-3.5 cursor-pointer hover:text-on-surface transition-colors"
+                                          onclick="togglePasswordVisibility('current_pwd')">visibility</span>
                                 </div>
                             </div>
+
                             <div class="space-y-space-xs">
                                 <label class="font-title-sm text-title-sm text-on-surface block" for="new_pwd">Mật khẩu mới</label>
                                 <div class="relative">
-                                    <input name="MatKhauMoi" required minlength="6" class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm pr-10" id="new_pwd" placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)" type="password">
-                                    <span class="material-symbols-outlined text-[20px] text-outline absolute right-3 top-3.5 cursor-pointer hover:text-on-surface transition-colors" onclick="togglePasswordVisibility('new_pwd')">visibility</span>
+                                    <input name="MatKhauMoi"
+                                           required
+                                           minlength="6"
+                                           class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm pr-10"
+                                           id="new_pwd"
+                                           placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
+                                           type="password">
+                                    <span class="material-symbols-outlined text-[20px] text-outline absolute right-3 top-3.5 cursor-pointer hover:text-on-surface transition-colors"
+                                          onclick="togglePasswordVisibility('new_pwd')">visibility</span>
                                 </div>
                             </div>
+
                             <div class="space-y-space-xs">
                                 <label class="font-title-sm text-title-sm text-on-surface block" for="confirm_pwd">Xác nhận mật khẩu mới</label>
                                 <div class="relative">
-                                    <input name="XacNhanMatKhauMoi" required class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm pr-10" id="confirm_pwd" placeholder="Nhập lại mật khẩu mới" type="password">
-                                    <span class="material-symbols-outlined text-[20px] text-outline absolute right-3 top-3.5 cursor-pointer hover:text-on-surface transition-colors" onclick="togglePasswordVisibility('confirm_pwd')">visibility</span>
+                                    <input name="XacNhanMatKhauMoi"
+                                           required
+                                           class="w-full px-space-md py-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-sm pr-10"
+                                           id="confirm_pwd"
+                                           placeholder="Nhập lại mật khẩu mới"
+                                           type="password">
+                                    <span class="material-symbols-outlined text-[20px] text-outline absolute right-3 top-3.5 cursor-pointer hover:text-on-surface transition-colors"
+                                          onclick="togglePasswordVisibility('confirm_pwd')">visibility</span>
                                 </div>
                             </div>
+
                             <div class="flex items-center justify-end gap-space-sm pt-space-sm">
-                                <button class="px-space-xl py-2.5 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container shadow-md transition-all flex items-center gap-2 cursor-pointer" type="submit">
+                                <button class="px-space-xl py-2.5 rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                                        type="submit">
                                     <span class="material-symbols-outlined text-[18px]">verified_user</span>
                                     <span>Cập nhật mật khẩu mới</span>
                                 </button>
@@ -558,13 +679,15 @@
 
 <!-- JavaScript for Tab Switching & Hash Navigation -->
 <script>
+    // Ẩn/hiện mật khẩu trên giao diện, không thay đổi nội dung gửi lên server.
     function togglePasswordVisibility(fieldId) {
         const input = document.getElementById(fieldId);
         if (!input) return;
         input.type = input.type === 'password' ? 'text' : 'password';
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    // Chuyển tab hồ sơ/lịch sử đơn/thiết kế/bảo mật mà không tải lại trang.
+    document.addEventListener('DOMContentLoaded', function() {
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.profile-tab-content');
 
@@ -622,7 +745,7 @@
 
         // Attach click listeners to all tab buttons
         tabBtns.forEach(btn => {
-            btn.addEventListener('click', function () {
+            btn.addEventListener('click', function() {
                 const tabId = this.getAttribute('data-tab');
                 if (tabId) {
                     switchTab(tabId);
@@ -632,7 +755,7 @@
         });
 
         // Handle browser Back / Forward buttons & initial URL hash
-        window.addEventListener('hashchange', function () {
+        window.addEventListener('hashchange', function() {
             const hash = window.location.hash.replace('#', '');
             if (hash) {
                 switchTab(hash);

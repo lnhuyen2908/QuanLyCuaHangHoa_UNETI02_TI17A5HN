@@ -4,8 +4,10 @@
     Nội dung thực hiện: Sidebar Quản trị: hiển thị HoTen/VaiTro từ Session, nút Đăng xuất, phân quyền menu Tài khoản.
 *@
 
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+@inject AppDbContext db
 @{
     string activeMenu = ViewBag.ActiveMenu as string ?? "";
     string? vaiTro = Context.Session.GetVaiTro();
@@ -39,7 +41,7 @@
                     <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
                     <span>Đơn đặt hoa</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full @(activeMenu == "DonDatHoa" ? "bg-on-primary/20 text-on-primary" : "bg-primary/10 text-primary") text-[11px] font-bold">12</span>
+                <span class="px-2 py-0.5 rounded-full @(activeMenu == "DonDatHoa" ? "bg-on-primary/20 text-on-primary" : "bg-primary/10 text-primary") text-[11px] font-bold">@(db.DonDatHoas.Count(d => d.TrangThai == "Chờ xác nhận"))</span>
             </a>
 
             <!-- Module 3: Thiết kế riêng -->

@@ -26,7 +26,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 
         // GET: Danh sách khách hàng
         public async Task<IActionResult> Index(string? tuKhoa, bool? trangThai,
-                                                string sapXep = "name_asc",
+                                                string sapXep = "date_new",
                                                 int page = 1)
         {
             const int pageSize = 10;
@@ -62,9 +62,9 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 _ => query.OrderBy(k => k.HoTen).ThenBy(k => k.MaKhachHang)
             };
 
-            if (sapXep != "name_desc" && sapXep != "date_new" && sapXep != "date_old")
+            if (sapXep != "name_desc" && sapXep != "name_asc" && sapXep != "date_old")
             {
-                sapXep = "name_asc";
+                sapXep = "date_new";
             }
 
             // Phân trang

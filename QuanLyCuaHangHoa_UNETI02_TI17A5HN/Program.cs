@@ -23,6 +23,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN
                 options.Cookie.IsEssential = true; // Session vẫn hoạt động khi chưa đồng ý cookie
             });
 
+            builder.Services.AddScoped<DonHangService>();
+            builder.Services.AddScoped<GioHangService>();
             builder.Services.AddScoped<TaiKhoanService>();
 
             var app = builder.Build();
