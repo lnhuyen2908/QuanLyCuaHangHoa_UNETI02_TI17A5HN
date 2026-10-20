@@ -1,0 +1,159 @@
+﻿
+@* Họ và tên: Nguyễn Thị Đào
+   Mã sinh viên: 23103100245
+   Nội dung: Tuần 6 - Form ghi nhận thanh toán đơn hàng. *@
+
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.ThanhToanCreateViewModel
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+
+@{
+    ViewBag.Title = "Ghi nhận thanh toán";
+    ViewBag.ActiveMenu = "ThanhToan";
+    ViewBag.Breadcrumb = "Thanh toán / Ghi nhận";
+}
+
+<div class="w-full px-space-xl py-space-lg">
+    <div class="max-w-6xl mx-auto space-y-6">
+
+        @await Html.PartialAsync("_AdminPageHeader")
+
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm p-8 space-y-6">
+
+            <h2 class="font-headline-sm text-2xl">
+                Ghi nhận thanh toán
+            </h2>
+
+            <p class="text-secondary">
+                Đơn đặt hoa #ORD-@Model.MaDon.ToString("D4")
+            </p>
+
+            @* Nguyễn Thị Đào - Hiển thị số tiền *@
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <div class="bg-surface-container-low p-5 rounded-xl">
+                    <p class="text-sm text-secondary">Tổng tiền đơn</p>
+                    <p class="text-xl font-bold text-primary mt-2">
+                        @Model.TongTien.ToString("N0")₫
+                    </p>
+                </div>
+
+                <div class="bg-surface-container-low p-5 rounded-xl">
+                    <p class="text-sm text-secondary">Đã thanh toán</p>
+                    <p class="text-xl font-bold mt-2">
+                        @Model.TongDaThanhToan.ToString("N0")₫
+                    </p>
+                </div>
+
+                <div class="bg-surface-container-low p-5 rounded-xl">
+                    <p class="text-sm text-secondary">Còn lại</p>
+                    <p class="text-xl font-bold text-primary mt-2">
+                        @Model.SoTienConLai.ToString("N0")₫
+                    </p>
+                </div>
+            </div>
+
+            <form asp-area="Admin"
+                  asp-controller="ThanhToan"
+                  asp-action="Create"
+                  method="post"
+                  class="space-y-5">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="MaDon" type="hidden" />
+
+                <div asp-validation-summary="All"
+                     class="text-error text-sm"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <div>
+                        <label asp-for="SoTien"
+                               class="block font-semibold mb-2">
+                            Số tiền thanh toán
+                        </label>
+
+                        <input asp-for="SoTien"
+                               type="number"
+                               min="0.01"
+                               step="0.01"
+                               max="@Model.SoTienConLai.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                               required
+                               class="w-full p-3 rounded-lg bg-surface-container border border-outline-variant" />
+
+                        <span asp-validation-for="SoTien"
+                              class="text-error text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="PhuongThuc"
+                               class="block font-semibold mb-2">
+                            Phương thức thanh toán
+                        </label>
+
+                        <select asp-for="PhuongThuc"
+                                required
+                                class="w-full p-3 rounded-lg bg-surface-container border border-outline-variant">
+
+                            <option value="">-- Chọn phương thức --</option>
+
+                            <option value="@PhuongThucThanhToanConst.TienMat">
+                                Tiền mặt
+                            </option>
+
+                            <option value="@PhuongThucThanhToanConst.ChuyenKhoan">
+                                Chuyển khoản
+                            </option>
+
+                            <option value="@PhuongThucThanhToanConst.ViDienTu">
+                                Ví điện tử
+                            </option>
+
+                            <option value="@PhuongThucThanhToanConst.TheNganHang">
+                                Thẻ ngân hàng
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="PhuongThuc"
+                              class="text-error text-sm"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <label asp-for="GhiChu"
+                           class="block font-semibold mb-2">
+                        Ghi chú thanh toán
+                    </label>
+
+                    <textarea asp-for="GhiChu"
+                              rows="3"
+                              maxlength="500"
+                              placeholder="Nhập ghi chú nếu có..."
+                              class="w-full p-3 rounded-lg bg-surface-container border border-outline-variant"></textarea>
+
+                    <span asp-validation-for="GhiChu"
+                          class="text-error text-sm"></span>
+                </div>
+
+                <div class="flex flex-wrap gap-3 pt-4">
+
+                    <button type="submit"
+                            class="bg-primary text-on-primary px-6 py-3 rounded-lg font-semibold">
+                        Xác nhận thanh toán
+                    </button>
+
+                    <a asp-area="Admin"
+                       asp-controller="ThanhToan"
+                       asp-action="Index"
+                       asp-route-maDon="@Model.MaDon"
+                       class="px-6 py-3 bg-surface-container rounded-lg">
+                        Quay lại
+                    </a>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

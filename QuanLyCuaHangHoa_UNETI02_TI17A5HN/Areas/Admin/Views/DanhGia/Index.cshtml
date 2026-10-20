@@ -1,146 +1,347 @@
+
+@* Họ và tên: Nguyễn Thị Đào
+   Mã sinh viên: 23103100245
+   Nội dung thực hiện: Tuần 6 - Module 4
+   Quản lý đánh giá, thống kê LINQ,
+   tìm kiếm, sắp xếp và phân trang. *@
+
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
+
+@model DanhGiaAdminViewModel
+
 @{
     ViewBag.Title = "Quản Lý Đánh Giá";
     ViewBag.ActiveMenu = "DanhGia";
     ViewBag.Breadcrumb = "Chăm sóc khách hàng";
 }
 
-<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
-    <!-- Header Section -->
+<div class="w-full px-space-xl py-space-lg space-y-6">
+
     @await Html.PartialAsync("_AdminPageHeader")
 
-    <!-- CSAT & Star Breakdown Bento Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
-        <!-- Average CSAT Card -->
-        <div class="lg:col-span-4 bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between">
-            <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline font-semibold">Điểm trải nghiệm trung bình</span>
-                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-md text-label-md font-bold">
-                        <span class="material-symbols-outlined text-[14px]">trending_up</span>+0.3 tháng này
+    @* THỐNG KÊ ĐÁNH GIÁ TỪ DATABASE
+       Nguyễn Thị Đào - 23103100245*@
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+        <!-- Điểm đánh giá trung bình -->
+        <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-sm uppercase text-outline font-semibold">
+                    Điểm đánh giá trung bình
+                </p>
+
+                <span class="material-symbols-outlined text-primary text-2xl">
+                    star
+                </span>
+            </div>
+
+            <div class="flex items-baseline gap-2 mt-5">
+                <span class="text-4xl font-bold text-primary">
+                    @Model.DiemTrungBinh.ToString("0.0")
+                </span>
+                <span class="text-xl text-secondary">/ 5</span>
+            </div>
+
+            <p class="text-secondary text-sm mt-3">
+                Tính từ tất cả đánh giá của khách hàng
+            </p>
+        </div>
+
+        <!-- Tổng lượt đánh giá -->
+        <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-sm uppercase text-outline font-semibold">
+                    Tổng lượt đánh giá
+                </p>
+
+                <span class="material-symbols-outlined text-primary text-2xl">
+                    rate_review
+                </span>
+            </div>
+
+            <div class="text-4xl font-bold text-primary mt-5">
+                @Model.TongDanhGia.ToString("N0")
+            </div>
+
+            <p class="text-secondary text-sm mt-3">
+                Tổng số phản hồi đã được ghi nhận
+            </p>
+        </div>
+
+        <!-- Tỷ lệ đánh giá 5 sao -->
+        <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-sm uppercase text-outline font-semibold">
+                    Tỷ lệ đánh giá 5 sao
+                </p>
+
+                <span class="material-symbols-outlined text-amber-500 text-2xl">
+                    workspace_premium
+                </span>
+            </div>
+
+            <div class="text-4xl font-bold text-primary mt-5">
+                @Model.TyLe5Sao.ToString("0.0")%
+            </div>
+
+            <p class="text-secondary text-sm mt-3">
+                @Model.ThongKeSao[5] đánh giá đạt 5 sao
+            </p>
+        </div>
+
+    </div>
+
+    @* BIỂU ĐỒ PHÂN BỐ 1-5 SAO
+       Dữ liệu tính bằng LINQ *@
+
+    <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-6">
+
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="font-headline-sm text-xl font-semibold">
+                    Phân bố mức đánh giá
+                </h2>
+
+                <p class="text-secondary text-sm mt-1">
+                    Số lượng và tỷ lệ đánh giá theo từng mức sao
+                </p>
+            </div>
+
+            <span class="material-symbols-outlined text-primary text-3xl">
+                bar_chart
+            </span>
+        </div>
+
+        <div class="space-y-5">
+
+            @for (int sao = 5; sao >= 1; sao--)
+            {
+                var soLuong = Model.ThongKeSao[sao];
+
+                var phanTram = Model.TongDanhGia > 0
+                    ? soLuong * 100.0 / Model.TongDanhGia
+                    : 0.0;
+
+                var chieuRong =
+                    "width:" +
+                    phanTram.ToString(
+                        "0.##",
+                        System.Globalization.CultureInfo.InvariantCulture)
+                    + "%;";
+
+                <div class="flex items-center gap-4">
+
+                    <div class="w-16 shrink-0 flex items-center gap-1">
+                        <span class="font-semibold">@sao</span>
+                        <span class="material-symbols-outlined text-amber-500 text-[19px]">
+                            star
+                        </span>
+                    </div>
+
+                    <div class="flex-1 bg-surface-container rounded-full h-3 overflow-hidden">
+                        <div class="h-full bg-primary rounded-full transition-all"
+                             style="@chieuRong">
+                        </div>
+                    </div>
+
+                    <span class="w-16 text-right text-sm font-semibold">
+                        @phanTram.ToString("0.0")%
                     </span>
-                </div>
-                <div class="flex items-baseline gap-3 pt-2">
-                    <span class="font-display-lg text-display-lg text-primary font-bold">4.9</span>
-                    <span class="font-headline-md text-headline-md text-outline">/ 5.0</span>
-                </div>
-                <div class="flex items-center gap-1 text-amber-500">
-                    <span class="material-symbols-outlined text-[22px]">star</span>
-                    <span class="material-symbols-outlined text-[22px]">star</span>
-                    <span class="material-symbols-outlined text-[22px]">star</span>
-                    <span class="material-symbols-outlined text-[22px]">star</span>
-                    <span class="material-symbols-outlined text-[22px]">star</span>
-                </div>
-            </div>
-            <div class="mt-6 pt-4 border-t border-surface-container flex items-center justify-between">
-                <div class="text-left">
-                    <p class="font-headline-sm text-headline-sm text-on-surface font-semibold">1,420</p>
-                    <p class="font-label-md text-label-md text-outline uppercase tracking-wider">Lượt đánh giá</p>
-                </div>
-                <div class="text-right">
-                    <p class="font-headline-sm text-headline-sm text-tertiary font-semibold">98.2%</p>
-                    <p class="font-label-md text-label-md text-outline uppercase tracking-wider">Hài lòng tuyệt đối</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- Star Distribution Card -->
-        <div class="lg:col-span-4 bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between">
-            <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline font-semibold">Phân bố số sao</span>
-                    <span class="font-body-sm text-body-sm text-outline">1,420 phản hồi</span>
-                </div>
-                <div class="space-y-2 pt-1">
-                    <div class="flex items-center gap-2 font-body-sm text-body-sm">
-                        <span class="w-10 text-on-surface font-medium shrink-0">5 sao</span>
-                        <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
-                            <div class="h-full bg-primary rounded-full" style="width: 90%;"></div>
-                        </div>
-                        <span class="w-14 text-right text-on-surface-variant font-medium">90.1%</span>
-                    </div>
-                    <div class="flex items-center gap-2 font-body-sm text-body-sm">
-                        <span class="w-10 text-on-surface font-medium shrink-0">4 sao</span>
-                        <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
-                            <div class="h-full bg-primary-container rounded-full" style="width: 7.2%;"></div>
-                        </div>
-                        <span class="w-14 text-right text-on-surface-variant font-medium">7.2%</span>
-                    </div>
-                    <div class="flex items-center gap-2 font-body-sm text-body-sm">
-                        <span class="w-10 text-on-surface font-medium shrink-0">3 sao</span>
-                        <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
-                            <div class="h-full bg-secondary rounded-full" style="width: 1.7%;"></div>
-                        </div>
-                        <span class="w-14 text-right text-on-surface-variant font-medium">1.7%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    <span class="w-12 text-right text-sm text-secondary">
+                        @soLuong
+                    </span>
 
-        <!-- Standards Card -->
-        <div class="lg:col-span-4 bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between">
-            <div class="space-y-4">
-                <span class="font-label-md text-label-md uppercase tracking-wider text-outline font-semibold">Chỉ số tiêu chuẩn dịch vụ</span>
-                <div class="space-y-3">
-                    <div class="space-y-1">
-                        <div class="flex items-center justify-between text-on-surface font-title-sm text-title-sm">
-                            <span>Độ tươi hoa &gt; 5 ngày</span>
-                            <span class="font-bold text-tertiary">99.4%</span>
-                        </div>
-                        <div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
-                            <div class="h-full bg-tertiary rounded-full" style="width: 99.4%;"></div>
-                        </div>
-                    </div>
-                    <div class="space-y-1">
-                        <div class="flex items-center justify-between text-on-surface font-title-sm text-title-sm">
-                            <span>Giao hoa đúng giờ hẹn</span>
-                            <span class="font-bold text-primary">98.7%</span>
-                        </div>
-                        <div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden">
-                            <div class="h-full bg-primary rounded-full" style="width: 98.7%;"></div>
-                        </div>
-                    </div>
                 </div>
-            </div>
+            }
+
         </div>
     </div>
 
-    <!-- Filter Component -->
-    @await Html.PartialAsync("_AdminFilterBar")
+    @* BỘ LỌC DÙNG CHUNG CỦA NHÓM
+       Nguyễn Thị Đào - 23103100245 *@
 
-    <!-- Reviews List -->
-    <div class="space-y-space-md">
-        <article class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm space-y-4">
-            <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-title-md text-title-md font-bold shrink-0">PU</div>
-                    <div class="space-y-1">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="font-title-md text-title-md text-on-surface font-semibold">Lê Phương Uyên</span>
-                            <span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-md text-label-md font-bold">VIP Diamond</span>
-                        </div>
-                        <div class="flex items-center gap-2 font-body-sm text-body-sm text-outline">
-                            <span>Mã đơn: <strong class="text-primary font-medium">#ORD-9021</strong></span>
-                            <span>•</span>
-                            <span>24/10/2026</span>
-                        </div>
-                    </div>
+    @await Html.PartialAsync("_AdminFilterBar", new AdminFilterViewModel
+    {
+        Area = "Admin",
+        Controller = "DanhGia",
+        Action = "Index",
+
+        TuKhoa = Model.TuKhoa,
+        SapXep = Model.SapXep,
+
+        HienThiTrangThai = false,
+
+        Placeholder = "Tìm mã đơn (#ORD-0025), tên khách, nhận xét...",
+
+        SapXepOptions = new()
+        {
+            new() { Value = "date_new", Text = "Đánh giá mới nhất" },
+            new() { Value = "date_old", Text = "Đánh giá cũ nhất" },
+            new() { Value = "rate_high", Text = "Số sao cao nhất" },
+            new() { Value = "rate_low", Text = "Số sao thấp nhất" }
+        }
+    })
+
+    @* DANH SÁCH ĐÁNH GIÁ TỪ DATABASE*@
+
+    <div class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden">
+
+        <div class="p-6 border-b border-surface-container">
+
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h2 class="font-headline-sm text-xl font-semibold">
+                        Danh sách đánh giá khách hàng
+                    </h2>
+
+                    <p class="text-secondary text-sm mt-1">
+                        Tìm thấy @Model.DanhSach.TongSoBanGhi đánh giá phù hợp
+                    </p>
                 </div>
-                <div class="flex items-center gap-1 text-amber-500 shrink-0">
-                    <span class="material-symbols-outlined text-[20px]">star</span>
-                    <span class="material-symbols-outlined text-[20px]">star</span>
-                    <span class="material-symbols-outlined text-[20px]">star</span>
-                    <span class="material-symbols-outlined text-[20px]">star</span>
-                    <span class="material-symbols-outlined text-[20px]">star</span>
-                </div>
+
+                <span class="px-3 py-2 bg-surface-container rounded-xl text-sm font-semibold">
+                    Dữ liệu từ SQL Server
+                </span>
             </div>
-            <p class="font-body-md text-body-md text-on-surface">"Hoa hồng Ohara hương thơm thanh khiết nức nở, cành dày dặn không dập nát một cánh nào. Cách bó giấy lụa mờ rất trang nhã. Bạn người nhận khen nức nở. Rất hài lòng với dịch vụ cắm hoa của Nhóm 2 Atelier!"</p>
-            <div class="p-4 rounded-xl bg-surface-container-low border-l-2 border-primary space-y-1">
-                <div class="flex items-center justify-between">
-                    <span class="font-title-sm text-title-sm text-primary font-semibold">Phản hồi từ Nhóm 2 Atelier Admin:</span>
-                    <span class="font-label-md text-label-md text-outline">24/10/2026 - Bởi Admin</span>
+
+        </div>
+
+        <div class="p-6 space-y-4">
+
+            @if (!Model.DanhSach.DuLieu.Any())
+            {
+                <div class="text-center py-12 space-y-3">
+
+                    <span class="material-symbols-outlined text-5xl text-outline">
+                        rate_review
+                    </span>
+
+                    <p class="font-semibold text-on-surface">
+                        Chưa tìm thấy đánh giá phù hợp
+                    </p>
+
+                    <p class="text-secondary text-sm">
+                        Bạn có thể thử tìm kiếm với từ khóa khác.
+                    </p>
+
                 </div>
-                <p class="font-body-sm text-body-sm text-on-surface-variant">"Nhóm 2 Atelier chân thành cảm ơn chị Uyên đã tin tưởng lựa chọn sản phẩm của shop. Chúc chị luôn rạng rỡ bên những đóa hoa tươi!"</p>
-            </div>
-        </article>
+            }
+            else
+            {
+                @foreach (var danhGia in Model.DanhSach.DuLieu)
+                {
+                    <article class="border border-outline-variant rounded-2xl p-5 space-y-4 hover:shadow-sm transition-all">
+
+                        <div class="flex flex-col md:flex-row justify-between gap-4">
+
+                            <div class="flex items-center gap-3">
+
+                                <div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-lg shrink-0">
+                                    <span class="material-symbols-outlined">
+                                        person
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <h3 class="font-semibold text-on-surface">
+                                        @(danhGia.KhachHang?.HoTen ?? "Khách hàng")
+                                    </h3>
+
+                                    <p class="text-secondary text-sm mt-1">
+                                        Mã đơn:
+                                        <a asp-area="Admin"
+                                           asp-controller="DonDatHoa"
+                                           asp-action="Details"
+                                           asp-route-id="@danhGia.MaDon"
+                                           class="text-primary font-semibold hover:underline">
+                                            #ORD-@danhGia.MaDon.ToString("D4")
+                                        </a>
+                                    </p>
+
+                                    <p class="text-secondary text-xs mt-1">
+                                        @danhGia.NgayDanhGia.ToString("dd/MM/yyyy HH:mm")
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="flex items-center gap-1 shrink-0">
+
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <span class="material-symbols-outlined text-[22px] @(i <= danhGia.SoSao ? "text-amber-500" : "text-outline-variant")">
+                                        star
+                                    </span>
+                                }
+
+                                <span class="ml-2 text-primary font-bold">
+                                    @danhGia.SoSao/5
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="bg-surface-container-low rounded-xl p-4">
+                            <p class="text-sm text-on-surface leading-relaxed whitespace-pre-wrap">@(string.IsNullOrWhiteSpace(danhGia.NoiDung)
+                                ? "Khách hàng không để lại nội dung nhận xét."
+                                : danhGia.NoiDung)</p>
+                        </div>
+
+                        <div class="flex flex-wrap gap-3 items-center justify-between">
+
+                            <span class="text-xs text-secondary">
+                                Mã đánh giá:
+                                DG-@danhGia.MaDanhGia.ToString("D4")
+                            </span>
+
+                            <a asp-area="Admin"
+                               asp-controller="DonDatHoa"
+                               asp-action="Details"
+                               asp-route-id="@danhGia.MaDon"
+                               class="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-surface-container text-on-surface text-sm font-semibold hover:bg-surface-container-high transition-all">
+
+                                <span class="material-symbols-outlined text-[17px]">
+                                    visibility
+                                </span>
+
+                                Xem đơn hàng
+                            </a>
+                        </div>
+
+                    </article>
+                }
+            }
+
+        </div>
+
+        @* Phân trang dùng chung của nhóm *@
+
+        <div class="px-6 pb-5">
+
+            @await Html.PartialAsync("_AdminPagination", new PaginationViewModel
+            {
+                TrangHienTai = Model.DanhSach.TrangHienTai,
+                TongSoTrang = Model.DanhSach.TongSoTrang,
+                TongSoBanGhi = Model.DanhSach.TongSoBanGhi,
+                SoBanGhiMoiTrang = Model.DanhSach.SoBanGhiMoiTrang,
+
+                Area = "Admin",
+                Controller = "DanhGia",
+                Action = "Index",
+
+                BoLoc = new Dictionary<string, string?>
+                {
+                    ["tuKhoa"] = Model.TuKhoa,
+                    ["sapXep"] = Model.SapXep
+                }
+            })
+
+        </div>
     </div>
+
 </div>
+
+@* KẾT THÚC MODULE 4 - NGUYỄN THỊ ĐÀO *@

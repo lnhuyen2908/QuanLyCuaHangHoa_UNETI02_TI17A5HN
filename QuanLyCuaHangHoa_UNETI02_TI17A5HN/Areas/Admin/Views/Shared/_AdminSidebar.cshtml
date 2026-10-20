@@ -115,6 +115,25 @@
                 <span>Giao &amp; Nhận</span>
             </a>
 
+            
+            @* Họ và tên: Nguyễn Thị Đào
+               Mã sinh viên: 23103100245
+               Nội dung: Tuần 6 - Thêm menu quản lý thanh toán. *@
+
+            <a asp-area="Admin"
+               asp-controller="ThanhToan"
+               asp-action="Index"
+               class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "ThanhToan" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
+
+                <span class="material-symbols-outlined text-[20px]">
+                    payments
+                </span>
+
+                <span>Thanh toán</span>
+            </a>
+
+            @* KẾT THÚC PHẦN BỔ SUNG - NGUYỄN THỊ ĐÀO *@
+
             <!-- Module 4: Đánh giá -->
             <a href="/Admin/DanhGia" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "DanhGia" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
                 <span class="material-symbols-outlined text-[20px]">star</span>

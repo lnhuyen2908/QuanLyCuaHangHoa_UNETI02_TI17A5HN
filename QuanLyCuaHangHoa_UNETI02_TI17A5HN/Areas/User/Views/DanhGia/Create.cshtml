@@ -1,0 +1,136 @@
+﻿
+@* Họ và tên: Nguyễn Thị Đào
+   Mã sinh viên: 23103100245
+   Nội dung: Tuần 6 - Giao diện đánh giá đơn hoàn thành. *@
+
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.DanhGiaCreateViewModel
+
+@{
+    ViewData["Title"] = "Đánh giá đơn đặt hoa";
+}
+
+<div class="w-full px-space-xl py-space-lg">
+    <div class="max-w-4xl mx-auto space-y-6">
+
+        <div class="text-center space-y-3 py-5">
+            <span class="material-symbols-outlined text-primary text-[48px]">
+                rate_review
+            </span>
+
+            <h1 class="text-3xl font-bold text-on-surface">
+                Đánh giá đơn đặt hoa
+            </h1>
+
+            <p class="text-secondary">
+                Chia sẻ trải nghiệm của bạn về chất lượng hoa
+                và dịch vụ của cửa hàng.
+            </p>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-8">
+
+            <div class="mb-6 pb-5 border-b border-outline-variant">
+                <p class="text-secondary text-sm">ĐƠN ĐẶT HOA</p>
+                <h2 class="text-xl font-bold text-primary">
+                    #ORD-@Model.MaDon.ToString("D4")
+                </h2>
+            </div>
+
+            <form asp-area="User"
+                  asp-controller="DanhGia"
+                  asp-action="Create"
+                  method="post"
+                  class="space-y-6">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="MaDon" type="hidden" />
+
+                <div asp-validation-summary="All"
+                     class="text-error text-sm"></div>
+
+                <div class="space-y-3">
+                    <label class="block font-semibold text-lg">
+                        Bạn hài lòng ở mức nào?
+                    </label>
+
+                    <div class="grid grid-cols-5 gap-2">
+                        @for (int sao = 1; sao <= 5; sao++)
+                        {
+                            <label class="flex flex-col items-center gap-2
+                                          cursor-pointer rounded-xl p-3
+                                          bg-surface-container-low
+                                          hover:bg-surface-container
+                                          transition-all">
+
+                                <input type="radio"
+                                       name="SoSao"
+                                       value="@sao"
+                                       checked="@(Model.SoSao == sao)"
+                                       class="accent-primary w-4 h-4" />
+
+                                <span class="material-symbols-outlined
+                                             text-amber-500 text-[28px]">
+                                    star
+                                </span>
+
+                                <span class="font-semibold text-sm">
+                                    @sao sao
+                                </span>
+                            </label>
+                        }
+                    </div>
+
+                    <span asp-validation-for="SoSao"
+                          class="text-error text-sm"></span>
+                </div>
+
+                <div class="space-y-2">
+                    <label asp-for="NoiDung"
+                           class="block font-semibold text-lg">
+                        Nội dung đánh giá
+                    </label>
+
+                    <textarea asp-for="NoiDung"
+                              rows="5"
+                              maxlength="1000"
+                              placeholder="Hoa có tươi không? Giao hàng và phục vụ thế nào?"
+                              class="w-full p-4 rounded-xl
+                                     bg-surface-container-low
+                                     border border-outline-variant
+                                     focus:outline-none
+                                     focus:border-primary"></textarea>
+
+                    <span asp-validation-for="NoiDung"
+                          class="text-error text-sm"></span>
+
+                    <p class="text-xs text-secondary">
+                        Tối đa 1000 ký tự. Bạn có thể để trống.
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap gap-3 pt-4">
+
+                    <button type="submit"
+                            class="inline-flex items-center justify-center
+                                   gap-2 px-6 py-3 bg-primary
+                                   text-on-primary rounded-xl font-semibold
+                                   hover:opacity-90 transition-all">
+                        <span class="material-symbols-outlined">
+                            send
+                        </span>
+                        Gửi đánh giá
+                    </button>
+
+                    <a href="/User/Profile#orders"
+                       class="px-6 py-3 rounded-xl
+                              bg-surface-container
+                              font-semibold">
+                        Quay lại
+                    </a>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

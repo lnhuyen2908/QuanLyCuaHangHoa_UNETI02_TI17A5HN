@@ -101,6 +101,84 @@ Nội dung thực hiện: Hiển thị dữ liệu thật, form GET lọc và PO
         </div>
     </div>
 
+    
+    @* Họ và tên: Nguyễn Thị Đào
+       Mã sinh viên: 23103100245
+       Nội dung: Tuần 6 - Giao diện chuyển trạng thái đơn *@
+
+    @{
+        string? buocTiepTheo = d.TrangThai switch
+        {
+            TrangThaiDon.DaXacNhan =>
+                TrangThaiDon.DangChuanBi,
+
+            TrangThaiDon.DangChuanBi =>
+                TrangThaiDon.SanSang,
+
+            TrangThaiDon.SanSang
+                when d.HinhThucNhan == HinhThucNhanConst.GiaoTanNoi =>
+                TrangThaiDon.DangGiao,
+
+            TrangThaiDon.SanSang
+                when d.HinhThucNhan == HinhThucNhanConst.KhachDenNhan =>
+                TrangThaiDon.HoanThanh,
+
+            TrangThaiDon.DangGiao
+                when d.HinhThucNhan == HinhThucNhanConst.GiaoTanNoi =>
+                TrangThaiDon.HoanThanh,
+
+            _ => null
+        };
+    }
+
+    @if (buocTiepTheo != null)
+    {
+        <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-3">
+
+            <h3 class="font-headline-sm text-xl">
+                Xử lý trạng thái đơn hàng
+            </h3>
+
+            <p>
+                Trạng thái hiện tại:
+                <strong>@d.TrangThai</strong>
+            </p>
+
+            <form method="post"
+                  asp-area="Admin"
+                  asp-controller="DonDatHoa"
+                  asp-action="ChuyenTrangThai"
+                  asp-route-id="@d.MaDon"
+                  class="space-y-3">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="trangThaiMoi"
+                       value="@buocTiepTheo" />
+
+                <label for="ghiChuDao">
+                    Ghi chú xử lý
+                </label>
+
+                <textarea id="ghiChuDao"
+                          name="ghiChu"
+                          maxlength="500"
+                          rows="2"
+                          class="block w-full p-3 rounded-lg bg-surface-container border border-outline-variant"></textarea>
+
+                <button type="submit"
+                        class="bg-primary text-on-primary px-5 py-2 rounded-lg">
+                    Chuyển sang @buocTiepTheo
+                </button>
+
+            </form>
+        </div>
+    }
+
+    @* KẾT THÚC PHẦN MODULE 4 - Nguyễn Thị Đào *@
+
+
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-space-md">
 
         <!-- Sản phẩm và thanh toán -->
