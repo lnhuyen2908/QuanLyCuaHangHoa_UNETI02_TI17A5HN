@@ -81,6 +81,18 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             vm.DiaChiGiao = vm.DiaChiGiao?.Trim();
             vm.LoiNhan = vm.LoiNhan?.Trim();
 
+            // Nguyễn Thị Đào - 23103100245
+            // Giai đoạn hiện tại chỉ cho thanh toán COD.
+            // Kiểm tra phía server để chặn POST giả mạo.
+            if (vm.PhuongThucThanhToan !=
+                PhuongThucThanhToanConst.TienMat)
+            {
+                ModelState.AddModelError(
+                    nameof(vm.PhuongThucThanhToan),
+                    "Hiện chỉ hỗ trợ thanh toán tiền mặt khi nhận hoa.");
+            }
+
+
             // Kiểm tra nghiệp vụ: chỉ hai hình thức nhận, giao tận nơi cần địa chỉ.
             if (vm.HinhThucNhan != HinhThucNhanConst.GiaoTanNoi
                 && vm.HinhThucNhan != HinhThucNhanConst.KhachDenNhan)
@@ -141,6 +153,9 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 ThoiGianNhanGiao = vm.ThoiGianNhanGiao!.Value,
                 DiaChiGiao = vm.HinhThucNhan == HinhThucNhanConst.GiaoTanNoi ? vm.DiaChiGiao : null,
                 LoiNhan = vm.LoiNhan,
+                // Nguyễn Thị Đào - 23103100245
+                // Ghi nhận lựa chọn COD, chưa thu tiền.
+                GhiChu = "Phương thức thanh toán dự kiến: Tiền mặt khi nhận hoa (COD). Chưa thu tiền.",
                 TrangThai = TrangThaiDon.ChoXacNhan,
                 PhiGiaoHang = phiGiao,
                 TongTien = _don.TinhTongTien(cts.Select(x => x.ThanhTien), phiGiao, 0),
@@ -169,7 +184,10 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             // Chỉ xóa giỏ sau Commit; nếu lưu DB lỗi, giỏ vẫn còn để khách thử lại.
             _cart.Clear(HttpContext.Session, account);
 
-            TempData["ThongBao"] = $"Đặt hàng thành công: #{order.MaDon}. Đơn đang chờ xác nhận.";
+            // Nguyễn Thị Đào - 23103100245
+            TempData["ThongBao"] =
+                $"Đặt hàng thành công: #{order.MaDon}. " +
+                "Thanh toán tiền mặt khi nhận hoa. Đơn đang chờ xác nhận.";
             return Redirect("/User/Profile#orders");
         }
     }

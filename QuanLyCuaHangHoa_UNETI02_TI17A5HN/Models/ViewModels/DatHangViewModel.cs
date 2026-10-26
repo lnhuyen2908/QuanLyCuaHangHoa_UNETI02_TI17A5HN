@@ -3,11 +3,21 @@
 // Nội dung thực hiện: Xây dựng DatHangViewModel phục vụ chức năng đặt hàng
 // tiếp nhận và kiểm tra thông tin khách hàng nhập từ giao diện đặt hàng trước khi xử lý tạo đơn.
 using System.ComponentModel.DataAnnotations;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
 {
     public class DatHangViewModel
     {
+        // Họ và tên: Nguyễn Thị Đào
+        // Mã sinh viên: 23103100245
+        // Nội dung: Bổ sung lựa chọn thanh toán COD
+        [Required(ErrorMessage = "Vui lòng chọn phương thức thanh toán.")]
+        [Display(Name = "Phương thức thanh toán")]
+        public string PhuongThucThanhToan { get; set; }
+            = PhuongThucThanhToanConst.TienMat;
+        // KẾT THÚC BỔ SUNG - NGUYỄN THỊ ĐÀO
+
         // Chỉ nhận thông tin giao/nhận từ khách; giá và mã khách được lấy ở server.
         [Required(ErrorMessage = "Tên người nhận là bắt buộc")]
         [StringLength(100, ErrorMessage = "Tên người nhận tối đa 100 ký tự")]

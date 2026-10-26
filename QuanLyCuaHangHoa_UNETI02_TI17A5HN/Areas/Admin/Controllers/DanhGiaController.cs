@@ -10,6 +10,7 @@ using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 {
@@ -55,7 +56,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 
             vm.TongDanhGia = vm.ThongKeSao.Sum();
 
-            if (vm.TongDanhGia > 0)
+            if (vm.TongDanhGia > 0) // tránh chia 0
             {
                 double tongDiem = thongKe.Sum(
                     x => (double)x.SoSao * x.SoLuong);
@@ -87,7 +88,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                     maNhap = maNhap.Substring(4);
                 }
 
-                if (int.TryParse(maNhap, out int maDon))
+                if (int.TryParse(maNhap, out int maDon)) // đổi chuỗi thành số
                 {
                     query = query.Where(d => d.MaDon == maDon);
                 }
@@ -114,14 +115,12 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                     .OrderBy(d => d.SoSao)
                     .ThenByDescending(d => d.NgayDanhGia),
 
-                _ => query
+                _ => query      // _ : Đại diện cho tham số đầu vào của hàm.( Làm mới ý)
                     .OrderByDescending(d => d.NgayDanhGia)
             };
 
             // Tái sử dụng phân trang của nhóm.
-            vm.DanhSach = await PagedList<
-                QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.DanhGia
-            >.CreateAsync(query, page, 10);
+            vm.DanhSach = await PagedList<DanhGia>.CreateAsync(query, page, 10);
 
             return View(vm);
         }

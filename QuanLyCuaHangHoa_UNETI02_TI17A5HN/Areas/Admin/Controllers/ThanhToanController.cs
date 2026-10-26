@@ -19,6 +19,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
     [PhanQuyen(VaiTroConst.Admin, VaiTroConst.NhanVien)]
     public class ThanhToanController : Controller
     {
+        // kết nối csdl
         private readonly AppDbContext _db;
 
         public ThanhToanController(AppDbContext db)
@@ -31,7 +32,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         {
             var vm = new ThanhToanViewModel
             {
-                MaDon = maDon
+                MaDon = maDon                   // gán sẵn mã đơn hàng thu tiền
             };
 
             vm.DonHang = await _db.DonDatHoas
@@ -95,9 +96,9 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 .SumAsync(t => (decimal?)t.SoTien) ?? 0m;
 
             if (daTra >= don.TongTien)
-                return RedirectToAction(
-                    nameof(Index), new { maDon });
+                return RedirectToAction(nameof(Index), new { maDon });
 
+            // hiển thị trang Create.html cho nv nhập số tiền và pttt
             return View(new ThanhToanCreateViewModel
             {
                 MaDon = maDon,
@@ -127,14 +128,12 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                     "Phương thức thanh toán không hợp lệ.");
             }
 
-            var maTaiKhoan =
-                HttpContext.Session.GetMaTaiKhoan();
+            var maTaiKhoan =  HttpContext.Session.GetMaTaiKhoan();
 
             if (!maTaiKhoan.HasValue)
                 return Unauthorized();
 
-            // Khóa giao dịch để tránh hai nhân viên
-            // cùng ghi thanh toán vượt tổng tiền.
+            // Khóa giao dịch để tránh hai nhân viên cùng ghi thanh toán vượt tổng tiền.
             await using var tx =
                 await _db.Database.BeginTransactionAsync(
                     IsolationLevel.Serializable);
@@ -171,7 +170,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 ModelState.AddModelError(
                     "", "Đơn đã thanh toán đủ.");
             }
-
+            //thanh toán k hợp lệ
             if (!ModelState.IsValid)
                 return View(vm);
 
@@ -186,7 +185,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             });
 
             await _db.SaveChangesAsync();
-            await tx.CommitAsync();
+            await tx.CommitAsync(); // ghi nhận giao dịch
 
             TempData["Success"] =
                 "Đã ghi nhận thanh toán thành công.";
