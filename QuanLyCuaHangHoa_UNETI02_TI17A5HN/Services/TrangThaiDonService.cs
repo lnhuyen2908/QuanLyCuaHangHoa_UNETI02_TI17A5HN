@@ -82,6 +82,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services
             if (ghiChu?.Length > 500)
                 return (false, "Ghi chú tối đa 500 ký tự.");
 
+            //khóa chặt toàn bộ các bảng dữ liệu liên quan lại k ai được can thiệp tránh nhiều yêu cầu tc đồng thời
             await using var tx = await _db.Database.BeginTransactionAsync(
                 IsolationLevel.Serializable);
 
@@ -164,10 +165,10 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services
                 giaoNhan.ThoiGianThucTe = DateTime.Now;
             }
 
-            // Cập nhật trạng thái nếu dữ liệu chưa bị thay đổi.
-            var soDong = await _db.DonDatHoas
+            // Cập nhật trạng thái nếu dữ liệu chưa bị thay đổi.(2 nv cùng đổi trạng thái)
+            var soDong = await _db.DonDatHoas   //số dòng thực sự được cập nhật.
                 .Where(d => d.MaDon == maDon &&
-                            d.TrangThai == don.TrangThai)
+                            d.TrangThai == don.TrangThai) // trạng thái cũ
                 .ExecuteUpdateAsync(s =>
                     s.SetProperty(d => d.TrangThai, trangThaiMoi));
 
@@ -193,7 +194,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services
 
             // Lưu dữ liệu.
             await _db.SaveChangesAsync();
-            await tx.CommitAsync();
+            await tx.CommitAsync(); // csdl mở khóa (Unlock) các bảng và lưu "vĩnh viễn" dữ liệu đó vào ổ cứng
 
             return (true, "Chuyển trạng thái thành công và đã lưu lịch sử.");
         }

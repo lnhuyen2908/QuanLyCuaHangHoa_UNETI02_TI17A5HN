@@ -40,15 +40,17 @@
                    class="block font-semibold mb-2">
                 Chọn đơn đặt hoa
             </label>
-
+            
             <select asp-for="MaDon"
                     asp-items="Model.DonHopLe"
+                    onchange="chonDonGiaoNhan(this)"
                     class="w-full rounded-lg p-3 bg-surface-container">
+
                 <option value="0">
                     -- Chọn đơn chưa có phiếu giao nhận --
                 </option>
-            </select>
 
+            </select>
             <span asp-validation-for="MaDon"
                   class="text-error text-sm"></span>
         </div>
@@ -138,5 +140,24 @@
             </a>
         </div>
     </form>
+    
+@*Tự điền thông tin khi chọn đơn giao nhận *@
+
+<script>
+    function chonDonGiaoNhan(select) {
+        const maDon = select.value;
+
+        const url = '@Url.Action("Create", "GiaoNhan", new { area = "Admin" })';
+
+        if (!maDon || maDon === "0") {
+            window.location.href = url;
+            return;
+        }
+
+        window.location.href =
+            url + "?maDon=" + encodeURIComponent(maDon);
+    }
+</script>
+
     </div>
 </div>

@@ -1,0 +1,411 @@
+﻿
+@*
+    Họ và tên: Nguyễn Thị Đào
+    Mã sinh viên: 23103100245
+    Nội dung: Thống kê LINQ nâng cao - Module 4
+*@
+
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.ThongKeViewModel
+
+@{
+    ViewBag.Title = "Thống kê LINQ";
+    ViewBag.ActiveMenu = "ThongKe";
+    ViewBag.Breadcrumb = "Thống kê và phân tích";
+
+    ViewData["ModuleName"] = "Module 4";
+    ViewData["Description"] =
+        "Phân tích doanh thu, đơn hàng, sản phẩm, khách hàng và đánh giá từ SQL Server.";
+    ViewData["BadgeText"] = "EF Core LINQ";
+
+    var tongDoanhThu = Model.DoanhThuTheoThang
+        .Sum(x => x.SoTien);
+
+    var doanhThuLonNhat = Model.DoanhThuTheoThang
+        .Select(x => x.SoTien)
+        .DefaultIfEmpty(0m)
+        .Max();
+
+    var tongDon = Model.DonTheoTrangThai
+        .Sum(x => x.SoLuong);
+}
+
+<div class="w-full px-space-xl py-space-lg space-y-6">
+
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    @* 1. CÁC CHỈ SỐ TỔNG QUAN *@
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+        <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-secondary">
+                    DOANH THU 12 THÁNG
+                </span>
+                <span class="material-symbols-outlined text-primary">
+                    payments
+                </span>
+            </div>
+
+            <div class="text-3xl font-bold text-primary mt-5">
+                @tongDoanhThu.ToString("N0")₫
+            </div>
+
+            <p class="text-sm text-secondary mt-3">
+                Tổng tiền thực tế đã thanh toán
+            </p>
+        </div>
+
+        <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-secondary">
+                    GIÁ TRỊ ĐƠN TRUNG BÌNH
+                </span>
+                <span class="material-symbols-outlined text-primary">
+                    receipt_long
+                </span>
+            </div>
+
+            <div class="text-3xl font-bold text-primary mt-5">
+                @Model.GiaTriDonTrungBinh.ToString("N0")₫
+            </div>
+
+            <p class="text-sm text-secondary mt-3">
+                Không tính đơn đã hủy hoặc chưa có giá
+            </p>
+        </div>
+
+        <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-secondary">
+                    ĐIỂM ĐÁNH GIÁ TRUNG BÌNH
+                </span>
+                <span class="material-symbols-outlined text-primary">
+                    star
+                </span>
+            </div>
+
+            <div class="flex items-baseline gap-2 mt-5">
+                <span class="text-3xl font-bold text-primary">
+                    @Model.DiemDanhGiaTrungBinh.ToString("0.0")
+                </span>
+                <span class="text-secondary">/ 5 sao</span>
+            </div>
+
+            <p class="text-sm text-secondary mt-3">
+                Từ @Model.TongDanhGia đánh giá của khách hàng
+            </p>
+        </div>
+
+    </div>
+
+    @* 2. BIỂU ĐỒ DOANH THU 12 THÁNG *@
+
+    <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-6">
+
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="font-headline-sm text-xl font-semibold">
+                    Doanh thu theo tháng
+                </h2>
+                <p class="text-sm text-secondary mt-1">
+                    Tiền thực thu trong 12 tháng gần nhất
+                </p>
+            </div>
+
+            <span class="material-symbols-outlined text-primary text-3xl">
+                bar_chart
+            </span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <div class="flex items-end gap-3 min-w-[700px] h-64 border-b border-outline-variant pb-2">
+
+                @foreach (var thang in Model.DoanhThuTheoThang)
+                {
+                    double tyLe = doanhThuLonNhat > 0
+                        ? (double)(thang.SoTien / doanhThuLonNhat) * 100
+                        : 0;
+
+                    string chieuCao = tyLe.ToString(
+                        "0.##",
+                        System.Globalization.CultureInfo.InvariantCulture) + "%";
+
+                    <div class="flex-1 h-full flex flex-col justify-end items-center gap-2">
+
+                        <div class="h-48 w-full flex items-end justify-center">
+
+                            <div class="w-full max-w-10 bg-primary rounded-t-lg transition-all"
+                                 style="height:@chieuCao"
+                                 title="@(thang.SoTien.ToString("N0"))₫">
+                            </div>
+
+                        </div>
+
+                        <span class="text-xs text-secondary whitespace-nowrap">
+                            @thang.Thang.ToString("D2")/@(thang.Nam % 100)
+                        </span>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+        <p class="text-sm text-secondary mt-4">
+            Di chuột vào các cột để xem doanh thu từng tháng.
+            Tháng không phát sinh thanh toán có doanh thu bằng 0.
+        </p>
+    </div>
+
+    @* 3. SỐ ĐƠN THEO TRẠNG THÁI *@
+
+    <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-6">
+
+        <h2 class="font-headline-sm text-xl font-semibold mb-1">
+            Số đơn hàng theo trạng thái
+        </h2>
+
+        <p class="text-sm text-secondary mb-6">
+            Tổng cộng @tongDon đơn hàng
+        </p>
+
+        @if (tongDon == 0)
+        {
+            <p class="text-secondary text-center py-6">
+                Chưa có dữ liệu đơn hàng.
+            </p>
+        }
+        else
+        {
+            <div class="space-y-5">
+
+                @foreach (var item in Model.DonTheoTrangThai)
+                {
+                    double tyLe = item.SoLuong * 100.0 / tongDon;
+
+                    string chieuRong = tyLe.ToString(
+                        "0.##",
+                        System.Globalization.CultureInfo.InvariantCulture) + "%";
+
+                    <div>
+                        <div class="flex justify-between mb-2 gap-3">
+                            <span class="font-semibold text-on-surface">
+                                @item.Ten
+                            </span>
+                            <span class="text-secondary whitespace-nowrap">
+                                @item.SoLuong đơn
+                                (@tyLe.ToString("0.0")%)
+                            </span>
+                        </div>
+
+                        <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full rounded-full"
+                                 style="width:@chieuRong">
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        }
+    </div>
+
+    @* 4. GIÁ TRỊ SẢN PHẨM THEO KIỂU VÀ DỊP SỬ DỤNG *@
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-6">
+            <h2 class="font-headline-sm text-xl font-semibold mb-2">
+                Giá trị theo kiểu sản phẩm
+            </h2>
+
+            <p class="text-sm text-secondary mb-5">
+                Các mẫu có sẵn thuộc đơn hoàn thành
+            </p>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="border-b border-surface-container text-secondary">
+                        <tr>
+                            <th class="text-left py-3">Kiểu sản phẩm</th>
+                            <th class="text-right py-3">Giá trị</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.GiaTriTheoKieu)
+                        {
+                            <tr class="border-b border-surface-container">
+                                <td class="py-3">@item.Ten</td>
+                                <td class="py-3 text-right font-semibold">
+                                    @item.SoTien.ToString("N0")₫
+                                </td>
+                            </tr>
+                        }
+
+                        @if (!Model.GiaTriTheoKieu.Any())
+                        {
+                            <tr>
+                                <td colspan="2" class="py-6 text-center text-secondary">
+                                    Chưa có dữ liệu.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-6">
+            <h2 class="font-headline-sm text-xl font-semibold mb-2">
+                Giá trị theo dịp sử dụng
+            </h2>
+
+            <p class="text-sm text-secondary mb-5">
+                Các mẫu có sẵn thuộc đơn hoàn thành
+            </p>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="border-b border-surface-container text-secondary">
+                        <tr>
+                            <th class="text-left py-3">Dịp sử dụng</th>
+                            <th class="text-right py-3">Giá trị</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.GiaTriTheoDip)
+                        {
+                            <tr class="border-b border-surface-container">
+                                <td class="py-3">@item.Ten</td>
+                                <td class="py-3 text-right font-semibold">
+                                    @item.SoTien.ToString("N0")₫
+                                </td>
+                            </tr>
+                        }
+
+                        @if (!Model.GiaTriTheoDip.Any())
+                        {
+                            <tr>
+                                <td colspan="2" class="py-6 text-center text-secondary">
+                                    Chưa có dữ liệu.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-xs text-secondary">
+        Lưu ý: Hai bảng trên thống kê giá trị chi tiết sản phẩm của đơn hoàn thành,
+        không phải tiền thực thu. Không tính mẫu thiết kế riêng và các khoản phí giao hàng.
+    </p>
+
+    @* 5, 6, 7. TOP MẪU HOA, LOẠI HOA, KHÁCH HÀNG *@
+
+    @{
+        var bangTop = new[]
+        {
+            new
+            {
+                TieuDe = "Top 5 mẫu bán chạy",
+                MoTa = "Số sản phẩm thuộc đơn hoàn thành",
+                DonVi = "sản phẩm",
+                DuLieu = Model.MauBanChay
+            },
+            new
+            {
+                TieuDe = "Top 5 loại hoa phổ biến",
+                MoTa = "Số lượt xuất hiện theo số mẫu đã bán",
+                DonVi = "lượt",
+                DuLieu = Model.LoaiHoaPhoBien
+            },
+            new
+            {
+                TieuDe = "Top 5 khách hàng nhiều đơn",
+                MoTa = "Không tính các đơn đã hủy",
+                DonVi = "đơn",
+                DuLieu = Model.KhachHangNhieuDon
+            }
+        };
+    }
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        @foreach (var bang in bangTop)
+        {
+            <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-6">
+
+                <h2 class="font-headline-sm text-xl font-semibold">
+                    @bang.TieuDe
+                </h2>
+
+                <p class="text-sm text-secondary mt-1 mb-5">
+                    @bang.MoTa
+                </p>
+
+                @if (!bang.DuLieu.Any())
+                {
+                    <div class="text-center text-secondary py-8">
+                        Chưa có dữ liệu thống kê.
+                    </div>
+                }
+                else
+                {
+                    <div class="space-y-4">
+
+                        @{
+                            int stt = 0;
+                        }
+
+                        @foreach (var item in bang.DuLieu)
+                        {
+                            stt++;
+
+                            <div class="flex items-start gap-3 border-b border-surface-container pb-3">
+
+                                <span class="w-8 h-8 rounded-lg bg-primary/10 text-primary
+                                             flex items-center justify-center font-bold shrink-0">
+                                    @stt
+                                </span>
+
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-on-surface break-words">
+                                        @item.Ten
+                                    </p>
+
+                                    <p class="text-sm text-secondary mt-1">
+                                        @item.SoLuong @bang.DonVi
+                                    </p>
+                                </div>
+
+                            </div>
+                        }
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+
+    <div class="flex justify-end">
+        <a asp-area="Admin"
+           asp-controller="ThongKe"
+           asp-action="Index"
+           class="inline-flex items-center gap-2 px-5 py-2.5
+                  bg-primary text-on-primary rounded-xl
+                  font-semibold hover:opacity-90 transition-all">
+
+            <span class="material-symbols-outlined text-[18px]">
+                refresh
+            </span>
+
+            Cập nhật thống kê
+        </a>
+    </div>
+
+</div>
