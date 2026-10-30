@@ -46,7 +46,10 @@
             <div class="flex justify-between border-b pb-2">
                 <div>
                     <strong>@(c.MauSanPham?.TenMau ?? "Hoa thiết kế riêng")</strong>
-                    <p class="text-sm text-secondary">@c.YeuCauRieng</p>
+                    @if (!string.IsNullOrWhiteSpace(c.YeuCauRieng))
+                    {
+                        <p class="text-sm text-secondary whitespace-pre-line">@c.YeuCauRieng</p>
+                    }
                     <p>@c.SoLuong × @c.DonGia.ToString("N0")₫</p>
                     @if (c.MaMau == null && !c.DaChotGia)
                     {
@@ -55,6 +58,15 @@
                 </div>
                 <span>@c.ThanhTien.ToString("N0")₫</span>
             </div>
+        }
+
+        @if (Model.ChuaChotGia)
+        {
+            <p class="text-sm text-secondary">
+                Đơn thiết kế riêng chưa được báo giá hoa.
+                Tổng tiền hiện tại chưa phải giá cuối cùng;
+                khách chưa cần thanh toán.
+            </p>
         }
 
         <div class="flex justify-between">

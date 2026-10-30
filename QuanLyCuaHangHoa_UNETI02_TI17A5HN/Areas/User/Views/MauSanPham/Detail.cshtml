@@ -1,4 +1,4 @@
-@* Họ và tên: Nguyễn Thị Phương Anh 
+@* Họ và tên: Nguyễn Thị Phương Anh
 Mã sinh viên: 23103100267
 Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển thị thành phần và mẫu hoa liên quan *@
 
@@ -27,15 +27,15 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
 <!-- MAIN PRODUCT DETAIL SECTION -->
 <section class="w-full max-w-7xl mx-auto px-margin-mobile md:px-margin lg:px-margin-desktop py-space-lg md:py-space-xl">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-start">
-        
+
         <!-- LEFT COLUMN: VISUAL GALLERY & PROMISES -->
         <div class="lg:col-span-6 xl:col-span-7 flex flex-col gap-space-md">
             <!-- Main Large Image Container -->
             <div class="relative w-full rounded-2xl overflow-hidden bg-surface-container-lowest shadow-[0_4px_24px_-4px_rgba(41,37,36,0.08)] group">
                 <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
-                    <img id="mainProductVisual" 
-                         alt="@Model.TenMau" 
-                         class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" 
+                    <img id="mainProductVisual"
+                         alt="@Model.TenMau"
+                         class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                          src="@Url.Content(string.IsNullOrWhiteSpace(Model.HinhAnh) ? "~/images/no-image.png" : Model.HinhAnh)" />
                 </div>
                 <!-- Top Action Tags -->
@@ -75,17 +75,17 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
                 </div>
             </div>
 
-            <!-- Thumbnails Gallery -->           
+            <!-- Thumbnails Gallery -->
             <div class="grid grid-cols-4 gap-space-sm">
                 <button type="button"
                         onclick="switchMainVisual(this, document.getElementById('mainProductVisual').src)"
                         class="thumb-btn active relative aspect-square rounded-xl overflow-hidden
-                               bg-surface-container-low ring-2 ring-primary">
+                    bg-surface-container-low ring-2 ring-primary">
                     <img alt="@Model.TenMau"
                          class="w-full h-full object-cover"
                          src="@Url.Content(string.IsNullOrWhiteSpace(Model.HinhAnh)
-                              ? "~/images/no-image.png"
-                              : Model.HinhAnh)" />
+                                                  ? "~/images/no-image.png"
+                                                  : Model.HinhAnh)" />
                 </button>
             </div>
 
@@ -246,8 +246,8 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
                     <span id="greetingArrow" class="material-symbols-outlined text-outline text-[18px] transition-transform duration-200">expand_more</span>
                 </div>
                 <div id="greetingContainer" class="flex flex-col gap-2 pt-2">
-                    <textarea class="w-full px-3 py-2 rounded-xl bg-surface-container-lowest font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-primary shadow-inner" 
-                              placeholder="Nhập lời chúc bạn muốn gửi đến người thương (Web quản lý hoa tươi sẽ nắn nót viết tay trên thiệp mỹ thuật dập nhũ)..." 
+                    <textarea class="w-full px-3 py-2 rounded-xl bg-surface-container-lowest font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-primary shadow-inner"
+                              placeholder="Nhập lời chúc bạn muốn gửi đến người thương (Web quản lý hoa tươi sẽ nắn nót viết tay trên thiệp mỹ thuật dập nhũ)..."
                               rows="2"></textarea>
                     <div class="flex items-center justify-between text-[11px] text-on-surface-variant font-label-md">
                         <span>Mẫu thiệp: Bìa thư giấy mỹ thuật dập nhũ vàng 24K</span>
@@ -272,12 +272,50 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
                             <span class="material-symbols-outlined text-[18px]">add</span>
                         </button>
                     </div>
+
+                    @* Đặng Thị Mai Hương - 23103100293 *@
                     <!-- Primary Action: Buy Now -->
-                    <a asp-area="User" asp-controller="Home" asp-action="Checkout"
-                       class="flex-1 py-3 px-space-lg rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container shadow-md transition-all duration-300 flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-[20px]">bolt</span>
-                        <span>Đặt hoa ngay • Giao hỏa tốc</span>
-                    </a>
+                    <form asp-area="User"
+                          asp-controller="Checkout"
+                          asp-action="BuyNow"
+                          method="post"
+                          onsubmit="return guiMuaNgay(this)"
+                          class="flex-1">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="maMau" value="@Model.MaMau" />
+                        <input type="hidden" name="soLuong" />
+                        <input type="hidden" name="giayGoiRuyBang" />
+                        <input type="hidden" name="loiChuc" />
+
+                        <button type="submit"
+                                class="w-full py-3 px-space-lg rounded-full bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container shadow-md transition-all duration-300 flex items-center justify-center gap-2">
+
+                            <span class="material-symbols-outlined text-[20px]">bolt</span>
+                            <span>Đặt hoa ngay • Giao hỏa tốc</span>
+
+                        </button>
+                    </form>
+                    <script>
+                                            // Lấy các tùy chọn khách đang chọn để chuyển sang Checkout.
+                                            function guiMuaNgay(form) {
+
+                                                // Số lượng hoa
+                                                form.elements["soLuong"].value =
+                                                    document.getElementById("quantityInput").value;
+
+                                                // Giấy gói và ruy-băng
+                                                form.elements["giayGoiRuyBang"].value =
+                                                    document.getElementById("selectedWrapLabel").textContent.trim();
+
+                                                // Lời chúc (có thể để trống)
+                                                form.elements["loiChuc"].value =
+                                                    document.querySelector("#greetingContainer textarea").value;
+
+                                                return true;
+                                            }
+                    </script>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
                     <!-- Secondary Action: Add to Cart -->
@@ -297,19 +335,20 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
                     </form>
 
                     <script>
-                            function guiVaoGio(form) {
-                                form.elements["soLuong"].value =
-                                    document.getElementById("quantityInput").value;
+                                            function guiVaoGio(form) {
+                                                form.elements["soLuong"].value =
+                                                    document.getElementById("quantityInput").value;
 
-                                form.elements["giayGoiRuyBang"].value =
-                                    document.getElementById("selectedWrapLabel").textContent.trim();
+                                                form.elements["giayGoiRuyBang"].value =
+                                                    document.getElementById("selectedWrapLabel").textContent.trim();
 
-                                form.elements["loiChuc"].value =
-                                    document.querySelector("#greetingContainer textarea").value;
+                                                form.elements["loiChuc"].value =
+                                                    document.querySelector("#greetingContainer textarea").value;
 
-                                return true;
-                            }
+                                                return true;
+                                            }
                     </script>
+                    @* HẾT PHẦN CỦA HƯƠNG *@
 
                     <!-- Custom Bespoke Action -->
                     <a asp-area="User" asp-controller="Home" asp-action="CustomDesign"
@@ -384,8 +423,8 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
                                         <th class="py-2 px-3">Màu sắc</th>
                                         <th class="py-2 px-3 text-right">Số lượng chuẩn</th>
                                     </tr>
-                                </thead>                               
-                                
+                                </thead>
+
                                 <tbody class="divide-y divide-surface-container text-on-surface">
                                     @if (Model.ChiTietMaus != null &&
                                          Model.ChiTietMaus.Any(ct => ct.HoaTuoi != null))
@@ -551,12 +590,11 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
                 <div class="group flex flex-col rounded-2xl bg-surface-container-lowest overflow-hidden shadow-[0_2px_12px_-2px_rgba(41,37,36,0.04)] hover:shadow-[0_12px_28px_-6px_rgba(41,37,36,0.07)] transition-all duration-300">
 
                     <div class="relative w-full aspect-[4/5] overflow-hidden bg-surface-container">
-                        <img
-                            alt="@mau.TenMau"
-                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                            src="@Url.Content(string.IsNullOrWhiteSpace(mau.HinhAnh)
-                                ? "~/images/no-image.png"
-                                : mau.HinhAnh)" />
+                        <img alt="@mau.TenMau"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             src="@Url.Content(string.IsNullOrWhiteSpace(mau.HinhAnh)
+                                                        ? "~/images/no-image.png"
+                                                        : mau.HinhAnh)" />
 
                         <span class="absolute bottom-3 left-3 px-2 py-0.5 rounded-md bg-surface-container-lowest/90 backdrop-blur-sm text-[11px] font-label-md text-primary font-bold">
                             Mẫu hoa
@@ -639,7 +677,7 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
         sizeCards.forEach(card => {
             card.classList.remove('border-2', 'border-primary', 'active');
             card.classList.add('border', 'border-outline-variant');
-            
+
             const checkIcon = card.querySelector('.check-indicator');
             if (checkIcon) {
                 checkIcon.textContent = 'radio_button_unchecked';

@@ -4,7 +4,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
@@ -26,16 +26,91 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             _env = env;
         }
 
+        // Lấy danh sách loại hoa đang hoạt động từ database.
+        // Dùng chung khi mở form và khi form có lỗi.
+        private async Task NapDanhSachLoaiHoa(ThietKeRiengViewModel vm)
+        {
+            vm.DanhSachLoaiHoa = await _db.LoaiHoas
+                .AsNoTracking()
+                .Where(x => x.TrangThai)
+                .OrderBy(x => x.TenLoaiHoa)
+                .ToListAsync();
+        }
+
         // GET: hiển thị form thiết kế hoa theo yêu cầu, chưa phát sinh đơn hàng.
         [HttpGet("")]
         [HttpGet("Index")]
-        public IActionResult Index()
-        => View(new ThietKeRiengViewModel());
+        public async Task<IActionResult> Index()
+        {
+            var vm = new ThietKeRiengViewModel();
+            var account = HttpContext.Session.GetMaTaiKhoan();
+
+            if (account.HasValue)
+            {
+                var kh = await _db.KhachHangs
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.MaTaiKhoan == account.Value && x.TrangThai);
+
+                if (kh != null)
+                {
+                    vm.NguoiNhan = kh.HoTen;
+                    vm.SoDienThoai = kh.SoDienThoai;
+                }
+            }
+
+            // Nạp loại hoa để hiển thị.
+            await NapDanhSachLoaiHoa(vm);
+
+            return View(vm);
+        }
 
         // POST: chỉ tạo yêu cầu khi dữ liệu form, thời gian giao và ảnh tham khảo hợp lệ.
         [HttpPost(""), HttpPost("Index"), ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(ThietKeRiengViewModel vm)
         {
+            // Nạp lại danh sách loại hoa để giữ giao diện khi form có lỗi.
+            await NapDanhSachLoaiHoa(vm);
+
+            // Loại bỏ các mã bị gửi trùng.
+            var maDaChon = vm.MaLoaiHoaDaChon.Distinct().ToList();
+
+            // Giới hạn tối đa 4 loại hoa.
+            if (maDaChon.Count > 4)
+            {
+                ModelState.AddModelError(
+                    nameof(vm.MaLoaiHoaDaChon),
+                    "Chỉ được chọn tối đa 4 loại hoa.");
+            }
+
+            // Kiểm tra mã loại hoa thực sự tồn tại và đang hoạt động.
+            // Chỉ lấy tên từ database, không tin tên gửi từ trình duyệt.
+            var tenHoa = await _db.LoaiHoas
+                .AsNoTracking()
+                .Where(x => x.TrangThai && maDaChon.Contains(x.MaLoaiHoa))
+                .OrderBy(x => x.MaLoaiHoa)
+                .Select(x => x.TenLoaiHoa)
+                .ToListAsync();
+
+            // Nếu số loại hoa hợp lệ không khớp số mã được gửi lên thì dữ liệu không hợp lệ.
+            if (tenHoa.Count != maDaChon.Count)
+            {
+                ModelState.AddModelError(
+                    nameof(vm.MaLoaiHoaDaChon),
+                    "Danh sách loại hoa không hợp lệ hoặc đã ngừng hoạt động.");
+            }
+
+            // Ghép tên các loại hoa hợp lệ thành chuỗi để lưu yêu cầu.
+            ModelState.Remove(nameof(vm.LoaiHoa));
+            vm.LoaiHoa = string.Join(", ", tenHoa);
+
+            // Giới hạn độ dài theo ViewModel.
+            if (vm.LoaiHoa.Length > 300)
+            {
+                ModelState.AddModelError(
+                    nameof(vm.MaLoaiHoaDaChon),
+                    "Tên các loại hoa đã chọn quá dài.");
+            }
+
             // Thời gian giao/nhận tối thiểu cách hiện tại 30 phút để có thời gian xử lý.
             if (vm.ThoiGianNhanGiao == null || vm.ThoiGianNhanGiao <= DateTime.Now.AddMinutes(30))
             {
@@ -75,10 +150,17 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             }
 
             // Chỉ tài khoản có hồ sơ khách hàng đang hoạt động mới được tạo yêu cầu.
-            var account = HttpContext.Session.GetMaTaiKhoan()!.Value;
+            var account = HttpContext.Session.GetMaTaiKhoan();
+
+            if (!account.HasValue)
+            {
+                return RedirectToAction("Login", "TaiKhoan", new { area = "User" });
+            }
+
             var kh = await _db.KhachHangs
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.MaTaiKhoan == account && x.TrangThai);
+    .AsNoTracking()
+    .FirstOrDefaultAsync(x =>
+        x.MaTaiKhoan == account.Value && x.TrangThai);
 
             if (kh == null)
             {
@@ -132,6 +214,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 yc = yc[..1000];
             }
 
+            var phiGiao = DonHangService.TinhPhiGiaoHang(vm.HinhThucNhan);
+
             // Chưa có giá thỏa thuận: MaMau = null, DaChotGia = false, DonGia/TongTien = 0.
             // Admin sẽ chốt giá qua YeuCauThietKeController trước khi xác nhận đơn.
             var order = new DonDatHoa
@@ -145,7 +229,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 DiaChiGiao = vm.HinhThucNhan == HinhThucNhanConst.GiaoTanNoi ? vm.DiaChiGiao?.Trim() : null,
                 LoiNhan = vm.NoiDungThiep,
                 TrangThai = TrangThaiDon.ChoXacNhan,
-                TongTien = 0,
+                PhiGiaoHang = phiGiao,
+                TongTien = phiGiao, // Chưa bao gồm giá hoa vì Admin chưa báo giá.
                 ChiTietDonHoas = new List<ChiTietDonHoa>
             {
                 new()
@@ -171,7 +256,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 MaDon = order.MaDon,
                 TrangThaiMoi = TrangThaiDon.ChoXacNhan,
                 ThoiGian = DateTime.Now,
-                NguoiThucHien = account,
+                NguoiThucHien = account.Value,
                 GhiChu = "Khách gửi yêu cầu thiết kế riêng, chờ báo giá"
             });
 

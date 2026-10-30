@@ -26,13 +26,22 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         // GET danh sách: thống kê chung độc lập với bộ lọc bảng; truy vấn không tracking để giảm tải.
         public async Task<IActionResult> Index(DonDatHoaListViewModel vm)
         {
+            // Mặc định lọc đơn Chờ xác nhận khi mới vào trang.
+            // Nếu Admin tự chọn trạng thái khác hoặc Tất cả thì giữ lựa chọn đó.
+            if (!Request.Query.ContainsKey("trangThai"))
+            {
+                vm.TrangThai = TrangThaiDon.ChoXacNhan;
+            }
+
             var today = DateTime.Today;
             var baseQ = _db.DonDatHoas.AsNoTracking();
 
             vm.DonHomNay = await baseQ.CountAsync(x => x.NgayDat >= today && x.NgayDat < today.AddDays(1));
 
             vm.DoanhSoHomNay = await baseQ
-                .Where(x => x.NgayDat >= today && x.NgayDat < today.AddDays(1) && x.TrangThai != TrangThaiDon.DaHuy)
+                .Where(x => x.NgayDat >= today
+                    && x.NgayDat < today.AddDays(1)
+                    && x.TrangThai == TrangThaiDon.HoanThanh)
                 .SumAsync(x => (decimal?)x.TongTien) ?? 0;
 
             vm.ChoXacNhan = await baseQ.CountAsync(x => x.TrangThai == TrangThaiDon.ChoXacNhan);
@@ -110,6 +119,28 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 .Include(x => x.ThanhToans)
                 .FirstOrDefaultAsync(x => x.MaDon == id);
 
+            // Lấy họ tên những tài khoản đã thực hiện xử lý đơn.
+            if (d != null)
+            {
+                var maTaiKhoans = d.LichSuXuLyDons
+                    .Select(x => x.NguoiThucHien)
+                    .Distinct()
+                    .ToList();
+
+                var nguoiThucHiens = await _db.TaiKhoans
+                    .AsNoTracking()
+                    .Where(x => maTaiKhoans.Contains(x.MaTaiKhoan))
+                    .Select(x => new
+                    {
+                        x.MaTaiKhoan,
+                        x.HoTen
+                    })
+                    .ToListAsync();
+
+                ViewBag.TenNguoiThucHien = nguoiThucHiens
+                    .ToDictionary(x => x.MaTaiKhoan, x => x.HoTen);
+            }
+
             return d == null
                 ? NotFound()
                 : View(new DonDatHoaDetailViewModel { Don = d });
@@ -128,10 +159,57 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            if (d.TrangThai != TrangThaiDon.ChoXacNhan
-                || await _db.ChiTietDonHoas.AnyAsync(x => x.MaDon == id && x.MaMau == null && !x.DaChotGia))
+            // Lấy toàn bộ chi tiết của đơn cần xác nhận.
+            var chiTiets = await _db.ChiTietDonHoas
+                .AsNoTracking()
+                .Where(x => x.MaDon == id)
+                .ToListAsync();
+
+            // 1. Đúng trạng thái.
+            bool dungTrangThai =
+                d.TrangThai == TrangThaiDon.ChoXacNhan;
+
+            // 2. Có sản phẩm và tất cả chi tiết hợp lệ.
+            bool dungChiTiet =
+                chiTiets.Count > 0 &&
+                chiTiets.All(x =>
+                    x.SoLuong > 0 &&
+                    x.DonGia > 0 &&
+                    x.DaChotGia &&
+                    x.ThanhTien == x.SoLuong * x.DonGia);
+
+            // 3. Thông tin giao nhận hợp lệ.
+            bool dungGiaoNhan =
+                !string.IsNullOrWhiteSpace(d.NguoiNhan) &&
+                !string.IsNullOrWhiteSpace(d.SoDienThoaiNguoiNhan) &&
+                (
+                    d.HinhThucNhan == HinhThucNhanConst.KhachDenNhan ||
+                    (
+                        d.HinhThucNhan == HinhThucNhanConst.GiaoTanNoi &&
+                        !string.IsNullOrWhiteSpace(d.DiaChiGiao)
+                    )
+                );
+
+            // 4. Thời gian giao/nhận phải sau lúc đặt.
+            bool dungThoiGian =
+                d.ThoiGianNhanGiao > d.NgayDat;
+
+            // 5. Tổng tiền phải khớp dữ liệu đã lưu.
+            bool dungTongTien =
+                d.PhiGiaoHang >= 0 &&
+                d.PhuPhi >= 0 &&
+                d.TongTien ==
+                    chiTiets.Sum(x => x.ThanhTien)
+                    + d.PhiGiaoHang
+                    + d.PhuPhi;
+
+            if (!dungTrangThai || !dungChiTiet ||
+                !dungGiaoNhan || !dungThoiGian || !dungTongTien)
             {
-                TempData["Error"] = "Chỉ xác nhận đơn chờ và đã chốt giá toàn bộ thiết kế riêng.";
+                TempData["Error"] =
+                    "Đơn chưa đủ điều kiện xác nhận. " +
+                    "Kiểm tra chi tiết, báo giá, giao nhận và tổng tiền.";
+
                 return RedirectToAction(nameof(Details), new { id });
             }
 

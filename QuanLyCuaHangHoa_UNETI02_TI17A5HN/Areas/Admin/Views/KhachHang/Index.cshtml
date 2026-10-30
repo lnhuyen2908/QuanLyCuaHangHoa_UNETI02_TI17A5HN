@@ -111,11 +111,17 @@
                             <td class="py-space-md px-space-md text-center">@await Html.PartialAsync("_AdminStatusBadge", kh.TrangThai ? "Hoạt động" : "Đã khóa")</td>
                             <td class="py-space-md pr-space-lg pl-space-sm text-right">
                                 <div class="flex items-center justify-end gap-1">
-                                    <a asp-area="Admin" asp-controller="KhachHang" asp-action="Edit"
-                                       asp-route-id="@kh.MaKhachHang" title="Chỉnh sửa khách hàng"
-                                       class="inline-flex p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all">
+                                    <button type="button"
+                                            title="Chỉnh sửa khách hàng"
+                                            data-id="@kh.MaKhachHang"
+                                            data-hoten="@kh.HoTen"
+                                            data-sdt="@kh.SoDienThoai"
+                                            data-email="@kh.Email"
+                                            data-diachi="@(kh.DiaChi ?? "")"
+                                            onclick="openEditKhachHangModal(this)"
+                                            class="inline-flex p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-all">
                                         <span class="material-symbols-outlined text-[18px]">edit</span>
-                                    </a>
+                                    </button>
                                     @if (Context.Session.CoVaiTro(VaiTroConst.Admin))
                                     {
                                         <form asp-area="Admin" asp-controller="KhachHang" asp-action="DoiTrangThai"
@@ -235,11 +241,124 @@
     </div>
 </div>
 
+<!-- POPUP CHỈNH SỬA KHÁCH HÀNG -->
+<div id="editKhachHangModal"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 backdrop-blur-sm p-4 overflow-y-auto">
+
+    <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden">
+
+        <!-- Tiêu đề popup -->
+        <div class="flex items-center justify-between px-space-lg py-space-md bg-surface-container-low border-b border-surface-container-high">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">edit</span>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">
+                    Chỉnh sửa khách hàng <span id="editMaKH"></span>
+                </h3>
+            </div>
+
+            <button type="button"
+                    onclick="closeEditKhachHangModal()"
+                    class="text-secondary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <!-- Form dùng lại POST Edit hiện có -->
+        <form id="editKhachHangForm"
+              asp-area="Admin"
+              asp-controller="KhachHang"
+              asp-action="Edit"
+              method="post"
+              class="p-space-lg space-y-space-md">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="id" />
+            <input type="hidden" name="MaKhachHang" />
+
+            <!-- Họ tên và số điện thoại -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                <div>
+                    <label class="block mb-2 font-label-md text-on-surface">
+                        Họ và tên *
+                    </label>
+                    <input name="HoTen" type="text" required maxlength="100"
+                           class="w-full p-3 bg-surface-container-low rounded-xl border border-outline-variant/40 focus:outline-none focus:border-primary" />
+                </div>
+
+                <div>
+                    <label class="block mb-2 font-label-md text-on-surface">
+                        Số điện thoại *
+                    </label>
+                    <input name="SoDienThoai" type="tel" required
+                           class="w-full p-3 bg-surface-container-low rounded-xl border border-outline-variant/40 focus:outline-none focus:border-primary" />
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label class="block mb-2 font-label-md text-on-surface">
+                    Email *
+                </label>
+                <input name="Email" type="email" required
+                       class="w-full p-3 bg-surface-container-low rounded-xl border border-outline-variant/40 focus:outline-none focus:border-primary" />
+            </div>
+
+            <!-- Địa chỉ -->
+            <div>
+                <label class="block mb-2 font-label-md text-on-surface">
+                    Địa chỉ liên hệ
+                </label>
+                <textarea name="DiaChi" rows="2"
+                          class="w-full p-3 bg-surface-container-low rounded-xl border border-outline-variant/40 focus:outline-none focus:border-primary"></textarea>
+            </div>
+
+            <!-- Nút thao tác -->
+            <div class="flex justify-end gap-space-sm pt-space-md border-t border-surface-container-high">
+                <button type="button"
+                        onclick="closeEditKhachHangModal()"
+                        class="px-5 py-2.5 rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-high">
+                    Hủy bỏ
+                </button>
+
+                <button type="submit"
+                        class="px-6 py-2.5 rounded-xl bg-primary text-on-primary hover:bg-primary-container">
+                    Lưu thay đổi
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     function openAddKhachHangModal() {
         document.getElementById('addKhachHangModal').classList.remove('hidden');
     }
     function closeAddKhachHangModal() {
         document.getElementById('addKhachHangModal').classList.add('hidden');
+    }
+
+    // Mở popup và điền thông tin khách hàng được chọn.
+    function openEditKhachHangModal(button) {
+        const form = document.getElementById('editKhachHangForm');
+
+        form.elements.namedItem('id').value = button.dataset.id;
+        form.elements.namedItem('MaKhachHang').value = button.dataset.id;
+        form.elements.namedItem('HoTen').value = button.dataset.hoten;
+        form.elements.namedItem('SoDienThoai').value = button.dataset.sdt;
+        form.elements.namedItem('Email').value = button.dataset.email;
+        form.elements.namedItem('DiaChi').value = button.dataset.diachi || '';
+
+        document.getElementById('editMaKH').textContent =
+            'KH-' + button.dataset.id.padStart(3, '0');
+
+        document.getElementById('editKhachHangModal')
+            .classList.remove('hidden');
+    }
+
+    // Đóng popup.
+    function closeEditKhachHangModal() {
+        document.getElementById('editKhachHangModal')
+            .classList.add('hidden');
     }
 </script>

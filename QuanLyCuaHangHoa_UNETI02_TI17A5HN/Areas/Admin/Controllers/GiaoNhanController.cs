@@ -332,8 +332,9 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             catch (DbUpdateException ex)
                 when (ex.InnerException is SqlException sqlEx &&
                       (sqlEx.Number == 2601 ||  // lỗi trùng
-                       sqlEx.Number == 2627))  // lỗi vi phạm ràng buộc UNIQUE và PRIMARY
-            {    // SQL Server phát hiện trùng Unique Index.
+                       sqlEx.Number == 2627))   // lỗi vi phạm ràng buộc UNIQUE và PRIMARY
+            {
+                // SQL Server phát hiện trùng Unique Index.
                 TempData["Error"] =
                     "Đơn này đã có phiếu giao nhận. " +
                     "Có thể nhân viên khác vừa tạo phiếu.";

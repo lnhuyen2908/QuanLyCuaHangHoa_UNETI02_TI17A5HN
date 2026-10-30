@@ -23,7 +23,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities
         [StringLength(1000, ErrorMessage = "Mô tả tối đa 1000 ký tự")]
         [DataType(DataType.MultilineText)]
         [Display(Name = "Mô tả")]
-        public string? MoTa { get; set; }
+        public string? MoTa { get; set; } // ?: được phép nhận giá trị null
 
         // true = Hoạt động, false = Ngừng hoạt động (không dùng cho sản phẩm mới)
         [Display(Name = "Trạng thái")]

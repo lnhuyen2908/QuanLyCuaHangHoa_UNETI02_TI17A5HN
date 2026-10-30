@@ -41,7 +41,9 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             }
 
             return View(await q
-                .OrderByDescending(x => x.DonDatHoa.NgayDat)
+                .OrderBy(x => x.DaChotGia)
+                .ThenByDescending(x => x.DonDatHoa.NgayDat)
+                .ThenByDescending(x => x.MaChiTiet)
                 .Take(200)
                 .ToListAsync());
         }

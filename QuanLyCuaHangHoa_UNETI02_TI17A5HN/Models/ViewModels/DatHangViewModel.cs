@@ -9,6 +9,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
 {
     public class DatHangViewModel
     {
+        // Checkbox trên Checkout: khi bật, controller lấy thông tin người nhận từ hồ sơ khách hiện tại.
+        public bool NguoiNhanLaNguoiDat { get; set; } = true;
         // Họ và tên: Nguyễn Thị Đào
         // Mã sinh viên: 23103100245
         // Nội dung: Bổ sung lựa chọn thanh toán COD

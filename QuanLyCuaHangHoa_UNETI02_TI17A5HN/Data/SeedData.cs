@@ -3,6 +3,7 @@
 // Nội dung thực hiện: Dữ liệu mẫu cho toàn bộ 13 entity (tài khoản, danh mục, hoa, mẫu, khách hàng, đơn, giao nhận, thanh toán, đánh giá).
 
 using Microsoft.EntityFrameworkCore;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities;
 
@@ -81,6 +82,25 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             await db.Database.MigrateAsync();
             await SeedAsync(db);
+            await NangCapMatKhauChuaMaHoaAsync(db);
+        }
+
+        private static async Task NangCapMatKhauChuaMaHoaAsync(AppDbContext db)
+        {
+            var dsTaiKhoan = await db.TaiKhoans.ToListAsync();
+            bool coThayDoi = false;
+            foreach (var tk in dsTaiKhoan)
+            {
+                if (MatKhauHelper.CanNangCap(tk.MatKhau))
+                {
+                    tk.MatKhau = MatKhauHelper.MaHoa(tk.MatKhau);
+                    coThayDoi = true;
+                }
+            }
+            if (coThayDoi)
+            {
+                await db.SaveChangesAsync();
+            }
         }
 
         public static async Task SeedAsync(AppDbContext db)
@@ -88,19 +108,21 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
             // Chỉ seed khi DB còn trống
             if (await db.TaiKhoans.AnyAsync()) return;
 
+            string matKhauDaMaHoa = MatKhauHelper.MaHoa(MatKhauMacDinh);
+
             // ================= 1. TÀI KHOẢN =================
             var taiKhoans = new List<TaiKhoan>
             {
-                new() { TenDangNhap = "admin", MatKhau = MatKhauMacDinh, HoTen = "Quản trị viên", Email = "admin@nhom2atelier.vn", VaiTro = VaiTroConst.Admin },
-                new() { TenDangNhap = "nhanvien01", MatKhau = MatKhauMacDinh, HoTen = "Lê Thị Mai", Email = "nhanvien01@nhom2atelier.vn", VaiTro = VaiTroConst.NhanVien },
-                new() { TenDangNhap = "nhanvien02", MatKhau = MatKhauMacDinh, HoTen = "Phạm Kim Ngân", Email = "nhanvien02@nhom2atelier.vn", VaiTro = VaiTroConst.NhanVien }
+                new() { TenDangNhap = "admin", MatKhau = matKhauDaMaHoa, HoTen = "Quản trị viên", Email = "admin@nhom2atelier.vn", VaiTro = VaiTroConst.Admin },
+                new() { TenDangNhap = "nhanvien01", MatKhau = matKhauDaMaHoa, HoTen = "Lê Thị Mai", Email = "nhanvien01@nhom2atelier.vn", VaiTro = VaiTroConst.NhanVien },
+                new() { TenDangNhap = "nhanvien02", MatKhau = matKhauDaMaHoa, HoTen = "Phạm Kim Ngân", Email = "nhanvien02@nhom2atelier.vn", VaiTro = VaiTroConst.NhanVien }
             };
             for (int i = 0; i < TenKhach.Length; i++)
             {
                 taiKhoans.Add(new TaiKhoan
                 {
                     TenDangNhap = $"khachhang{i + 1:D2}",
-                    MatKhau = MatKhauMacDinh,
+                    MatKhau = matKhauDaMaHoa,
                     HoTen = TenKhach[i],
                     Email = $"khachhang{i + 1:D2}@gmail.com",
                     VaiTro = VaiTroConst.KhachHang
@@ -109,7 +131,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
             // Tài khoản bị khóa để test đăng nhập
             taiKhoans.Add(new TaiKhoan
             {
-                TenDangNhap = "khoa01", MatKhau = MatKhauMacDinh, HoTen = "Tài khoản bị khóa",
+                TenDangNhap = "khoa01", MatKhau = matKhauDaMaHoa, HoTen = "Tài khoản bị khóa",
                 Email = "khoa01@gmail.com", VaiTro = VaiTroConst.KhachHang, TrangThai = false
             });
             db.TaiKhoans.AddRange(taiKhoans);

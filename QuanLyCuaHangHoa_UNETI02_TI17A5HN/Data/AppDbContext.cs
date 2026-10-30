@@ -38,10 +38,10 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
             // ===== Module 1 =====
             // TaiKhoan (1) - (0..1) KhachHang
             mb.Entity<KhachHang>()
-              .HasOne(k => k.TaiKhoan)
-              .WithOne(t => t.KhachHang)
-              .HasForeignKey<KhachHang>(k => k.MaTaiKhoan)
-              .OnDelete(DeleteBehavior.Restrict);
+              .HasOne(k => k.TaiKhoan) //Khai báo quan hệ một đối tượng ở phía KhachHang
+              .WithOne(t => t.KhachHang) //Khai báo quan hệ một-một ở phía TaiKhoan
+              .HasForeignKey<KhachHang>(k => k.MaTaiKhoan) //Chỉ định khóa ngoại nằm trong KhachHang
+              .OnDelete(DeleteBehavior.Restrict); //Hạn chế xóa khi việc xóa vi phạm ràng buộc khóa ngoại
 
             // ===== Module 2 =====
             // LoaiHoa (1) - (n) HoaTuoi

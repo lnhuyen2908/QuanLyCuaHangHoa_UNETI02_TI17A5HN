@@ -421,47 +421,6 @@
                                             </span>
                                             <a class="text-primary text-xs underline" href="/User/HoSo/ChiTietDon?maDon=@don.MaDon">Xem chi tiết đơn</a>
 
-                                            
-                                            @* Họ và tên: Nguyễn Thị Đào
-                                               Mã sinh viên: 23103100245
-                                               Nội dung: Tuần 6 - Nút đánh giá đơn hoàn thành.*@
-
-                                            @if (don.TrangThai == TrangThaiDon.HoanThanh)
-                                            {
-                                                if (don.DanhGia == null)
-                                                {
-                                                    <a asp-area="User"
-                                                       asp-controller="DanhGia"
-                                                       asp-action="Create"
-                                                       asp-route-maDon="@don.MaDon"
-                                                       class="inline-flex items-center gap-1
-                                                              px-3 py-2 bg-primary text-on-primary
-                                                              rounded-lg font-semibold text-xs
-                                                              hover:opacity-90">
-
-                                                        <span class="material-symbols-outlined text-[16px]">
-                                                            star
-                                                        </span>
-
-                                                        Đánh giá
-                                                    </a>
-                                                }
-                                                else
-                                                {
-                                                    <span class="inline-flex items-center gap-1
-                                                                 text-green-700 text-xs font-semibold">
-
-                                                        <span class="material-symbols-outlined text-[16px]">
-                                                            verified
-                                                        </span>
-
-                                                        Đã đánh giá (@don.DanhGia.SoSao/5 sao)
-                                                    </span>
-                                                }
-                                            }
-
-                                            @* KẾT THÚC PHẦN MODULE 4 - Nguyễn Thị Đào *@
-
                                             @* Khách chỉ thấy nút Hủy cho đơn chờ xác nhận và chưa có thanh toán; POST còn kiểm tra server. *@
                                             @if (don.TrangThai == TrangThaiDon.ChoXacNhan && !don.ThanhToans.Any())
                                             {
@@ -508,13 +467,13 @@
                             </a>
                         </div>
 
-                        @* Tab thiết kế riêng lọc từ đơn có ChiTietDonHoa.YeuCauRieng hoặc MaMau == null. *@
+                        @* Đơn thiết kế riêng được nhận diện bằng chi tiết chưa gắn với mẫu có sẵn (MaMau == null). *@
                         @if (Model.DonHangThietKeRieng.Any())
                         {
                             <div class="space-y-space-md">
                                 @foreach (var don in Model.DonHangThietKeRieng)
                                 {
-                                    var ctRieng = don.ChiTietDonHoas.FirstOrDefault(c => !string.IsNullOrEmpty(c.YeuCauRieng) || c.MaMau == null) ?? don.ChiTietDonHoas.FirstOrDefault();
+                                    var ctRieng = don.ChiTietDonHoas.FirstOrDefault(c => c.MaMau == null) ?? don.ChiTietDonHoas.FirstOrDefault();
                                     var yeuCau = ctRieng?.YeuCauRieng ?? "Yêu cầu thiết kế đặc biệt";
 
                                     <div class="p-space-lg rounded-xl bg-surface-container-low border border-primary/20 space-y-space-md relative overflow-hidden">
@@ -535,7 +494,14 @@
                                             </p>
                                             <div class="flex flex-wrap gap-2 pt-1 text-xs">
                                                 <span class="px-2.5 py-1 rounded-full bg-surface-container font-label-md text-secondary">
-                                                    Ngân sách: @don.TongTien.ToString("N0")₫
+                                                    @if (ctRieng != null && !ctRieng.DaChotGia)
+                                                    {
+                                                        <text>Chưa báo giá hoa • Phí giao: @don.PhiGiaoHang.ToString("N0")₫</text>
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>Tổng đơn: @don.TongTien.ToString("N0")₫</text>
+                                                    }
                                                 </span>
                                                 <span class="px-2.5 py-1 rounded-full bg-surface-container font-label-md text-secondary">
                                                     Ngày gửi: @don.NgayDat.ToString("dd/MM/yyyy")
