@@ -1,0 +1,219 @@
+@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.SocialLoginDemoViewModel
+@{
+    bool isGoogle = Model.Provider.Equals("Google", StringComparison.OrdinalIgnoreCase);
+    string actionText = Model.IsRegister ? "Đăng ký thành viên" : "Đăng nhập";
+    ViewData["Title"] = $"{actionText} bằng {(isGoogle ? "Gmail (Google)" : "Zalo")}";
+    string providerBg = isGoogle ? "bg-red-500 hover:bg-red-600" : "bg-[#0068FF] hover:bg-[#0052cc]";
+}
+
+<div class="relative w-full py-space-xl lg:py-margin-desktop overflow-hidden flex items-center justify-center">
+    <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-secondary-container/40 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-36 -right-28 w-[28rem] h-[28rem] rounded-full bg-primary-fixed/30 blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-xl w-full mx-auto px-margin-mobile md:px-margin">
+        <div class="rounded-2xl bg-surface-container-lowest shadow-xl border border-outline-variant/30 overflow-hidden">
+            <!-- Header Brand -->
+            <div class="p-space-lg text-center border-b border-outline-variant/20 bg-surface-container-low/50">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface-container-lowest shadow-md mb-3">
+                    @if (isGoogle)
+                    {
+                        <svg class="w-8 h-8" viewBox="0 0 24 24">
+                            <path d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z" fill="#EA4335"></path>
+                            <path d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z" fill="#4285F4"></path>
+                            <path d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z" fill="#FBBC05"></path>
+                            <path d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.3-6.4-5.2L1.9 16c1.8 3.7 5.6 7 10.1 7z" fill="#34A853"></path>
+                        </svg>
+                    }
+                    else
+                    {
+                        <span class="w-10 h-10 rounded-full bg-[#0068FF] text-white font-bold text-xl flex items-center justify-center">Z</span>
+                    }
+                </div>
+                <h1 class="font-headline-sm text-headline-sm text-on-surface">
+                    @actionText bằng @(isGoogle ? "Tài khoản Google / Gmail" : "Tài khoản Zalo")
+                </h1>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                    @if (Model.IsRegister)
+                    {
+                        <span>Đăng ký một chạm - Nhận ngay Voucher 100.000₫ &amp; đặc quyền Hội viên VIP</span>
+                    }
+                    else
+                    {
+                        <span>Cổng xác thực một chạm cho thành viên Cửa hàng Hoa tươi UNETI</span>
+                    }
+                </p>
+            </div>
+
+            <!-- Body -->
+            <div class="p-space-lg space-y-space-md">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div asp-validation-summary="All" class="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 font-body-sm text-sm"></div>
+                }
+
+                @if (!Model.IsConfigured)
+                {
+                    <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-body-sm leading-relaxed flex items-start gap-2">
+                        <span class="material-symbols-outlined text-amber-600 text-[20px] shrink-0">info</span>
+                        <div>
+                            <strong>Chế độ Xác thực Nhanh (Local &amp; Demo Đồ Án):</strong>
+                            <p class="mt-0.5">Để tiện kiểm thử và thuyết trình đồ án không phụ thuộc vào Internet hay Client Secret bên thứ 3, bạn có thể chọn ngay một tài khoản bên dưới hoặc nhập thông tin bất kỳ để @actionText.ToLowerInvariant() tức thì.</p>
+                            <p class="mt-1 text-[11px] text-amber-700">*(Khi triển khai thực tế, chỉ cần cấu hình <code class="bg-amber-100 px-1 rounded">ClientId</code> &amp; <code class="bg-amber-100 px-1 rounded">ClientSecret</code> trong file <code class="bg-amber-100 px-1 rounded">appsettings.json</code> để kích hoạt OAuth 2.0 live)*</p>
+                        </div>
+                    </div>
+                }
+
+                <!-- Chọn nhanh tài khoản mẫu -->
+                <div>
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-outline block mb-2">Tài khoản @(isGoogle ? "Gmail" : "Zalo") mẫu gợi ý:</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        @if (isGoogle)
+                        {
+                            <button type="button" onclick="chonTaiKhoan('thuthao.uneti@gmail.com', 'Nguyễn Thu Thảo', '0912345678', '45 Tràng Tiền, Hoàn Kiếm, Hà Nội')"
+                                    class="p-2.5 rounded-xl border border-outline-variant/50 hover:border-primary hover:bg-surface-container-low transition-all text-left flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-full bg-red-100 text-red-700 font-bold text-xs flex items-center justify-center shrink-0">TT</span>
+                                <div class="overflow-hidden">
+                                    <div class="font-title-sm text-xs font-medium text-on-surface truncate">Nguyễn Thu Thảo</div>
+                                    <div class="text-[11px] text-on-surface-variant truncate">thuthao.uneti@gmail.com</div>
+                                </div>
+                            </button>
+                            <button type="button" onclick="chonTaiKhoan('minhhoang.flower@gmail.com', 'Trần Minh Hoàng', '0987654321', '88 Cầu Giấy, Hà Nội')"
+                                    class="p-2.5 rounded-xl border border-outline-variant/50 hover:border-primary hover:bg-surface-container-low transition-all text-left flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center shrink-0">MH</span>
+                                <div class="overflow-hidden">
+                                    <div class="font-title-sm text-xs font-medium text-on-surface truncate">Trần Minh Hoàng</div>
+                                    <div class="text-[11px] text-on-surface-variant truncate">minhhoang.flower@gmail.com</div>
+                                </div>
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" onclick="chonTaiKhoan('0912345678@zalo.me', 'Phương Uyên (Zalo)', '0912345678', '218 Lĩnh Nam, Hoàng Mai, Hà Nội')"
+                                    class="p-2.5 rounded-xl border border-outline-variant/50 hover:border-[#0068FF] hover:bg-blue-50/40 transition-all text-left flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-full bg-blue-100 text-[#0068FF] font-bold text-xs flex items-center justify-center shrink-0">Z</span>
+                                <div class="overflow-hidden">
+                                    <div class="font-title-sm text-xs font-medium text-on-surface truncate">Phương Uyên (Zalo)</div>
+                                    <div class="text-[11px] text-on-surface-variant truncate">0912 345 678</div>
+                                </div>
+                            </button>
+                            <button type="button" onclick="chonTaiKhoan('0987654321@zalo.me', 'Hoàng Long (Zalo)', '0987654321', '15 Hàng Bài, Hoàn Kiếm, Hà Nội')"
+                                    class="p-2.5 rounded-xl border border-outline-variant/50 hover:border-[#0068FF] hover:bg-blue-50/40 transition-all text-left flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-full bg-blue-100 text-[#0068FF] font-bold text-xs flex items-center justify-center shrink-0">Z</span>
+                                <div class="overflow-hidden">
+                                    <div class="font-title-sm text-xs font-medium text-on-surface truncate">Hoàng Long (Zalo)</div>
+                                    <div class="text-[11px] text-on-surface-variant truncate">0987 654 321</div>
+                                </div>
+                            </button>
+                        }
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-center my-2">
+                    <div class="w-full h-px bg-outline-variant/30"></div>
+                    <span class="absolute px-2.5 bg-surface-container-lowest text-[11px] font-label-md text-outline uppercase tracking-wider">Hoặc nhập thông tin tùy ý</span>
+                </div>
+
+                <!-- Form đăng nhập / đăng ký -->
+                <form asp-area="User" asp-controller="TaiKhoan" asp-action="SocialDemoLogin" method="post" class="space-y-3">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Provider" />
+                    <input type="hidden" asp-for="ReturnUrl" />
+                    <input type="hidden" asp-for="IsRegister" />
+
+                    <div>
+                        <label class="block font-title-sm text-xs text-on-surface mb-1">
+                            @(isGoogle ? "Địa chỉ Gmail" : "Số điện thoại / Định danh Zalo") <span class="text-error">*</span>
+                        </label>
+                        <div class="relative flex items-center">
+                            <span class="material-symbols-outlined absolute left-3 text-outline text-[18px] pointer-events-none">mail</span>
+                            <input asp-for="Email" id="input-email" required
+                                   class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-outline-variant/50 bg-surface-container-lowest text-on-surface font-body-sm text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                                   placeholder="@(isGoogle ? "nguyenvana@gmail.com" : "0901234567@zalo.me")" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-title-sm text-xs text-on-surface mb-1">
+                            Họ và tên của bạn <span class="text-error">*</span>
+                        </label>
+                        <div class="relative flex items-center">
+                            <span class="material-symbols-outlined absolute left-3 text-outline text-[18px] pointer-events-none">person</span>
+                            <input asp-for="HoTen" id="input-hoten" required
+                                   class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-outline-variant/50 bg-surface-container-lowest text-on-surface font-body-sm text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                                   placeholder="Ví dụ: Nguyễn Thu Thảo" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-title-sm text-xs text-on-surface mb-1">
+                            Số điện thoại liên hệ @(Model.IsRegister ? "(để giao hoa & tích điểm)" : "(tùy chọn)")
+                        </label>
+                        <div class="relative flex items-center">
+                            <span class="material-symbols-outlined absolute left-3 text-outline text-[18px] pointer-events-none">phone</span>
+                            <input asp-for="SoDienThoai" id="input-sdt"
+                                   class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-outline-variant/50 bg-surface-container-lowest text-on-surface font-body-sm text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                                   placeholder="0912 345 678" />
+                        </div>
+                    </div>
+
+                    @if (Model.IsRegister)
+                    {
+                        <div>
+                            <label class="block font-title-sm text-xs text-on-surface mb-1">
+                                Địa chỉ nhận hoa mặc định (tùy chọn)
+                            </label>
+                            <div class="relative flex items-center">
+                                <span class="material-symbols-outlined absolute left-3 text-outline text-[18px] pointer-events-none">home_pin</span>
+                                <input asp-for="DiaChi" id="input-diachi"
+                                       class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-outline-variant/50 bg-surface-container-lowest text-on-surface font-body-sm text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                                       placeholder="Ví dụ: 218 Lĩnh Nam, Hoàng Mai, Hà Nội" />
+                            </div>
+                        </div>
+                    }
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full py-3 px-space-md rounded-full text-white font-title-sm text-sm shadow-md transition-all duration-300 flex items-center justify-center gap-2 @providerBg">
+                            <span>@(Model.IsRegister ? "Đăng ký thành viên & Kích hoạt" : "Tiếp tục đăng nhập với") @(isGoogle ? "Google" : "Zalo")</span>
+                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="pt-2 text-center">
+                    @if (Model.IsRegister)
+                    {
+                        <a asp-area="User" asp-controller="TaiKhoan" asp-action="Register" class="font-title-sm text-xs text-on-surface-variant hover:text-primary transition-colors inline-flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                            <span>Quay lại biểu mẫu Đăng ký truyền thống</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-area="User" asp-controller="TaiKhoan" asp-action="Login" class="font-title-sm text-xs text-on-surface-variant hover:text-primary transition-colors inline-flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                            <span>Quay lại trang Đăng nhập thông thường</span>
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Footer an toàn -->
+            <div class="p-space-sm bg-surface-container-low text-center border-t border-outline-variant/20 text-[11px] text-on-surface-variant flex items-center justify-center gap-1">
+                <span class="material-symbols-outlined text-[14px] text-tertiary">lock</span>
+                <span>Tài khoản tự động được tạo và bảo vệ bằng mật khẩu mã hóa PBKDF2 HMAC-SHA256.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function chonTaiKhoan(email, hoten, sdt, diachi) {
+            document.getElementById('input-email').value = email;
+            document.getElementById('input-hoten').value = hoten;
+            if (sdt) document.getElementById('input-sdt').value = sdt;
+            var diachiInput = document.getElementById('input-diachi');
+            if (diachiInput && diachi) diachiInput.value = diachi;
+        }
+    </script>
+}

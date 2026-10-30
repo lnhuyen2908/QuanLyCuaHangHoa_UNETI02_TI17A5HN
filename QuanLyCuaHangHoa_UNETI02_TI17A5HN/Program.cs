@@ -12,6 +12,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpClient();
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
