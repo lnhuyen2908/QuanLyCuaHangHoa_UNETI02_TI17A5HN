@@ -96,28 +96,29 @@
                                 required
                                 class="w-full p-3 rounded-lg bg-surface-container border border-outline-variant">
 
-                            <option value="">-- Chọn phương thức --</option>
-
                             <option value="@PhuongThucThanhToanConst.TienMat">
-                                Tiền mặt
+                                Tiền mặt (ĐANG HỖ TRỢ)
                             </option>
 
-                            <option value="@PhuongThucThanhToanConst.ChuyenKhoan">
-                                Chuyển khoản
+                            <option value="@PhuongThucThanhToanConst.ChuyenKhoan" disabled>
+                                Chuyển khoản 
                             </option>
 
-                            <option value="@PhuongThucThanhToanConst.ViDienTu">
-                                Ví điện tử
+                            <option value="@PhuongThucThanhToanConst.ViDienTu" disabled>
+                                Ví điện tử 
                             </option>
 
-                            <option value="@PhuongThucThanhToanConst.TheNganHang">
-                                Thẻ ngân hàng
+                            <option value="@PhuongThucThanhToanConst.TheNganHang" disabled>
+                                Thẻ ngân hàng 
                             </option>
 
                         </select>
 
                         <span asp-validation-for="PhuongThuc"
                               class="text-error text-sm"></span>
+                        <p class="text-xs text-secondary mt-2">
+                            Hiện chỉ ghi nhận tiền mặt. Các phương thức còn lại mới hiển thị, chưa hỗ trợ giao dịch.
+                        </p>
                     </div>
                 </div>
 

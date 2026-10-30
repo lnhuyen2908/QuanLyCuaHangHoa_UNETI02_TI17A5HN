@@ -85,7 +85,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                         (g.NguoiGiao != null &&
                          g.NguoiGiao.Contains(tuKhoa)) ||
 
-                        g.DonDatHoa.NguoiNhan.Contains(tuKhoa));
+                        g.DonDatHoa.NguoiNhan.Contains(tuKhoa) ||
+                        g.DonDatHoa.SoDienThoaiNguoiNhan.Contains(tuKhoa));
                 }
             }
 
@@ -159,7 +160,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 })
                 .ToListAsync();
 
-            vm.DonHopLe = Seds.lect(d =>
+            vm.DonHopLe = ds.Select(d =>
                 new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
                 {
                     Value = d.MaDon.ToString(),
@@ -174,7 +175,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         {
             var vm = new GiaoNhanCreateViewModel
             {
-                MaDon = maDon ?? 0 
+                MaDon = maDon ?? 0
             };
 
             if (maDon.HasValue)
@@ -185,6 +186,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 
                 if (don != null)
                 {
+                    vm.TenNguoiNhan = don.NguoiNhan;
+                    vm.SoDienThoaiNguoiNhan = don.SoDienThoaiNguoiNhan;
                     vm.DiaChi = don.DiaChiGiao;
 
                     if (don.ThoiGianNhanGiao > DateTime.Now)
@@ -215,6 +218,18 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             }
             else
             {
+                // Thông tin người nhận luôn lấy từ đơn gốc, không tin dữ liệu form.
+                vm.TenNguoiNhan = don.NguoiNhan;
+                vm.SoDienThoaiNguoiNhan = don.SoDienThoaiNguoiNhan;
+
+                if (string.IsNullOrWhiteSpace(don.NguoiNhan) ||
+                    string.IsNullOrWhiteSpace(don.SoDienThoaiNguoiNhan))
+                {
+                    ModelState.AddModelError(
+                        nameof(vm.MaDon),
+                        "Đơn thiếu tên hoặc số điện thoại người nhận.");
+                }
+
                 // Đơn phải nằm trong luồng xử lý hợp lệ.
                 if (don.TrangThai != TrangThaiDon.DaXacNhan &&
                     don.TrangThai != TrangThaiDon.DangChuanBi &&
@@ -267,13 +282,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                             "Giao tận nơi bắt buộc có địa chỉ.");
                     }
 
-                    if (string.IsNullOrWhiteSpace(don.NguoiNhan) ||
-                        string.IsNullOrWhiteSpace(don.SoDienThoaiNguoiNhan))
-                    {
-                        ModelState.AddModelError(
-                            nameof(vm.MaDon),
-                            "Đơn thiếu thông tin người nhận.");
-                    }
+                    // Tên và số điện thoại đã được kiểm tra từ đơn gốc ở phía trên.
                 }
             }
 
@@ -320,12 +329,11 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 TempData["Success"] =
                     "Tạo phiếu giao nhận thành công.";
             }
-            
-            {catch (DbUpdateException ex)
+            catch (DbUpdateException ex)
                 when (ex.InnerException is SqlException sqlEx &&
                       (sqlEx.Number == 2601 ||  // lỗi trùng
-                       sqlEx.Number == 2627))   // lỗi vi phạm ràng buộc UNIQUE và PRIMARY
-                // SQL Server phát hiện trùng Unique Index.
+                       sqlEx.Number == 2627))  // lỗi vi phạm ràng buộc UNIQUE và PRIMARY
+            {    // SQL Server phát hiện trùng Unique Index.
                 TempData["Error"] =
                     "Đơn này đã có phiếu giao nhận. " +
                     "Có thể nhân viên khác vừa tạo phiếu.";
@@ -379,6 +387,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 MaGiaoNhan = giaoNhan.MaGiaoNhan,
                 MaDon = giaoNhan.MaDon,
                 TenNguoiNhan = don.NguoiNhan,
+                SoDienThoaiNguoiNhan = don.SoDienThoaiNguoiNhan,
                 HinhThuc = giaoNhan.HinhThuc,
                 ThoiGianDuKien = giaoNhan.ThoiGianDuKien,
                 DiaChi = giaoNhan.DiaChi,
@@ -392,7 +401,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         // POST: Admin/GiaoNhan/Edit/1
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit( int id, GiaoNhanEditViewModel vm)
+        public async Task<IActionResult> Edit(int id, GiaoNhanEditViewModel vm)
         {
             if (id != vm.MaGiaoNhan)
                 return BadRequest();
@@ -450,6 +459,14 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                     "Thời gian dự kiến mới phải ở tương lai.");
             }
 
+            if (string.IsNullOrWhiteSpace(don.NguoiNhan) ||
+                string.IsNullOrWhiteSpace(don.SoDienThoaiNguoiNhan))
+            {
+                ModelState.AddModelError(
+                    nameof(vm.MaGiaoNhan),
+                    "Đơn thiếu tên hoặc số điện thoại người nhận.");
+            }
+
             var diaChiMoi = string.IsNullOrWhiteSpace(vm.DiaChi)
                 ? don.DiaChiGiao
                 : vm.DiaChi.Trim();
@@ -464,18 +481,13 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                         "Giao tận nơi bắt buộc có địa chỉ.");
                 }
 
-                if (string.IsNullOrWhiteSpace(don.NguoiNhan) ||
-                    string.IsNullOrWhiteSpace(don.SoDienThoaiNguoiNhan))
-                {
-                    ModelState.AddModelError(
-                        nameof(vm.MaGiaoNhan),
-                        "Đơn thiếu thông tin người nhận.");
-                }
+                // Thông tin người nhận được kiểm tra từ đơn gốc ở phía trên.
             }
 
             // Giữ lại dữ liệu hiển thị nếu validation lỗi.
             vm.MaDon = don.MaDon;
             vm.TenNguoiNhan = don.NguoiNhan;
+            vm.SoDienThoaiNguoiNhan = don.SoDienThoaiNguoiNhan;
             vm.HinhThuc = don.HinhThucNhan;
 
             if (!ModelState.IsValid)

@@ -20,6 +20,14 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
         public DateTime ThoiGianDuKien { get; set; }
             = DateTime.Now.AddHours(2);
 
+
+        // Thông tin người nhận được lấy từ DonDatHoa, chỉ hiển thị trên form.
+        [Display(Name = "Người nhận")]
+        public string TenNguoiNhan { get; set; } = string.Empty;
+
+        [Display(Name = "Số điện thoại người nhận")]
+        public string SoDienThoaiNguoiNhan { get; set; } = string.Empty;
+
         [StringLength(250)]
         [Display(Name = "Địa chỉ giao")]
         public string? DiaChi { get; set; }
