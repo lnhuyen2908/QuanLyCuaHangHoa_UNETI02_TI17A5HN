@@ -12,7 +12,6 @@ using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services;
-// Nguyễn Thị Đào - 23103100245
 // Bổ sung thư viện xử lý lỗi trùng dữ liệu SQL Server.
 using Microsoft.Data.SqlClient;
 
@@ -139,10 +138,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         }
 
 
-        // Họ và tên: Nguyễn Thị Đào
-        // Mã sinh viên: 23103100245
         // Nội dung: Tuần 6 - Thêm phiếu giao nhận.
-
         // Lấy các đơn đủ điều kiện và chưa có phiếu giao nhận.
         private async Task NapDanhSachDonAsync(
             GiaoNhanCreateViewModel vm)
@@ -163,7 +159,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 })
                 .ToListAsync();
 
-            vm.DonHopLe = ds.Select(d =>
+            vm.DonHopLe = Seds.lect(d =>
                 new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
                 {
                     Value = d.MaDon.ToString(),
@@ -172,13 +168,13 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 }).ToList();
         }
 
-        // GET: Admin/GiaoNhan/Create
+        // GET: Admin/GiaoNhan/Create/ chỉ mở form, tải ds đơn đủ đk, điền sẵn dữ liệu
         [HttpGet]
         public async Task<IActionResult> Create(int? maDon)
         {
             var vm = new GiaoNhanCreateViewModel
             {
-                MaDon = maDon ?? 0
+                MaDon = maDon ?? 0 
             };
 
             if (maDon.HasValue)
@@ -196,7 +192,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 }
             }
 
-            await NapDanhSachDonAsync(vm);
+            await NapDanhSachDonAsync(vm); // kiểm tra lại điều kiện
 
             return View(vm);
         }
@@ -272,8 +268,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                     }
 
                     if (string.IsNullOrWhiteSpace(don.NguoiNhan) ||
-                        string.IsNullOrWhiteSpace(
-                            don.SoDienThoaiNguoiNhan))
+                        string.IsNullOrWhiteSpace(don.SoDienThoaiNguoiNhan))
                     {
                         ModelState.AddModelError(
                             nameof(vm.MaDon),
@@ -293,7 +288,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             {
                 MaDon = vm.MaDon,
 
-                // Không lấy hình thức từ form.
+                // Không lấy hình thức từ form./ đã đc k.h lựa chọn khi đặt hàng r
                 HinhThuc = don!.HinhThucNhan,
 
                 ThoiGianDuKien = vm.ThoiGianDuKien,
@@ -325,11 +320,11 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 TempData["Success"] =
                     "Tạo phiếu giao nhận thành công.";
             }
-            catch (DbUpdateException ex)
+            
+            {catch (DbUpdateException ex)
                 when (ex.InnerException is SqlException sqlEx &&
-                      (sqlEx.Number == 2601 ||
-                       sqlEx.Number == 2627))
-            {
+                      (sqlEx.Number == 2601 ||  // lỗi trùng
+                       sqlEx.Number == 2627))   // lỗi vi phạm ràng buộc UNIQUE và PRIMARY
                 // SQL Server phát hiện trùng Unique Index.
                 TempData["Error"] =
                     "Đơn này đã có phiếu giao nhận. " +
@@ -341,13 +336,10 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
 
         }
-        // KẾT THÚC PHẦN CREATE - NGUYỄN THỊ ĐÀO
+        // KẾT THÚC PHẦN CREATE
 
 
-        // Họ và tên: Nguyễn Thị Đào
-        // Mã sinh viên: 23103100245
         // Nội dung: Tuần 6 - Sửa phiếu giao nhận (Edit)
-
         // GET: Admin/GiaoNhan/Edit/1
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -400,8 +392,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         // POST: Admin/GiaoNhan/Edit/1
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(
-            int id, GiaoNhanEditViewModel vm)
+        public async Task<IActionResult> Edit( int id, GiaoNhanEditViewModel vm)
         {
             if (id != vm.MaGiaoNhan)
                 return BadRequest();
@@ -474,8 +465,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 }
 
                 if (string.IsNullOrWhiteSpace(don.NguoiNhan) ||
-                    string.IsNullOrWhiteSpace(
-                        don.SoDienThoaiNguoiNhan))
+                    string.IsNullOrWhiteSpace(don.SoDienThoaiNguoiNhan))
                 {
                     ModelState.AddModelError(
                         nameof(vm.MaGiaoNhan),
@@ -509,16 +499,10 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        // KẾT THÚC PHẦN EDIT 
 
-        // KẾT THÚC PHẦN EDIT - NGUYỄN THỊ ĐÀO
-
-
-        // Họ và tên: Nguyễn Thị Đào
-        // Mã sinh viên: 23103100245
         // Nội dung: Tuần 6 - Hoàn thành giao nhận
         // Đồng bộ trạng thái đơn và lưu lịch sử xử lý.
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> HoanThanh(int id)
@@ -606,7 +590,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // KẾT THÚC PHẦN HOÀN THÀNH GIAO NHẬN - ĐÀO
+        // KẾT THÚC PHẦN HOÀN THÀNH GIAO NHẬN 
 
 
     }

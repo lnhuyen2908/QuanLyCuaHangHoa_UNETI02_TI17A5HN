@@ -141,6 +141,25 @@
             </a>
 
             <div class="my-space-sm border-t border-surface-container"></div>
+            
+            @*  Họ và tên: Nguyễn Thị Đào
+               Mã sinh viên: 23103100245
+               Nội dung: Thêm menu thống kê LINQ - Module 4 *@
+
+            <a asp-area="Admin"
+               asp-controller="ThongKe"
+               asp-action="Index"
+               class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg transition-all @(activeMenu == "ThongKe" ? "bg-primary text-on-primary font-title-sm shadow-sm" : "font-title-sm text-title-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface")">
+
+                <span class="material-symbols-outlined text-[20px]">
+                    analytics
+                </span>
+
+                <span>Thống kê LINQ</span>
+            </a>
+
+            @* KẾT THÚC BỔ SUNG - NGUYỄN THỊ ĐÀO *@
+
 
             <!-- Module 1: Tài khoản & Phân quyền -->
             @if (vaiTro == VaiTroConst.Admin)

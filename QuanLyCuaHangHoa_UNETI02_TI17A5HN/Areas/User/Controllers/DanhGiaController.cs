@@ -82,7 +82,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             if (!maTaiKhoan.HasValue)
                 return Unauthorized();
 
-            // Không tin mã khách hàng từ trình duyệt.
+            // thông tin mã khách hàng từ trình duyệt.
             // Kiểm tra lại chủ sở hữu ngay tại POST.
             var don = await _db.DonDatHoas
                 .AsNoTracking()
@@ -126,11 +126,11 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             {
                 await _db.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException)  // giả sử SaveChange thấy bại vì đã có đánh giá
             {
                 // CSDL đã có ràng buộc 1 đơn - 1 đánh giá.
                 // Xử lý khi hai yêu cầu đánh giá đến cùng lúc.
-                _db.Entry(danhGia).State = EntityState.Detached;
+                _db.Entry(danhGia).State = EntityState.Detached; // -> sẽ loại đối tượng đó khỏi danh sách EF Core đang theo dõi.
 
                 if (await _db.DanhGias
                     .AnyAsync(d => d.MaDon == vm.MaDon))
