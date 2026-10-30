@@ -165,16 +165,14 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             if (taiKhoan == null)
                 return RedirectToAction("Login", "TaiKhoan", new { area = "User" });
 
-            // So sánh mật khẩu hiện tại
-            var a = Encoding.UTF8.GetBytes(vm.MatKhauHienTai);
-            var b = Encoding.UTF8.GetBytes(taiKhoan.MatKhau);
-            if (!CryptographicOperations.FixedTimeEquals(a, b))
+            // So sánh mật khẩu hiện tại bằng MatKhauHelper
+            if (!MatKhauHelper.KiemTra(vm.MatKhauHienTai, taiKhoan.MatKhau))
             {
                 TempData["Loi"] = "Mật khẩu hiện tại không chính xác.";
                 return Redirect("/User/Profile#security");
             }
 
-            taiKhoan.MatKhau = vm.MatKhauMoi;
+            taiKhoan.MatKhau = MatKhauHelper.MaHoa(vm.MatKhauMoi);
             await _db.SaveChangesAsync();
 
             TempData["ThongBao"] = "Đổi mật khẩu thành công!";

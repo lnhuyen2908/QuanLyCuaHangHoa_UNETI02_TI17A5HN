@@ -23,9 +23,11 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
     public static class SessionExtensions
     {
         // ===== Object <-> JSON (dùng cho giỏ hàng, dữ liệu tạm nhỏ) =====
-        public static void SetJson<T>(this ISession session, string key, T value)
+        public static void SetJson<T>(this ISession session, string key, T value)  //this ISession session gọi phương thức trực tiếp trên đối tượng Session.
         {
             session.SetString(key, JsonSerializer.Serialize(value));
+            //JsonSerializer.Serialize(value): Chuyển đối tượng C# thành chuỗi JSON.
+            //session.SetString(key, ...): Lưu chuỗi JSON đó vào Session theo khóa key
         }
 
         // Trả về default nếu key không tồn tại, Session hết hạn hoặc JSON hỏng
@@ -36,7 +38,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
 
             try
             {
-                return JsonSerializer.Deserialize<T>(json);
+                return JsonSerializer.Deserialize<T>(json); //Deserialize<T>(json): Chuyển chuỗi JSON thành đối tượng kiểu T
             }
             catch (JsonException)
             {
@@ -76,7 +78,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
             => session.GetMaTaiKhoan().HasValue
                && !string.IsNullOrEmpty(session.GetVaiTro());
 
-        // Vai trò hiện tại có nằm trong danh sách cho phép không (logic HOẶC).
+        // Vai trò hiện tại có nằm trong danh sách cho phép không (logic OR).
         // Chấp nhận cả dạng "Admin","NhanVien" lẫn "Admin,NhanVien".
         public static bool CoVaiTro(this ISession session, params string[] vaiTros)
         {

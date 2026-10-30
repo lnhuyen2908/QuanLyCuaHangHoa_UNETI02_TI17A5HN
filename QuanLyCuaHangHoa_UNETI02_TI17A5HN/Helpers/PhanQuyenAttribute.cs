@@ -1,4 +1,4 @@
-// Họ và tên: Lã Ngọc Huyền
+﻿// Họ và tên: Lã Ngọc Huyền
 // Mã sinh viên: 23103100271
 // Nội dung thực hiện: Filter kiểm tra đăng nhập (Session) và vai trò tại Controller, hỗ trợ [AllowAnonymous].
 
@@ -32,6 +32,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
             // Nếu thiếu bước này, đặt [PhanQuyen] ở cấp Controller sẽ chặn luôn
             // trang Login và gây vòng lặp chuyển hướng vô tận.
             if (context.ActionDescriptor.EndpointMetadata.OfType<IAllowAnonymous>().Any())
+            //EndpointMetadata: Lấy metadata của endpoint đang được truy cập.
+            //OfType<IAllowAnonymous>(): Tìm metadata cho phép truy cập ẩn danh, chẳng hạn[AllowAnonymous].
                 return;
 
             var http = context.HttpContext;
@@ -47,7 +49,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
                         new { area = "User", returnUrl = LayReturnUrl(http.Request) });
                 return;
             }
-
+            
             // Kiểm tra tài khoản có bị khóa trong CSDL hay không (phòng trường hợp bị khóa khi session còn hạn)
             var maTaiKhoan = session.GetMaTaiKhoan();
             if (maTaiKhoan.HasValue)
