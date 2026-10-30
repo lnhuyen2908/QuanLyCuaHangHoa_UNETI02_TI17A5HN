@@ -8,6 +8,9 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
 {
     public class DatHangViewModel
     {
+        // Checkbox trên Checkout: khi bật, controller lấy thông tin người nhận từ hồ sơ khách hiện tại.
+        public bool NguoiNhanLaNguoiDat { get; set; } = true;
+
         // Chỉ nhận thông tin giao/nhận từ khách; giá và mã khách được lấy ở server.
         [Required(ErrorMessage = "Tên người nhận là bắt buộc")]
         [StringLength(100, ErrorMessage = "Tên người nhận tối đa 100 ký tự")]

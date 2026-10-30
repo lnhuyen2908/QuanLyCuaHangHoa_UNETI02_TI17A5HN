@@ -10,6 +10,9 @@ Nội dung thực hiện: Hiển thị dữ liệu thật, form GET lọc và PO
     ViewBag.ActiveMenu = "DonDatHoa";
     ViewBag.Breadcrumb = "Bán hàng & Vận hành";
     var d = Model.Don;
+    Dictionary<int, string> tenNguoiThucHien =
+        ViewBag.TenNguoiThucHien as Dictionary<int, string>
+        ?? new Dictionary<int, string>();
 }
 
 <div class="px-space-xl py-space-lg space-y-space-md">
@@ -228,12 +231,20 @@ Nội dung thực hiện: Hiển thị dữ liệu thật, form GET lọc và PO
             @* Lịch sử trạng thái hiển thị theo thứ tự thời gian để truy vết thao tác. *@
             @foreach (var l in d.LichSuXuLyDons.OrderBy(x => x.ThoiGian))
             {
+                // Tìm họ tên tương ứng với mã tài khoản thực hiện.
+                var tenHienThi = tenNguoiThucHien.TryGetValue(
+                    l.NguoiThucHien, out var hoTen)
+                    ? hoTen
+                    : $"Tài khoản #{l.NguoiThucHien}";
+
                 <div class="border-b py-2">
                     <strong>@l.TrangThaiCu → @l.TrangThaiMoi</strong>
+
                     <p class="text-secondary text-xs">
                         @l.ThoiGian.ToString("dd/MM/yyyy HH:mm")
-                        • Người thực hiện #@l.NguoiThucHien
+                        • Người thực hiện: @tenHienThi
                     </p>
+
                     <p>@l.GhiChu</p>
                 </div>
             }

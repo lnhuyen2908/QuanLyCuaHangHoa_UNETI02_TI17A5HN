@@ -29,6 +29,15 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
         private int Account
             => HttpContext.Session.GetMaTaiKhoan() ?? throw new InvalidOperationException("Cần đăng nhập.");
 
+        // Kiểm tra độ dài lựa chọn riêng trước khi lưu Session.
+        private static bool TuyChonHopLe(
+            string? giayGoiRuyBang,
+            string? loiChuc)
+        {
+            return (giayGoiRuyBang?.Length ?? 0) <= 100
+                && (loiChuc?.Length ?? 0) <= 180;
+        }
+
         // GET: đọc giỏ của tài khoản hiện tại và hiển thị dữ liệu sản phẩm lấy từ DB.
         [HttpGet(""), HttpGet("Index")]
         public async Task<IActionResult> Index()
@@ -38,6 +47,14 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
         [HttpPost("Add"), ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int maMau, int soLuong = 1, string? giayGoiRuyBang = null, string? loiChuc = null)
         {
+            if (!TuyChonHopLe(giayGoiRuyBang, loiChuc))
+            {
+                TempData["Error"] =
+                    "Giấy gói tối đa 100 ký tự, lời chúc tối đa 180 ký tự.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
             if (maMau <= 0 || soLuong is < 1 or > 100)
             {
                 TempData["Error"] = "Mã mẫu hoặc số lượng không hợp lệ (tối đa 100).";
@@ -82,6 +99,14 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
         [HttpPost("Update"), ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int maMau, int soLuong, string? giayGoiRuyBang, string? loiChuc)
         {
+            if (!TuyChonHopLe(giayGoiRuyBang, loiChuc))
+            {
+                TempData["Error"] =
+                    "Giấy gói tối đa 100 ký tự, lời chúc tối đa 180 ký tự.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
             var items = _cart.Read(HttpContext.Session, Account);
             var item = items.FirstOrDefault(x => x.MaMau == maMau);
 

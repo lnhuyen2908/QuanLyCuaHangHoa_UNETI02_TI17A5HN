@@ -94,6 +94,11 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                 else
                 {
                     @* Lặp mỗi mẫu hoa; các nút sửa/xóa đều gọi POST thực tế. *@
+                    <form id="chonHoaForm"
+                          action="/User/Checkout"
+                          method="get">
+                        <input type="hidden" name="chonTuGio" value="true" />
+                    </form>
                     @foreach (var item in Model)
                     {
                         <div class="grid grid-cols-[64px_1fr_auto] gap-3 items-start
@@ -107,6 +112,16 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                                  onerror="this.src='/images/mau/mau01.jpg'" />
 
                             <div class="min-w-0">
+                                <label class="flex items-center gap-2 text-sm mb-2">
+                                    <input type="checkbox"
+                                           name="maMauChon"
+                                           value="@item.MaMau"
+                                           form="chonHoaForm"
+                                           checked="@item.ConBan"
+                                           disabled="@(!item.ConBan)" />
+
+                                    Chọn đặt mẫu này
+                                </label>
                                 <h3 class="font-semibold text-on-surface">@item.TenMau</h3>
                                 <p class="mt-1 text-sm text-primary">
                                     @item.DonGia.ToString("N0")₫ × @item.SoLuong
@@ -222,22 +237,27 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                 <div class="h-px bg-surface-container"></div>
 
                 <p class="font-body-sm text-body-sm text-on-surface-variant">
-                    Tạm tính: @Model.Sum(x => x.ThanhTien).ToString("N0")₫ (phí vận chuyển xác định khi xác nhận đơn).
+                    Tạm tính toàn bộ giỏ:
+                    @Model.Sum(x => x.ThanhTien).ToString("N0")₫.
+                    Tổng tiền các mẫu được chọn sẽ hiển thị ở bước Checkout. đơn).
                 </p>
 
                 @if (Model.Count > 0)
                 {
                     @* Chỉ mở đường sang Checkout khi tất cả mẫu trong giỏ vẫn được kinh doanh. *@
-                    @if (Model.All(x => x.ConBan))
+                    @if (Model.Any(x => x.ConBan))
                     {
-                        <a href="/User/Checkout"
-                           class="block text-center w-full py-3.5 px-space-lg rounded-full bg-primary text-on-primary font-label-lg text-label-lg">
-                            Tiến Hành Đặt Hoa &amp; Chọn Giờ Giao
-                        </a>
+                        <button type="submit"
+                                form="chonHoaForm"
+                                class="block w-full text-center py-3.5 px-space-lg rounded-full bg-primary text-on-primary font-label-lg">
+                            Đặt những mẫu đã chọn
+                        </button>
                     }
                     else
                     {
-                        <p class="text-error text-sm">Xóa mẫu đã ngừng bán để tiếp tục.</p>
+                        <p class="text-error text-sm">
+                            Không có mẫu hoa còn bán để đặt.
+                        </p>
                     }
                 }
             </div>

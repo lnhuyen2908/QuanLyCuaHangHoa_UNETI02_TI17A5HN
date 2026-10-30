@@ -62,9 +62,6 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                     .Include(d => d.LichSuXuLyDons)
                     .Include(d => d.GiaoNhans)
                     .Include(d => d.ThanhToans)
-                    // BỔ SUNG MODULE 4 - Nguyễn Thị Đào (23103100245)
-                    // Lấy đánh giá để xác định đơn đã được khách đánh giá chưa.
-                    .Include(d => d.DanhGia)
                     .OrderByDescending(d => d.NgayDat)
                     .ToListAsync();
             }
@@ -83,7 +80,9 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 TrangThai = taiKhoan.TrangThai,
                 DanhSachDonHang = donHangs,
                 DonHangGanNhat = donHangs.FirstOrDefault(),
-                DonHangThietKeRieng = donHangs.Where(d => d.ChiTietDonHoas.Any(c => !string.IsNullOrEmpty(c.YeuCauRieng) || c.MaMau == null)).ToList()
+                // Phân biệt bằng dòng không gắn mẫu có sẵn; YeuCauRieng cũng được dùng
+                // để lưu giấy gói/lời chúc cho mẫu thường nên không dùng nó làm dấu hiệu thiết kế riêng.
+                DonHangThietKeRieng = donHangs.Where(d => d.ChiTietDonHoas.Any(c => c.MaMau == null)).ToList()
             };
 
             return View("~/Areas/User/Views/HoSo/Index.cshtml", vm);
