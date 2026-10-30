@@ -5,10 +5,16 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
 @* DatHangViewModel chỉ chứa thông tin nhận hàng; tổng tiền được tính từ giỏ + giá DB. *@
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services
 
 @{
     var cartItems = (List<CartDisplayItem>?)ViewBag.Items ?? new();
     var tamTinh = cartItems.Sum(x => x.ThanhTien);
+    var phiGiao = DonHangService.TinhPhiGiaoHang(Model.HinhThucNhan);
+
+    var chonTuGio = ViewBag.ChonTuGio is bool b && b;
+    var maMauChon = (List<int>?)ViewBag.MaMauChon ?? new();
+    var muaNgay = ViewBag.MuaNgay is bool bMuaNgay && bMuaNgay;
 }
 
 @{
@@ -67,8 +73,30 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
         @* Form thật gửi POST tạo đơn. AntiForgeryToken ngăn yêu cầu giả mạo từ website khác. *@
-        <form id="checkoutSubmitForm" action="/User/Checkout" method="post" class="hidden">
+        <form id="checkoutSubmitForm"
+              action="/User/Checkout"
+              method="post"
+              class="hidden">
+
             @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   name="muaNgay"
+                   value="@(muaNgay ? "true" : "false")" />
+
+            <input type="hidden"
+                   name="chonTuGio"
+                   value="@(chonTuGio ? "true" : "false")" />
+
+            @if (chonTuGio)
+            {
+                foreach (var id in maMauChon)
+                {
+                    <input type="hidden"
+                           name="maMauChon"
+                           value="@id" />
+                }
+            }
         </form>
 
         <!-- CỘT TRÁI (LEFT COLUMN - 7 COLS): Giao nhận & Dịch vụ cá nhân hóa -->
@@ -163,9 +191,16 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                             <p class="font-body-sm text-secondary">Địa chỉ trao gửi tác phẩm nghệ thuật tận tay</p>
                         </div>
                     </div>
-                    <!-- Checkbox: Người nhận chính là tôi -->
+                    <!-- Checkbox đồng bộ người nhận với hồ sơ người đặt. -->
                     <label class="inline-flex items-center gap-2 cursor-pointer font-title-sm text-xs text-primary hover:text-primary-container">
-                        <input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/40" type="checkbox">
+                        <input type="checkbox"
+                               name="NguoiNhanLaNguoiDat"
+                               value="true"
+                               form="checkoutSubmitForm"
+                               id="NguoiNhanLaNguoiDat"
+                               class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/40"
+                               checked="@(Model.NguoiNhanLaNguoiDat ? "checked" : null)" />
+                        <input type="hidden" name="NguoiNhanLaNguoiDat" value="false" form="checkoutSubmitForm" />
                         <span class="">Người nhận chính là tôi</span>
                     </label>
                 </div>
@@ -180,7 +215,9 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                                type="text"
                                name="NguoiNhan"
                                value="@(Model.NguoiNhan)"
-                               form="checkoutSubmitForm">
+                               form="checkoutSubmitForm"
+                               readonly="@(Model.NguoiNhanLaNguoiDat ? "readonly" : null)">
+                        <span class="text-error text-xs" asp-validation-for="NguoiNhan"></span>
                     </div>
                     <div>
                         <label class="block font-title-sm text-title-sm text-on-surface mb-1.5" for="recipient_phone">Số điện thoại người nhận *</label>
@@ -192,7 +229,9 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                                type="tel"
                                name="SoDienThoaiNguoiNhan"
                                value="@(Model.SoDienThoaiNguoiNhan)"
-                               form="checkoutSubmitForm">
+                               form="checkoutSubmitForm"
+                               readonly="@(Model.NguoiNhanLaNguoiDat ? "readonly" : null)">
+                        <span class="text-error text-xs" asp-validation-for="SoDienThoaiNguoiNhan"></span>
                     </div>
                     <div class="md:col-span-2">
                         <label class="block font-title-sm text-title-sm text-on-surface mb-1.5" for="recipient_address">Địa chỉ chi tiết (Số nhà, tòa nhà, tên đường) *</label>
@@ -203,7 +242,9 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                                type="text"
                                name="DiaChiGiao"
                                value="@(Model.DiaChiGiao)"
-                               form="checkoutSubmitForm">
+                               form="checkoutSubmitForm"
+                               >
+                        <span class="text-error text-xs" asp-validation-for="DiaChiGiao"></span>
                     </div>
                     <p class="md:col-span-2 text-secondary text-xs">
                         Nhập đầy đủ số nhà, phường/xã, quận/huyện và tỉnh/thành phố trong ô địa chỉ ở trên để tránh thất lạc.
@@ -211,32 +252,21 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                 </div>
             </div>
 
-            <!-- KHỐI 3: thời gian giao, input đồng bộ cùng Checkout -->
-            <div class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 md:p-8 shadow-sm">
-                <div class="flex items-center gap-3 pb-4 border-b border-outline-variant/30 mb-6">
-                    <span class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">3</span>
-                    <h2 class="font-headline-sm text-headline-sm text-on-surface">Thời gian nhận/giao mong muốn</h2>
-                </div>
-                <p class="text-secondary text-sm">
-                    Chọn giờ nhận/giao trong ô phía trên. Nhân viên xác nhận đơn sẽ phối hợp theo thời gian này.
-                </p>
-            </div>
-
             <!-- KHỐI 4: Thiệp chúc mừng & Dịch vụ đi kèm -->
             <div class="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-6 md:p-8 shadow-sm">
                 <div class="flex items-center gap-3 pb-4 border-b border-outline-variant/30 mb-6">
-                    <span class="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">4</span>
+                    <span class="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">3</span>
                     <div>
-                        <h2 class="font-headline-sm text-headline-sm text-on-surface">Thiệp chúc mừng &amp; Lời nhắn nghệ thuật</h2>
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface">Lời nhắn chung cho toàn đơn (tùy chọn)</h2>
                         <p class="font-body-sm text-secondary">Trao gửi tâm tư qua từng con chữ thư pháp trau chuốt</p>
                     </div>
                 </div>
-                <p class="mb-3 text-secondary text-sm">Lời nhắn được lưu cùng đơn. Các mẫu thiệp cao cấp chưa mở bán trực tuyến.</p>
+                <p class="mb-3 text-secondary text-sm">Lời nhắn dưới đây áp dụng chung cho toàn đơn. Lời chúc riêng và giấy gói của từng mẫu được giữ riêng theo từng chi tiết sản phẩm.</p>
 
                 <!-- Lời chúc -->
                 <div>
                     <div class="flex items-center justify-between mb-2">
-                        <label class="font-title-sm text-title-sm text-on-surface" for="card_content">Nội dung thiệp chúc mừng *</label>
+                        <label class="font-title-sm text-title-sm text-on-surface" for="card_content">Lời nhắn áp dụng chung (nếu có)</label>
                         <div class="flex items-center gap-1.5 text-xs text-primary font-medium">
                             <span class="material-symbols-outlined text-[15px]">auto_awesome</span>
                             <span class="">Gợi ý lời chúc:</span>
@@ -250,7 +280,7 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                               name="LoiNhan"
                               form="checkoutSubmitForm"
                               maxlength="500"
-                              placeholder="Nhập lời chúc bạn muốn nghệ nhân viết tay gửi tặng người nhận..."
+                              placeholder="Ghi chú chung cho cả đơn. Lời chúc riêng từng mẫu đã nằm trong phần chi tiết sản phẩm..."
                               rows="3">@Model.LoiNhan</textarea>
                     <div class="flex justify-between items-center mt-1 text-xs text-secondary">
                         <span class="">Nghệ nhân Web quản lý hoa tươi sẽ nắn nót viết tay bằng bút máy mực sepia</span>
@@ -404,6 +434,14 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                                 <div class="flex-1">
                                     <p class="font-title-sm text-on-surface">@item.TenMau</p>
                                     <p class="text-secondary text-xs">@item.SoLuong × @item.DonGia.ToString("N0")₫</p>
+                                    @if (!string.IsNullOrWhiteSpace(item.GiayGoiRuyBang))
+                                    {
+                                        <p class="text-secondary text-xs">Giấy gói &amp; ruy-băng: @item.GiayGoiRuyBang</p>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(item.LoiChuc))
+                                    {
+                                        <p class="text-secondary text-xs">Lời chúc riêng: @item.LoiChuc</p>
+                                    }
                                 </div>
                                 <p class="text-primary font-semibold">@item.ThanhTien.ToString("N0")₫</p>
                             </div>
@@ -412,12 +450,8 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
 
                     <div class="py-4 space-y-2 border-b border-outline-variant/30 text-sm">
                         <div class="flex justify-between">
-                            <span>Tạm tính</span>
-                            <strong>@tamTinh.ToString("N0")₫</strong>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Phí giao hàng tạm tính</span>
-                            <strong>0₫</strong>
+                            <span>Phí giao hàng</span>
+                            <strong id="shippingFee">@phiGiao.ToString("N0")₫</strong>
                         </div>
                         <p class="text-xs text-secondary">
                             Chưa áp dụng voucher. Phí/phụ phí phát sinh chỉ được cập nhật theo quy trình của cửa hàng trước thanh toán.
@@ -426,7 +460,9 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
 
                     <div class="flex items-center justify-between py-4">
                         <strong>TỔNG TIỀN DỰ KIẾN</strong>
-                        <strong class="text-primary text-xl">@tamTinh.ToString("N0")₫</strong>
+                        <strong id="orderTotal" class="text-primary text-xl">
+                            @((tamTinh + phiGiao).ToString("N0"))₫
+                        </strong>
                     </div>
 
                     <!-- Checkbox Điều khoản -->
@@ -448,7 +484,12 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                                 form="checkoutSubmitForm"
                                 type="submit">
                             <span class="material-symbols-outlined text-[20px]">lock</span>
-                            <span class="">Xác nhận đặt hàng (@tamTinh.ToString("N0")₫) - Chưa thu tiền</span>
+                            <span id="checkoutButtonTotal">
+                                Xác nhận đặt hàng
+                                (@((tamTinh + phiGiao).ToString("N0"))₫)
+                                <br />
+                                Chưa thu tiền
+                            </span>
                             <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </button>
                     </div>
@@ -492,47 +533,42 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
 
 @section Scripts {
     <script>
-        // Tương tác giao diện: đếm lời nhắn, nhập nhanh mẫu thiệp và yêu cầu địa chỉ nếu giao tận nơi.
-        const textArea = document.getElementById('card_content');
-        const counter = document.getElementById('cardCharCount');
-
-        if (textArea && counter) {
-            const update = () => counter.textContent = `${textArea.value.length}/500 ký tự`;
-            textArea.addEventListener('input', update);
-            update();
-        }
-
-        window.setCardPreset = function(name) {
-            if (textArea) {
-                textArea.value = name === 'Sinh nhật'
-                    ? 'Chúc mừng sinh nhật!'
-                    : name === 'Tình yêu'
-                        ? 'Yêu thương và trân trọng!'
-                        : 'Khai trương hồng phát!';
-                textArea.dispatchEvent(new Event('input'));
-            }
-        };
-
-        document.querySelectorAll('input[name="HinhThucNhan"]').forEach(r => r.addEventListener('change', () => {
-            const address = document.querySelector('[name="DiaChiGiao"]');
-            if (address) {
-                address.required = document.querySelector('input[name="HinhThucNhan"]:checked').value === 'Giao tận nơi';
-            }
-        }));
+        const phiGiaoTanNoi = @(DonHangService.PhiGiaoTanNoi.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture));
+        const tamTinhDon = @(tamTinh.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture));
 
         const address = document.querySelector('[name="DiaChiGiao"]');
-        const selected = document.querySelector('input[name="HinhThucNhan"]:checked');
-        if (address && selected) {
-            address.required = selected.value === 'Giao tận nơi';
+
+        function capNhatHinhThucNhan() {
+            const hinhThuc = document.querySelector(
+                'input[name="HinhThucNhan"]:checked'
+            )?.value;
+
+            const giaoTanNoi = hinhThuc === 'Giao tận nơi';
+            const phiGiao = giaoTanNoi ? phiGiaoTanNoi : 0;
+
+            if (address) {
+                address.required = giaoTanNoi;
+            }
+
+            const dinhDang = soTien =>
+                soTien.toLocaleString('vi-VN') + '₫';
+
+            document.getElementById('shippingFee').textContent =
+                dinhDang(phiGiao);
+
+            document.getElementById('orderTotal').textContent =
+                dinhDang(tamTinhDon + phiGiao);
+
+            document.getElementById('checkoutButtonTotal').innerHTML =
+                `Xác nhận đặt hàng (${dinhDang(tamTinhDon + phiGiao)})<br>Chưa thu tiền`;
         }
 
-        // Chặn nhấn nút gửi nhiều lần ở phía trình duyệt; server vẫn tự kiểm tra dữ liệu.
-        const form = document.getElementById('checkoutSubmitForm');
-        if (form) {
-            form.addEventListener('submit', function() {
-                const button = document.querySelector('button[form="checkoutSubmitForm"]');
-                if (button) button.disabled = true;
-            });
-        }
+        document.querySelectorAll('input[name="HinhThucNhan"]')
+            .forEach(radio =>
+                radio.addEventListener('change', capNhatHinhThucNhan));
+
+        capNhatHinhThucNhan();
     </script>
 }

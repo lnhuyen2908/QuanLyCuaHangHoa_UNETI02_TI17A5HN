@@ -10,17 +10,25 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Trước khi POST, ghép các checkbox loài hoa vào trường LoaiHoa cho model binding.
-        const form = document.getElementById('customFlowerForm');
-        if (form) {
-            form.addEventListener('submit', () => {
-                document.getElementById('LoaiHoaInput').value =
-                    Array.from(document.querySelectorAll('input[name="flower_types"]:checked'))
-                        .map(x => x.value)
-                        .join(', ')
-                        .slice(0, 300);
+
+        // Giới hạn khách chọn tối đa 4 loại hoa.
+        const boxes = Array.from(
+            document.querySelectorAll('input[name="MaLoaiHoaDaChon"]')
+        );
+
+        boxes.forEach(box => {
+            box.addEventListener('change', () => {
+
+                const soLuongDaChon = boxes.filter(x => x.checked).length;
+
+                if (soLuongDaChon > 4) {
+                    box.checked = false;
+                    alert('Chỉ được chọn tối đa 4 loại hoa.');
+                }
+
             });
-        }
+        });
+
     });
 </script>
 
@@ -39,7 +47,7 @@
                     <span>Bespoke Floral Workshop • Nghệ Thuật Cắm Hoa Độc Bản</span>
                 </div>
 
-                <h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">
+                <h1 class="font-display-lg text-display-lg text-on-surface tracking-tight whitespace-nowrap" style="font-size:clamp(1rem, 3.2vw, 2.5rem)">
                     Bạn muốn một bó hoa thật <span class="text-primary italic font-normal">đặc biệt?</span>
                 </h1>
 
@@ -85,10 +93,7 @@
           method="post"
           enctype="multipart/form-data">
 
-        <input type="hidden" id="LoaiHoaInput" name="LoaiHoa" value="@Model.LoaiHoa" />
         @Html.AntiForgeryToken()
-
-        <div class="lg:col-span-12 text-error" asp-validation-summary="All"></div>
 
         <!-- LEFT COLUMN: Flower Characteristics & Palette -->
         <div class="lg:col-span-7 space-y-space-lg">
@@ -292,88 +297,59 @@
 
             <!-- STEP 3: Prioritized Flowers Multi-select -->
             <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm space-y-space-md">
+
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-space-sm">
-                        <span class="w-7 h-7 rounded-full bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center shadow-sm">3</span>
-                        <h2 class="font-title-md text-title-md text-on-surface font-semibold">Chọn loại hoa ưu tiên phối (chọn nhiều)</h2>
+
+                        <span class="w-7 h-7 rounded-full bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center shadow-sm">
+                            3
+                        </span>
+
+                        <h2 class="font-title-md text-title-md text-on-surface font-semibold">
+                            Chọn loại hoa ưu tiên phối (chọn nhiều)
+                        </h2>
+
                     </div>
-                    <span class="font-body-sm text-body-sm text-on-surface-variant">Tối đa 4 loại</span>
+
+                    <span class="font-body-sm text-body-sm text-on-surface-variant">
+                        Tối đa 4 loại
+                    </span>
                 </div>
 
+                <!-- Danh sách loại hoa lấy từ database -->
                 <div class="flex flex-wrap gap-2.5">
 
-                    <!-- Flower Tag 1 -->
-                    <label class="flower-tag flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container-low hover:bg-secondary-container/40 cursor-pointer transition-colors select-none text-on-surface text-body-md">
-                        <input checked="" class="sr-only peer" name="flower_types" type="checkbox" value="Hoa hồng Ecuador &amp; David Austin">
-                        <span class="w-4 h-4 rounded-full bg-surface-variant peer-checked:bg-primary flex items-center justify-center text-on-primary text-[10px]">
-                            <span class="material-symbols-outlined text-[12px] opacity-0 peer-checked:opacity-100">check</span>
-                        </span>
-                        <span class="peer-checked:font-semibold peer-checked:text-primary">Hoa hồng Ecuador / David Austin</span>
-                    </label>
+                    @foreach (var hoa in Model.DanhSachLoaiHoa)
+                    {
+                        <label class="flower-tag flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container-low hover:bg-secondary-container/40 cursor-pointer transition-colors select-none text-on-surface text-body-md">
 
-                    <!-- Flower Tag 2 -->
-                    <label class="flower-tag flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container-low hover:bg-secondary-container/40 cursor-pointer transition-colors select-none text-on-surface text-body-md">
-                        <input class="sr-only peer" name="flower_types" type="checkbox" value="Hoa Tulip Hà Lan">
-                        <span class="w-4 h-4 rounded-full bg-surface-variant peer-checked:bg-primary flex items-center justify-center text-on-primary text-[10px]">
-                            <span class="material-symbols-outlined text-[12px] opacity-0 peer-checked:opacity-100">check</span>
-                        </span>
-                        <span class="peer-checked:font-semibold peer-checked:text-primary">Hoa Tulip Hà Lan</span>
-                    </label>
+                            <input class="sr-only peer"
+                                   name="MaLoaiHoaDaChon"
+                                   type="checkbox"
+                                   value="@hoa.MaLoaiHoa"
+                                   checked="@(Model.MaLoaiHoaDaChon.Contains(hoa.MaLoaiHoa))" />
 
-                    <!-- Flower Tag 3 -->
-                    <label class="flower-tag flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container-low hover:bg-secondary-container/40 cursor-pointer transition-colors select-none text-on-surface text-body-md">
-                        <input class="sr-only peer" name="flower_types" type="checkbox" value="Hoa Lily thơm kép">
-                        <span class="w-4 h-4 rounded-full bg-surface-variant peer-checked:bg-primary flex items-center justify-center text-on-primary text-[10px]">
-                            <span class="material-symbols-outlined text-[12px] opacity-0 peer-checked:opacity-100">check</span>
-                        </span>
-                        <span class="peer-checked:font-semibold peer-checked:text-primary">Hoa Lily thơm kép</span>
-                    </label>
+                            <span class="w-4 h-4 rounded-full bg-surface-variant peer-checked:bg-primary flex items-center justify-center text-on-primary text-[10px]">
 
-                    <!-- Flower Tag 4 -->
-                    <label class="flower-tag flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container-low hover:bg-secondary-container/40 cursor-pointer transition-colors select-none text-on-surface text-body-md">
-                        <input checked="" class="sr-only peer" name="flower_types" type="checkbox" value="Hoa Baby trắng Hà Lan">
-                        <span class="w-4 h-4 rounded-full bg-surface-variant peer-checked:bg-primary flex items-center justify-center text-on-primary text-[10px]">
-                            <span class="material-symbols-outlined text-[12px] opacity-0 peer-checked:opacity-100">check</span>
-                        </span>
-                        <span class="peer-checked:font-semibold peer-checked:text-primary">Hoa Baby trắng Hà Lan</span>
-                    </label>
+                                <span class="material-symbols-outlined text-[12px] opacity-0 peer-checked:opacity-100">
+                                    check
+                                </span>
 
-                    <!-- Flower Tag 5 -->
-                    <label class="flower-tag flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container-low hover:bg-secondary-container/40 cursor-pointer transition-colors select-none text-on-surface text-body-md">
-                        <input class="sr-only peer" name="flower_types" type="checkbox" value="Hoa Mẫu đơn (Peony)">
-                        <span class="w-4 h-4 rounded-full bg-surface-variant peer-checked:bg-primary flex items-center justify-center text-on-primary text-[10px]">
-                            <span class="material-symbols-outlined text-[12px] opacity-0 peer-checked:opacity-100">check</span>
-                        </span>
-                        <span class="peer-checked:font-semibold peer-checked:text-primary">Hoa Mẫu đơn (Peony)</span>
-                    </label>
+                            </span>
 
-                    <!-- Flower Tag 6 -->
-                    <label class="flower-tag flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container-low hover:bg-secondary-container/40 cursor-pointer transition-colors select-none text-on-surface text-body-md">
-                        <input class="sr-only peer" name="flower_types" type="checkbox" value="Hoa Cẩm chướng xoăn">
-                        <span class="w-4 h-4 rounded-full bg-surface-variant peer-checked:bg-primary flex items-center justify-center text-on-primary text-[10px]">
-                            <span class="material-symbols-outlined text-[12px] opacity-0 peer-checked:opacity-100">check</span>
-                        </span>
-                        <span class="peer-checked:font-semibold peer-checked:text-primary">Hoa Cẩm chướng xoăn</span>
-                    </label>
+                            <span class="peer-checked:font-semibold peer-checked:text-primary">
+                                @hoa.TenLoaiHoa
+                            </span>
 
-                    <!-- Flower Tag 7 -->
-                    <label class="flower-tag flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container-low hover:bg-secondary-container/40 cursor-pointer transition-colors select-none text-on-surface text-body-md">
-                        <input class="sr-only peer" name="flower_types" type="checkbox" value="Hoa Hướng dương Đà Lạt">
-                        <span class="w-4 h-4 rounded-full bg-surface-variant peer-checked:bg-primary flex items-center justify-center text-on-primary text-[10px]">
-                            <span class="material-symbols-outlined text-[12px] opacity-0 peer-checked:opacity-100">check</span>
-                        </span>
-                        <span class="peer-checked:font-semibold peer-checked:text-primary">Hoa Hướng dương</span>
-                    </label>
+                        </label>
+                    }
 
-                    <!-- Flower Tag 8 -->
-                    <label class="flower-tag flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface-container-low hover:bg-secondary-container/40 cursor-pointer transition-colors select-none text-on-surface text-body-md">
-                        <input class="sr-only peer" name="flower_types" type="checkbox" value="Lan hồ điệp cánh lớn">
-                        <span class="w-4 h-4 rounded-full bg-surface-variant peer-checked:bg-primary flex items-center justify-center text-on-primary text-[10px]">
-                            <span class="material-symbols-outlined text-[12px] opacity-0 peer-checked:opacity-100">check</span>
-                        </span>
-                        <span class="peer-checked:font-semibold peer-checked:text-primary">Lan hồ điệp</span>
-                    </label>
                 </div>
+
+                <!-- Hiển thị lỗi ngay dưới phần chọn loại hoa -->
+                <span asp-validation-for="MaLoaiHoaDaChon"
+                      class="text-red-600 text-sm block mt-1"></span>
+
             </div>
 
             <!-- STEP 4: Budget Range Selector -->
@@ -556,56 +532,127 @@
 
                 <div class="space-y-3">
 
-                    <div>
-                        <label class="font-label-lg text-label-lg text-on-surface block mb-1">Họ tên của bạn *</label>
-                        <input class="w-full px-4 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none focus:bg-surface-container-lowest shadow-inner"
-                               id="senderName"
-                               name="NguoiNhan"
-                               value="@Model.NguoiNhan"
-                               maxlength="100"
-                               placeholder="VD: Nguyễn Mai Phương"
-                               required=""
-                               type="text">
-                    </div>
-
+                    <!-- DÒNG 1: HỌ TÊN - SỐ ĐIỆN THOẠI -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="font-label-lg text-label-lg text-on-surface block mb-1">Số điện thoại (Zalo) *</label>
+
+                        <!-- Họ tên -->
+                        <div class="min-w-0">
+                            <label for="senderName"
+                                   class="font-label-lg text-label-lg text-on-surface block mb-1">
+                                Họ tên của bạn *
+                            </label>
+
+                            <input class="w-full px-4 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none focus:bg-surface-container-lowest shadow-inner"
+                                   id="senderName"
+                                   name="NguoiNhan"
+                                   value="@Model.NguoiNhan"
+                                   maxlength="100"
+                                   placeholder="Nhập họ tên"
+                                   required
+                                   type="text" />
+
+                            <span asp-validation-for="NguoiNhan"
+                                  class="text-red-600 text-sm block mt-1"></span>
+                        </div>
+
+                        <!-- Số điện thoại -->
+                        <div class="min-w-0">
+                            <label for="senderPhone"
+                                   class="font-label-lg text-label-lg text-on-surface block mb-1">
+                                Số điện thoại (Zalo) *
+                            </label>
+
                             <input class="w-full px-4 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none focus:bg-surface-container-lowest shadow-inner"
                                    id="senderPhone"
                                    name="SoDienThoai"
                                    value="@Model.SoDienThoai"
                                    maxlength="15"
                                    placeholder="090 123 4567"
-                                   required=""
-                                   type="tel">
+                                   required
+                                   type="tel" />
+
+                            <span asp-validation-for="SoDienThoai"
+                                  class="text-red-600 text-sm block mt-1"></span>
                         </div>
-                        <div>
-                            <label class="font-label-lg text-label-lg text-on-surface block mb-1">Thời gian cần nhận hoa *</label>
+
+                    </div>
+
+                    <!-- DÒNG 2: HÌNH THỨC NHẬN - THỜI GIAN NHẬN -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                        <!-- Hình thức nhận -->
+                        <div class="min-w-0">
+                            <label for="HinhThucNhan"
+                                   class="font-label-lg text-label-lg text-on-surface block mb-1">
+                                Hình thức nhận *
+                            </label>
+
+                            <select id="HinhThucNhan"
+                                    name="HinhThucNhan"
+                                    class="w-full px-4 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none focus:bg-surface-container-lowest shadow-inner">
+
+                                <option value="Giao tận nơi"
+                                        selected="@(Model.HinhThucNhan == "Giao tận nơi")">
+                                    Giao tận nơi
+                                </option>
+
+                                <option value="Khách đến nhận"
+                                        selected="@(Model.HinhThucNhan == "Khách đến nhận")">
+                                    Khách đến nhận
+                                </option>
+
+                            </select>
+
+                            <p class="text-xs text-secondary mt-2">
+                                Giao tận nơi: phí 30.000₫.
+                                Khách đến nhận: miễn phí giao hàng.
+                                Giá hoa thiết kế riêng được báo sau.
+                            </p>
+
+                            <span asp-validation-for="HinhThucNhan"
+                                  class="text-red-600 text-sm block mt-1"></span>
+                        </div>
+
+                        <!-- Thời gian nhận hoa -->
+                        <div class="min-w-0">
+                            <label for="deliveryTime"
+                                   class="font-label-lg text-label-lg text-on-surface block mb-1">
+                                Thời gian cần nhận hoa *
+                            </label>
+
                             <input class="w-full px-4 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none focus:bg-surface-container-lowest shadow-inner"
                                    id="deliveryTime"
-                                   value="@(Model.ThoiGianNhanGiao?.ToString("yyyy-MM-ddTHH:mm"))"
-                                   required=""
-                                   type="datetime-local"
                                    name="ThoiGianNhanGiao"
-                                   min="@DateTime.Now.AddMinutes(30).ToString("yyyy-MM-ddTHH:mm")">
+                                   value="@(Model.ThoiGianNhanGiao?.ToString("yyyy-MM-ddTHH:mm"))"
+                                   min="@DateTime.Now.AddMinutes(30).ToString("yyyy-MM-ddTHH:mm")"
+                                   required
+                                   type="datetime-local" />
 
-                            <div class="mt-3 grid gap-2">
-                                <label class="font-title-sm">Hình thức nhận *</label>
-                                <select name="HinhThucNhan" class="p-3 rounded-lg bg-surface-container-low">
-                                    <option value="Giao tận nơi">Giao tận nơi</option>
-                                    <option value="Khách đến nhận">Khách đến nhận</option>
-                                </select>
-
-                                <label class="font-title-sm">Địa chỉ giao (bắt buộc nếu giao tận nơi)</label>
-                                <input type="text"
-                                       name="DiaChiGiao"
-                                       maxlength="250"
-                                       value="@Model.DiaChiGiao"
-                                       class="p-3 rounded-lg bg-surface-container-low" />
-                            </div>
+                            <span asp-validation-for="ThoiGianNhanGiao"
+                                  class="text-red-600 text-sm block mt-1"></span>
                         </div>
+
                     </div>
+
+                    <!-- DÒNG 3: ĐỊA CHỈ GIAO HÀNG - CHIẾM TOÀN BỘ CHIỀU NGANG -->
+                    <div>
+                        <label for="DiaChiGiao"
+                               class="font-label-lg text-label-lg text-on-surface block mb-1">
+                            Địa chỉ giao (bắt buộc nếu giao tận nơi)
+                        </label>
+
+                        <input type="text"
+                               id="DiaChiGiao"
+                               name="DiaChiGiao"
+                               maxlength="250"
+                               value="@Model.DiaChiGiao"
+                               placeholder="Nhập địa chỉ giao hàng chi tiết"
+                               class="w-full px-4 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md focus:outline-none focus:bg-surface-container-lowest shadow-inner" />
+
+                        <span asp-validation-for="DiaChiGiao"
+                              class="text-red-600 text-sm block mt-1"></span>
+                    </div>
+
                 </div>
 
                 <!-- Florist Order Dispatch Workflow Notice -->
