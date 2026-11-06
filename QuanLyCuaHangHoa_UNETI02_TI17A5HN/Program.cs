@@ -27,6 +27,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN
             builder.Services.AddScoped<DonHangService>();
             builder.Services.AddScoped<GioHangService>();
             builder.Services.AddScoped<TaiKhoanService>();
+            builder.Services.AddHostedService<DonChuyenKhoanHetHanService>();
 
             var app = builder.Build();
 

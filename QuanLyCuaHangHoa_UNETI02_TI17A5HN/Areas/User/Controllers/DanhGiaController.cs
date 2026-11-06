@@ -53,6 +53,23 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 return Redirect("/User/Profile#orders");
             }
 
+            // Chỉ cho phép đánh giá trong vòng 10 ngày kể từ thời điểm đơn hoàn thành.
+            var thoiGianHoanThanh = await _db.LichSuXuLyDons
+                .AsNoTracking()
+                .Where(ls => ls.MaDon == maDon &&
+                             ls.TrangThaiMoi == TrangThaiDon.HoanThanh)
+                .OrderByDescending(ls => ls.ThoiGian)
+                .Select(ls => (DateTime?)ls.ThoiGian)
+                .FirstOrDefaultAsync();
+
+            if (thoiGianHoanThanh.HasValue &&
+                DateTime.Now > thoiGianHoanThanh.Value.AddDays(10))
+            {
+                TempData["Loi"] =
+                    "Đã quá 10 ngày kể từ khi đơn hoàn thành. Bạn không thể đánh giá đơn hàng này.";
+                return Redirect("/User/Profile#orders");
+            }
+
             bool daDanhGia = await _db.DanhGias
                 .AnyAsync(d => d.MaDon == maDon);
 
@@ -97,6 +114,22 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             {
                 ModelState.AddModelError("",
                     "Chỉ được đánh giá đơn đã hoàn thành.");
+            }
+
+            // Kiểm tra lại ở POST để không thể bỏ qua giới hạn bằng cách gửi form cũ.
+            var thoiGianHoanThanh = await _db.LichSuXuLyDons
+                .AsNoTracking()
+                .Where(ls => ls.MaDon == vm.MaDon &&
+                             ls.TrangThaiMoi == TrangThaiDon.HoanThanh)
+                .OrderByDescending(ls => ls.ThoiGian)
+                .Select(ls => (DateTime?)ls.ThoiGian)
+                .FirstOrDefaultAsync();
+
+            if (thoiGianHoanThanh.HasValue &&
+                DateTime.Now > thoiGianHoanThanh.Value.AddDays(10))
+            {
+                ModelState.AddModelError("",
+                    "Đã quá 10 ngày kể từ khi đơn hoàn thành. Bạn không thể đánh giá đơn hàng này.");
             }
 
             if (await _db.DanhGias

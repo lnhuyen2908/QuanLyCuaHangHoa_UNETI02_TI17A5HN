@@ -85,7 +85,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                         (g.NguoiGiao != null &&
                          g.NguoiGiao.Contains(tuKhoa)) ||
 
-                        g.DonDatHoa.NguoiNhan.Contains(tuKhoa));
+                        g.DonDatHoa.NguoiNhan.Contains(tuKhoa) ||
+                        g.DonDatHoa.SoDienThoaiNguoiNhan.Contains(tuKhoa));
                 }
             }
 
@@ -174,7 +175,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         {
             var vm = new GiaoNhanCreateViewModel
             {
-                MaDon = maDon ?? 0 
+                MaDon = maDon ?? 0
             };
 
             if (maDon.HasValue)
@@ -185,6 +186,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 
                 if (don != null)
                 {
+                    vm.TenNguoiNhan = don.NguoiNhan;
+                    vm.SoDienThoaiNguoiNhan = don.SoDienThoaiNguoiNhan;
                     vm.DiaChi = don.DiaChiGiao;
 
                     if (don.ThoiGianNhanGiao > DateTime.Now)
@@ -215,6 +218,18 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             }
             else
             {
+                // Thông tin người nhận luôn lấy từ đơn gốc, không tin dữ liệu form.
+                vm.TenNguoiNhan = don.NguoiNhan;
+                vm.SoDienThoaiNguoiNhan = don.SoDienThoaiNguoiNhan;
+
+                if (string.IsNullOrWhiteSpace(don.NguoiNhan) ||
+                    string.IsNullOrWhiteSpace(don.SoDienThoaiNguoiNhan))
+                {
+                    ModelState.AddModelError(
+                        nameof(vm.MaDon),
+                        "Đơn thiếu tên hoặc số điện thoại người nhận.");
+                }
+
                 // Đơn phải nằm trong luồng xử lý hợp lệ.
                 if (don.TrangThai != TrangThaiDon.DaXacNhan &&
                     don.TrangThai != TrangThaiDon.DangChuanBi &&
@@ -267,13 +282,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                             "Giao tận nơi bắt buộc có địa chỉ.");
                     }
 
-                    if (string.IsNullOrWhiteSpace(don.NguoiNhan) ||
-                        string.IsNullOrWhiteSpace(don.SoDienThoaiNguoiNhan))
-                    {
-                        ModelState.AddModelError(
-                            nameof(vm.MaDon),
-                            "Đơn thiếu thông tin người nhận.");
-                    }
+                    // Tên và số điện thoại đã được kiểm tra từ đơn gốc ở phía trên.
                 }
             }
 
@@ -320,7 +329,6 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 TempData["Success"] =
                     "Tạo phiếu giao nhận thành công.";
             }
-            
             catch (DbUpdateException ex)
                 when (ex.InnerException is SqlException sqlEx &&
                       (sqlEx.Number == 2601 ||  // lỗi trùng
@@ -380,6 +388,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 MaGiaoNhan = giaoNhan.MaGiaoNhan,
                 MaDon = giaoNhan.MaDon,
                 TenNguoiNhan = don.NguoiNhan,
+                SoDienThoaiNguoiNhan = don.SoDienThoaiNguoiNhan,
                 HinhThuc = giaoNhan.HinhThuc,
                 ThoiGianDuKien = giaoNhan.ThoiGianDuKien,
                 DiaChi = giaoNhan.DiaChi,
@@ -393,7 +402,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         // POST: Admin/GiaoNhan/Edit/1
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit( int id, GiaoNhanEditViewModel vm)
+        public async Task<IActionResult> Edit(int id, GiaoNhanEditViewModel vm)
         {
             if (id != vm.MaGiaoNhan)
                 return BadRequest();
@@ -451,6 +460,14 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                     "Thời gian dự kiến mới phải ở tương lai.");
             }
 
+            if (string.IsNullOrWhiteSpace(don.NguoiNhan) ||
+                string.IsNullOrWhiteSpace(don.SoDienThoaiNguoiNhan))
+            {
+                ModelState.AddModelError(
+                    nameof(vm.MaGiaoNhan),
+                    "Đơn thiếu tên hoặc số điện thoại người nhận.");
+            }
+
             var diaChiMoi = string.IsNullOrWhiteSpace(vm.DiaChi)
                 ? don.DiaChiGiao
                 : vm.DiaChi.Trim();
@@ -465,18 +482,13 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                         "Giao tận nơi bắt buộc có địa chỉ.");
                 }
 
-                if (string.IsNullOrWhiteSpace(don.NguoiNhan) ||
-                    string.IsNullOrWhiteSpace(don.SoDienThoaiNguoiNhan))
-                {
-                    ModelState.AddModelError(
-                        nameof(vm.MaGiaoNhan),
-                        "Đơn thiếu thông tin người nhận.");
-                }
+                // Thông tin người nhận được kiểm tra từ đơn gốc ở phía trên.
             }
 
             // Giữ lại dữ liệu hiển thị nếu validation lỗi.
             vm.MaDon = don.MaDon;
             vm.TenNguoiNhan = don.NguoiNhan;
+            vm.SoDienThoaiNguoiNhan = don.SoDienThoaiNguoiNhan;
             vm.HinhThuc = don.HinhThucNhan;
 
             if (!ModelState.IsValid)
@@ -593,6 +605,138 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 
         // KẾT THÚC PHẦN HOÀN THÀNH GIAO NHẬN 
 
+        // Xuất danh sách phiếu giao nhận sang Excel (định dạng SpreadsheetML, mở trực tiếp bằng Excel).
+        [HttpGet]
+        public async Task<IActionResult> XuatExcel()
+        {
+            var ds = await _db.GiaoNhans
+                .AsNoTracking()
+                .Include(g => g.DonDatHoa)
+                .OrderByDescending(g => g.MaGiaoNhan)
+                .ToListAsync();
+
+            string E(string? value) => System.Security.SecurityElement.Escape(value ?? "") ?? "";
+            string Cell(string? value) =>
+                $"<Cell><Data ss:Type=\"String\">{E(value)}</Data></Cell>";
+            string Date(DateTime? value) =>
+                Cell(value?.ToString("dd/MM/yyyy HH:mm") ?? "");
+
+            var sb = new System.Text.StringBuilder();
+            sb.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            sb.Append("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\">");
+            sb.Append("<Worksheet ss:Name=\"PhieuGiaoNhan\"><Table>");
+            sb.Append("<Row>");
+            foreach (var h in new[] { "Mã giao nhận", "Mã đơn", "Người nhận", "Số điện thoại", "Hình thức", "Thời gian dự kiến", "Thời gian thực tế", "Địa chỉ", "Người giao", "Trạng thái", "Ghi chú" })
+                sb.Append(Cell(h));
+            sb.Append("</Row>");
+            foreach (var g in ds)
+            {
+                sb.Append("<Row>");
+                sb.Append(Cell($"GN-{g.MaGiaoNhan:D4}"));
+                sb.Append(Cell($"ORD-{g.MaDon:D4}"));
+                sb.Append(Cell(g.DonDatHoa?.NguoiNhan));
+                sb.Append(Cell(g.DonDatHoa?.SoDienThoaiNguoiNhan));
+                sb.Append(Cell(g.HinhThuc));
+                sb.Append(Date(g.ThoiGianDuKien));
+                sb.Append(Date(g.ThoiGianThucTe));
+                sb.Append(Cell(g.DiaChi));
+                sb.Append(Cell(g.NguoiGiao));
+                sb.Append(Cell(g.TrangThai));
+                sb.Append(Cell(g.GhiChu));
+                sb.Append("</Row>");
+            }
+            sb.Append("</Table></Worksheet></Workbook>");
+            return File(System.Text.Encoding.UTF8.GetBytes(sb.ToString()),
+                "application/vnd.ms-excel", $"PhieuGiaoNhan_{DateTime.Now:yyyyMMdd_HHmm}.xls");
+        }
+
+        // Xuất một phiếu giao hàng riêng theo mã phiếu giao nhận.
+        // Trình duyệt mở hộp thoại in; chọn "Save as PDF/Lưu thành PDF" để lưu file PDF.
+        [HttpGet]
+        public async Task<IActionResult> XuatPdf(int id)
+        {
+            var phieu = await _db.GiaoNhans
+                .AsNoTracking()
+                .Include(g => g.DonDatHoa)
+                    .ThenInclude(d => d.ChiTietDonHoas)
+                        .ThenInclude(ct => ct.MauSanPham)
+                .Include(g => g.DonDatHoa)
+                    .ThenInclude(d => d.ThanhToans)
+                .FirstOrDefaultAsync(g => g.MaGiaoNhan == id);
+
+            if (phieu == null)
+                return NotFound("Không tìm thấy phiếu giao nhận.");
+
+            var don = phieu.DonDatHoa;
+            string E(string? value) => System.Net.WebUtility.HtmlEncode(
+                string.IsNullOrWhiteSpace(value) ? "—" : value);
+            string Money(decimal value) => value.ToString("N0") + " đ";
+
+            var sb = new System.Text.StringBuilder();
+            sb.Append("""
+                <!doctype html>
+                <html lang="vi"><head><meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title>Phieu giao hang</title>
+                <style>
+                    *{box-sizing:border-box} body{font-family:Arial,sans-serif;color:#222;margin:0;background:#eee}
+                    .toolbar{max-width:800px;margin:18px auto;text-align:right}
+                    .toolbar button{background:#b91c1c;color:white;border:0;border-radius:6px;padding:11px 18px;font-weight:bold;cursor:pointer}
+                    .paper{width:210mm;min-height:297mm;margin:0 auto 24px;padding:16mm;background:white}
+                    h1{text-align:center;font-size:23px;margin:0 0 5px;letter-spacing:1px}
+                    .subtitle{text-align:center;color:#555;margin:0 0 22px}
+                    .code{text-align:center;font-size:18px;font-weight:bold;margin:10px 0 22px}
+                    h2{font-size:15px;margin:20px 0 9px;padding-bottom:6px;border-bottom:1px solid #999}
+                    table{width:100%;border-collapse:collapse;font-size:13px}
+                    td,th{border:1px solid #bbb;padding:8px;text-align:left;vertical-align:top}
+                    th{background:#f1f1f1}.info td:first-child{width:32%;font-weight:bold;background:#fafafa}
+                    .note{border:1px dashed #999;padding:10px;min-height:45px;white-space:pre-wrap;font-size:13px}
+                    .total{text-align:right;font-weight:bold;margin-top:12px}
+                    .sign{display:flex;justify-content:space-between;text-align:center;margin-top:55px;font-size:13px}
+                    .sign div{width:42%}.hint{font-size:11px;color:#666;margin-top:25px}
+                    @page{size:A4;margin:0}
+                    @media print{body{background:white}.toolbar{display:none}.paper{margin:0;width:210mm;min-height:297mm;box-shadow:none;page-break-after:avoid}}
+                    @media screen{.paper{box-shadow:0 2px 12px #bbb}}
+                </style></head><body>
+                <div class="toolbar"><button onclick="window.print()">In / Lưu thành PDF</button></div>
+                <main class="paper">
+                <h1>PHIẾU GIAO HÀNG</h1>
+                <p class="subtitle">CỬA HÀNG HOA TƯƠI</p>
+                """);
+            sb.Append($"<div class=\"code\">MÃ PHIẾU: GN-{phieu.MaGiaoNhan:D4} &nbsp; | &nbsp; MÃ ĐƠN: ORD-{phieu.MaDon:D4}</div>");
+            sb.Append("<h2>1. THÔNG TIN NGƯỜI NHẬN</h2><table class=\"info\">");
+            sb.Append($"<tr><td>Người nhận</td><td>{E(don.NguoiNhan)}</td></tr>");
+            sb.Append($"<tr><td>Số điện thoại</td><td>{E(don.SoDienThoaiNguoiNhan)}</td></tr>");
+            sb.Append($"<tr><td>Địa chỉ giao hàng</td><td>{E(phieu.DiaChi ?? don.DiaChiGiao ?? "Nhận tại cửa hàng")}</td></tr>");
+            sb.Append($"<tr><td>Hình thức nhận</td><td>{E(phieu.HinhThuc)}</td></tr>");
+            sb.Append($"<tr><td>Thời gian dự kiến</td><td>{phieu.ThoiGianDuKien:dd/MM/yyyy HH:mm}</td></tr>");
+            sb.Append($"<tr><td>Người giao</td><td>{E(phieu.NguoiGiao)}</td></tr>");
+            sb.Append($"<tr><td>Trạng thái giao nhận</td><td>{E(phieu.TrangThai)}</td></tr></table>");
+
+            sb.Append("<h2>2. DANH SÁCH SẢN PHẨM</h2><table><thead><tr><th style='width:8%'>STT</th><th>Sản phẩm / Yêu cầu</th><th style='width:15%'>Số lượng</th><th style='width:22%'>Thành tiền</th></tr></thead><tbody>");
+            int stt = 0;
+            foreach (var ct in don.ChiTietDonHoas)
+            {
+                stt++;
+                var ten = ct.MauSanPham?.TenMau ?? (ct.MaMau == null ? "Hoa thiết kế riêng" : $"Mẫu hoa #{ct.MaMau}");
+                if (!string.IsNullOrWhiteSpace(ct.YeuCauRieng)) ten += " — " + ct.YeuCauRieng;
+                sb.Append($"<tr><td>{stt}</td><td>{E(ten)}</td><td>{ct.SoLuong}</td><td>{Money(ct.ThanhTien)}</td></tr>");
+            }
+            if (stt == 0) sb.Append("<tr><td colspan='4'>Không có thông tin sản phẩm.</td></tr>");
+            sb.Append("</tbody></table>");
+            sb.Append($"<div class='total'>Tổng tiền đơn hàng: {Money(don.TongTien)}</div>");
+            var daThanhToan = don.ThanhToans.Sum(t => t.SoTien);
+            var conPhaiThu = Math.Max(0m, don.TongTien - daThanhToan);
+            sb.Append($"<h2>3. THÔNG TIN THANH TOÁN</h2><table class='info'><tr><td>Đã thanh toán</td><td>{Money(daThanhToan)}</td></tr><tr><td>Còn phải thu</td><td>{Money(conPhaiThu)}</td></tr></table>");
+
+            sb.Append("<h2>4. GHI CHÚ GIAO HÀNG</h2>");
+            sb.Append($"<div class='note'>{E(phieu.GhiChu ?? don.LoiNhan ?? don.GhiChu)}</div>");
+            sb.Append("<div class='sign'><div><strong>NGƯỜI GIAO HÀNG</strong><br><br><br><br>(Ký và ghi rõ họ tên)</div><div><strong>NGƯỜI NHẬN HÀNG</strong><br><br><br><br>(Ký và ghi rõ họ tên)</div></div>");
+            sb.Append($"<p class='hint'>Phiếu được xuất lúc {DateTime.Now:dd/MM/yyyy HH:mm}. Vui lòng liên hệ người nhận trước khi giao.</p>");
+            sb.Append("</main><script>window.addEventListener('load',()=>setTimeout(()=>window.print(),400));</script></body></html>");
+
+            return Content(sb.ToString(), "text/html; charset=utf-8");
+        }
 
     }
 }

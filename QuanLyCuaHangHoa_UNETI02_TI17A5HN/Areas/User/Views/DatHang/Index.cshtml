@@ -198,6 +198,8 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                                value="true"
                                form="checkoutSubmitForm"
                                id="NguoiNhanLaNguoiDat"
+                               data-profile-name="@ViewBag.TenNguoiDat"
+                               data-profile-phone="@ViewBag.SdtNguoiDat"
                                class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/40"
                                checked="@(Model.NguoiNhanLaNguoiDat ? "checked" : null)" />
                         <input type="hidden" name="NguoiNhanLaNguoiDat" value="false" form="checkoutSubmitForm" />
@@ -348,22 +350,33 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                         </span>
                     </label>
 
-                    @* 2. Chuyển khoản - Chưa hỗ trợ *@
-                    <div class="flex items-start gap-3 p-5 border border-outline-variant rounded-2xl bg-surface-container-low opacity-70">
+                    @* 2. Chuyển khoản ngân hàng *@
+                    <label class="flex items-start gap-3 p-5 border border-outline-variant rounded-2xl cursor-pointer">
 
-                        <input type="radio" disabled class="mt-1 w-5 h-5" />
+                        <input type="radio"
+                               name="PhuongThucThanhToan"
+                               value="@PhuongThucThanhToanConst.ChuyenKhoan"
+                               form="checkoutSubmitForm"
+                               required
+                               class="mt-1 w-5 h-5 accent-emerald-700" />
 
                         <div class="flex-1">
                             <strong>Chuyển khoản ngân hàng / VietQR</strong>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded-full">
+                                ĐANG HỖ TRỢ
+                            </span>
+
                             <p class="text-sm text-secondary mt-1">
-                                Chưa hỗ trợ thanh toán qua mã QR.
+                                Quét mã QR hoặc nhập nội dung chuyển khoản để thanh toán.
+                                Nhân viên sẽ kiểm tra và xác nhận sau khi nhận được tiền.
                             </p>
                         </div>
 
                         <span class="material-symbols-outlined">
                             qr_code_2
                         </span>
-                    </div>
+
+                    </label>
 
                     @* 3. Ví điện tử - Chưa hỗ trợ *@
                     <div class="flex items-start gap-3 p-5 border border-outline-variant rounded-2xl bg-surface-container-low opacity-70">
@@ -539,6 +552,31 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                     System.Globalization.CultureInfo.InvariantCulture));
 
         const address = document.querySelector('[name="DiaChiGiao"]');
+
+         // Mặc định cho phép nhập người nhận khác; chỉ khóa và đồng bộ hồ sơ
+        // khi khách chủ động tích "Người nhận chính là tôi".
+        const checkboxNguoiNhan = document.getElementById('NguoiNhanLaNguoiDat');
+        const inputTenNguoiNhan = document.getElementById('recipient_name');
+        const inputSdtNguoiNhan = document.getElementById('recipient_phone');
+
+        function capNhatNguoiNhan() {
+            const dungThongTinNguoiDat = checkboxNguoiNhan?.checked === true;
+            if (inputTenNguoiNhan) {
+                inputTenNguoiNhan.readOnly = dungThongTinNguoiDat;
+                if (dungThongTinNguoiDat) {
+                    inputTenNguoiNhan.value = checkboxNguoiNhan.dataset.profileName || '';
+                }
+            }
+            if (inputSdtNguoiNhan) {
+                inputSdtNguoiNhan.readOnly = dungThongTinNguoiDat;
+                if (dungThongTinNguoiDat) {
+                    inputSdtNguoiNhan.value = checkboxNguoiNhan.dataset.profilePhone || '';
+                }
+            }
+        }
+
+        checkboxNguoiNhan?.addEventListener('change', capNhatNguoiNhan);
+        capNhatNguoiNhan();
 
         function capNhatHinhThucNhan() {
             const hinhThuc = document.querySelector(

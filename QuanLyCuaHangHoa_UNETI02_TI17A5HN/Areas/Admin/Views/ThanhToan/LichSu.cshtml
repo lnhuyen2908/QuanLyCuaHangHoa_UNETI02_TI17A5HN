@@ -1,0 +1,151 @@
+﻿@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.ThanhToanLichSuViewModel
+
+@{
+    ViewBag.Title = "Lịch sử thanh toán";
+    ViewBag.ActiveMenu = "ThanhToan";
+    ViewBag.Breadcrumb = "Thanh toán / Lịch sử giao dịch";
+}
+
+<div class="px-space-xl py-space-lg space-y-space-md">
+
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <a asp-action="Index"
+       class="text-primary underline">
+        ← Quay lại quản lý thanh toán
+    </a>
+
+    <div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm">
+
+        <h2 class="text-2xl font-bold">
+            Đơn #ORD-@Model.DonHang.MaDon.ToString("D4")
+        </h2>
+
+        <p class="mt-3">
+            Người nhận:
+            <strong>@Model.DonHang.NguoiNhan</strong>
+        </p>
+
+        <p>
+            Số điện thoại:
+            @Model.DonHang.SoDienThoaiNguoiNhan
+        </p>
+
+        <p>
+            Ngày đặt:
+            @Model.DonHang.NgayDat.ToString("dd/MM/yyyy HH:mm")
+        </p>
+
+        <p>
+            Trạng thái:
+            @Model.DonHang.TrangThai
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <div class="bg-surface-container-lowest p-5 rounded-xl">
+            <p>TỔNG TIỀN ĐƠN</p>
+            <h3 class="text-xl font-bold">
+                @Model.DonHang.TongTien.ToString("N0")₫
+            </h3>
+        </div>
+
+        <div class="bg-surface-container-lowest p-5 rounded-xl">
+            <p>ĐÃ THANH TOÁN</p>
+            <h3 class="text-xl font-bold text-green-700">
+                @Model.TongDaThanhToan.ToString("N0")₫
+            </h3>
+        </div>
+
+        <div class="bg-surface-container-lowest p-5 rounded-xl">
+            <p>CÒN PHẢI THANH TOÁN</p>
+            <h3 class="text-xl font-bold">
+                @Model.SoTienConLai.ToString("N0")₫
+            </h3>
+        </div>
+
+    </div>
+
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+
+        <div class="p-6 border-b">
+            <h2 class="text-xl font-bold">
+                Chi tiết giao dịch
+            </h2>
+            <p class="text-secondary text-sm">
+                Toàn bộ các lần thanh toán của đơn hàng.
+            </p>
+        </div>
+
+        @if (!Model.GiaoDich.Any())
+        {
+            <p class="p-6 text-secondary">
+                Đơn hàng chưa có giao dịch thanh toán.
+            </p>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+
+                    <thead class="bg-surface-container">
+                        <tr>
+                            <th class="p-4 text-left">Mã giao dịch</th>
+                            <th class="p-4 text-left">Ngày thanh toán</th>
+                            <th class="p-4 text-left">Số tiền</th>
+                            <th class="p-4 text-left">Phương thức</th>
+                            <th class="p-4 text-left">Người ghi nhận</th>
+                            <th class="p-4 text-left">Ghi chú</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var gd in Model.GiaoDich)
+                        {
+                            <tr class="border-t hover:bg-surface-container-low">
+
+                                <td class="p-4 font-semibold text-primary">
+                                    TT-@gd.MaThanhToan.ToString("D4")
+                                </td>
+
+                                <td class="p-4">
+                                    @gd.NgayThanhToan.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+
+                                <td class="p-4 font-semibold">
+                                    @gd.SoTien.ToString("N0")₫
+                                </td>
+
+                                <td class="p-4">
+                                    @gd.PhuongThuc
+                                </td>
+
+                                <td class="p-4">
+                                    @gd.TenNguoiGhiNhan
+                                </td>
+
+                                <td class="p-4">
+                                    @(gd.GhiChu ?? "Không có")
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        }
+
+    </div>
+
+    @if (Model.SoTienConLai > 0)
+    {
+        <a asp-action="Create"
+           asp-route-maDon="@Model.DonHang.MaDon"
+           class="inline-block bg-primary text-white px-5 py-3 rounded-lg">
+            Ghi nhận thêm thanh toán
+        </a>
+    }
+
+</div>

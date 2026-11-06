@@ -90,7 +90,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 
             return View(new DatHangViewModel
             {
-                NguoiNhanLaNguoiDat = true,
+                NguoiNhanLaNguoiDat = false,
                 NguoiNhan = kh.HoTen,
                 SoDienThoaiNguoiNhan = kh.SoDienThoai,
                 DiaChiGiao = kh.DiaChi,
@@ -128,14 +128,14 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             vm.LoiNhan = vm.LoiNhan?.Trim();
 
             // Nguyễn Thị Đào - 23103100245
-            // Giai đoạn hiện tại chỉ cho thanh toán COD.
+            // Chỉ chấp nhận COD hoặc chuyển khoản.
             // Kiểm tra phía server để chặn POST giả mạo.
-            if (vm.PhuongThucThanhToan !=
-                PhuongThucThanhToanConst.TienMat)
+            if (vm.PhuongThucThanhToan != PhuongThucThanhToanConst.TienMat
+             && vm.PhuongThucThanhToan != PhuongThucThanhToanConst.ChuyenKhoan)
             {
                 ModelState.AddModelError(
                     nameof(vm.PhuongThucThanhToan),
-                    "Hiện chỉ hỗ trợ thanh toán tiền mặt khi nhận hoa.");
+                    "Phương thức thanh toán không hợp lệ.");
             }
 
 
@@ -227,7 +227,9 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 LoiNhan = vm.LoiNhan,
                 // Nguyễn Thị Đào - 23103100245
                 // Ghi nhận lựa chọn COD, chưa thu tiền.
-                GhiChu = "Phương thức thanh toán dự kiến: Tiền mặt khi nhận hoa (COD). Chưa thu tiền.",
+                GhiChu = vm.PhuongThucThanhToan == PhuongThucThanhToanConst.ChuyenKhoan
+                        ? "[PTTT=CHUYENKHOAN] Chờ khách chuyển khoản trong 24 giờ kể từ lúc đặt đơn."
+                         : "[PTTT=COD] Thanh toán tiền mặt khi nhận hoa (COD). Chưa thu tiền.",
                 TrangThai = TrangThaiDon.ChoXacNhan,
                 PhiGiaoHang = phiGiao,
                 TongTien = _don.TinhTongTien(cts.Select(x => x.ThanhTien), phiGiao, 0),
@@ -278,10 +280,81 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             }
 
             // Nguyễn Thị Đào - 23103100245
+            //Chuyển khách đến trang QR sau khi đặt hàng
+            if (vm.PhuongThucThanhToan == PhuongThucThanhToanConst.ChuyenKhoan)
+            {
+                TempData["ThongBao"] =
+                    $"Đặt hàng thành công: #{order.MaDon}. Đơn chuyển khoản có thời hạn thanh toán 24 giờ kể từ lúc đặt và chờ nhân viên xác nhận.";
+
+                return RedirectToAction(nameof(ChuyenKhoan), new { maDon = order.MaDon });
+            }
+
             TempData["ThongBao"] =
-                $"Đặt hàng thành công: #{order.MaDon}. " +
-                "Thanh toán tiền mặt khi nhận hoa. Đơn đang chờ xác nhận.";
+                $"Đặt hàng thành công: #{order.MaDon}. Thanh toán tiền mặt khi nhận hoa. Đơn đang chờ xác nhận.";
+
             return Redirect("/User/Profile#orders");
+        }
+
+        // Nguyễn Thị Đào - 23103100245
+        // Hiển thị QR ngân hàng khi khách đặt đơn hoặc thanh toán lại.
+        [HttpGet("ChuyenKhoan")]
+        public async Task<IActionResult> ChuyenKhoan(int maDon)
+        {
+            var maTaiKhoan = HttpContext.Session.GetMaTaiKhoan();
+
+            if (!maTaiKhoan.HasValue)
+                return Unauthorized();
+
+            var don = await _db.DonDatHoas
+                .Include(d => d.KhachHang)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(d => d.MaDon == maDon);
+
+            if (don == null)
+                return NotFound();
+
+            // Chỉ chủ đơn mới được xem QR.
+            if (don.KhachHang.MaTaiKhoan != maTaiKhoan.Value)
+                return Forbid();
+
+            // Chỉ đơn chuyển khoản mới được mở trang QR.
+            if (don.GhiChu?.StartsWith("[PTTT=CHUYENKHOAN]") != true)
+            {
+                TempData["Loi"] = "Đơn hàng này không sử dụng phương thức chuyển khoản.";
+                return Redirect("/User/Profile#orders");
+            }
+
+            // Không cho thanh toán lại nếu đơn đã bị hủy hoặc đã xử lý khỏi trạng thái chờ.
+            if (don.TrangThai != TrangThaiDon.ChoXacNhan)
+            {
+                TempData["Loi"] = "Đơn hàng không còn ở trạng thái chờ thanh toán.";
+                return Redirect("/User/Profile#orders");
+            }
+
+            // Kiểm tra đơn đã có bản ghi thanh toán hay chưa.
+            bool daThanhToan = await _db.ThanhToans
+                .AnyAsync(t => t.MaDon == don.MaDon);
+
+            if (daThanhToan)
+            {
+                TempData["Loi"] = "Đơn hàng đã có thông tin thanh toán, không cần thanh toán lại.";
+                return Redirect("/User/Profile#orders");
+            }
+
+            // Kiểm tra thời hạn 24 giờ.
+            if (DateTime.Now >= don.NgayDat.AddHours(24))
+            {
+                TempData["Loi"] = "Đơn hàng đã hết thời hạn thanh toán 24 giờ.";
+                return Redirect("/User/Profile#orders");
+            }
+
+            ViewBag.MaDon = $"ORD-{don.MaDon:D4}";
+            ViewBag.TongTien = don.TongTien;
+
+            ViewBag.NoiDungChuyenKhoan =
+                $"ORD-{don.MaDon:D4} - {don.KhachHang.HoTen.Trim().ToUpper()} - {don.KhachHang.SoDienThoai.Trim()}";
+
+            return View();
         }
 
         // Lưu giấy gói và lời chúc theo từng dòng dưới dạng văn bản dễ đọc trong cột hiện có.

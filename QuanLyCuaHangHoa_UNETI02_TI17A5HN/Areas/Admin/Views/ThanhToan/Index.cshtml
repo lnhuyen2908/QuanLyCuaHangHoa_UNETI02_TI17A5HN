@@ -1,8 +1,6 @@
-﻿
-@* Họ và tên: Nguyễn Thị Đào
+﻿@* Họ và tên: Nguyễn Thị Đào
    Mã sinh viên: 23103100245
-   Nội dung: Tuần 6 - Quản lý thanh toán, lịch sử
-   thanh toán và tính số tiền còn lại. *@
+   Nội dung: Tuần 6 - Chọn đơn hàng, tra cứu và quản lý lịch sử thanh toán. *@
 
 @model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.ThanhToanViewModel
 
@@ -13,7 +11,7 @@
 }
 
 <div class="w-full px-space-xl py-space-lg">
-    <div class="max-w-6xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
 
         @await Html.PartialAsync("_AdminPageHeader")
 
@@ -31,86 +29,179 @@
             </div>
         }
 
-        @* Nguyễn Thị Đào - Tìm thanh toán theo đơn *@
-
-        <div class="bg-surface-container-lowest rounded-xl shadow-sm p-6">
-
-            <h2 class="font-headline-sm text-xl mb-4">
-                Tra cứu thanh toán đơn hàng
-            </h2>
+        @* Chọn đơn bằng bảng có tìm kiếm, lọc và phân trang thay cho dropdown dài. *@
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-surface-container">
+                <h2 class="font-headline-sm text-xl">Chọn đơn hàng cần ghi nhận thanh toán</h2>
+                <p class="text-secondary text-sm mt-1">
+                    Tìm theo mã đơn, tên hoặc số điện thoại người nhận. Mỗi trang hiển thị 10 đơn.
+                </p>
+            </div>
 
             <form asp-area="Admin"
                   asp-controller="ThanhToan"
                   asp-action="Index"
                   method="get"
-                  class="flex flex-wrap gap-3 items-end">
+                  class="p-6 flex flex-col lg:flex-row gap-3 lg:items-end">
 
-                <div class="flex-1 min-w-[240px]">
-                    <label class="block font-semibold mb-2">
-                        Chọn đơn đặt hoa
-                    </label>
+                <div class="flex-1 min-w-[220px]">
+                    <label for="tuKhoa" class="block font-semibold mb-2">Tìm đơn hàng</label>
+                    <input id="tuKhoa"
+                           type="text"
+                           name="tuKhoa"
+                           value="@Model.TuKhoa"
+                           placeholder="#ORD-0001, tên hoặc số điện thoại..."
+                           class="w-full p-3 rounded-lg bg-surface-container border border-outline-variant" />
+                </div>
 
-                    <select name="maDon"
+                <div class="min-w-[220px]">
+                    <label for="tinhTrangThanhToan" class="block font-semibold mb-2">Tình trạng thanh toán</label>
+                    <select id="tinhTrangThanhToan"
+                            name="tinhTrangThanhToan"
                             class="w-full p-3 rounded-lg bg-surface-container border border-outline-variant">
-
-                        <option value="">-- Chọn đơn hàng --</option>
-
-                        @foreach (var don in Model.DonHang)
-                        {
-                            <option value="@don.MaDon"
-                                    selected="@(Model.MaDon == don.MaDon)">
-                                #ORD-@don.MaDon.ToString("D4") - @don.NguoiNhan
-                            </option>
-                        }
+                        <option value="" selected="@(string.IsNullOrEmpty(Model.TinhTrangThanhToan))">Tất cả đơn</option>
+                        <option value="con-no" selected="@(Model.TinhTrangThanhToan == "con-no")">Còn phải thanh toán</option>
+                        <option value="da-du" selected="@(Model.TinhTrangThanhToan == "da-du")">Đã thanh toán đủ</option>
                     </select>
                 </div>
 
-                <button type="submit"
-                        class="bg-primary text-on-primary px-6 py-3 rounded-lg font-semibold">
-                    Xem thanh toán
-                </button>
+                <div class="flex gap-2">
+                    <button type="submit"
+                            class="bg-primary text-on-primary px-6 py-3 rounded-lg font-semibold">
+                        Tìm kiếm
+                    </button>
+                    <a asp-area="Admin"
+                       asp-controller="ThanhToan"
+                       asp-action="Index"
+                       class="px-5 py-3 rounded-lg bg-surface-container font-semibold">
+                        Làm mới
+                    </a>
+                </div>
             </form>
+
+            <div class="px-6 pb-3 text-sm text-secondary">
+                Tìm thấy @Model.DanhSachDonHang.TongSoBanGhi đơn phù hợp.
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[1120px] text-left">
+                    <thead class="bg-surface-container-low text-secondary text-sm">
+                        <tr>
+                            <th class="p-4">Mã đơn</th>
+                            <th class="p-4">Người nhận</th>
+                            <th class="p-4">Ngày đặt</th>
+                            <th class="p-4">Tổng tiền</th>
+                            <th class="p-4">Đã thanh toán</th>
+                            <th class="p-4">Còn lại</th>
+                            <th class="p-4">Tình trạng</th>
+                            <th class="p-4 text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-surface-container">
+                        @foreach (var don in Model.DanhSachDonHang.DuLieu)
+                        {
+                            <tr class="@(Model.MaDon == don.MaDon ? "bg-primary/5" : "hover:bg-surface-container-low")">
+                                <td class="p-4 font-semibold text-primary">
+                                    #ORD-@don.MaDon.ToString("D4")
+                                </td>
+                                <td class="p-4">
+                                    <div class="font-medium">@don.NguoiNhan</div>
+                                    <div class="text-xs text-secondary mt-1">@don.SoDienThoaiNguoiNhan</div>
+                                </td>
+                                <td class="p-4">@don.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="p-4 whitespace-nowrap">@don.TongTien.ToString("N0")₫</td>
+                                <td class="p-4 whitespace-nowrap">@don.TongDaThanhToan.ToString("N0")₫</td>
+                                <td class="p-4 whitespace-nowrap font-semibold">@don.SoTienConLai.ToString("N0")₫</td>
+                                <td class="p-4">
+                                    @if (don.SoTienConLai > 0)
+                                    {
+                                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">Còn phải thu</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">Đã thanh toán đủ</span>
+                                    }
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex justify-end gap-2 whitespace-nowrap">
+                                       <a asp-area="Admin"
+                                           asp-controller="ThanhToan"
+                                           asp-action="LichSu"
+                                           asp-route-maDon="@don.MaDon"
+                                           class="inline-flex items-center justify-center px-3 py-2 rounded-lg
+                                                  bg-surface-container text-primary hover:bg-surface-container-high">
+                                            Xem lịch sử
+                                        </a>
+                                        @if (don.SoTienConLai > 0)
+                                        {
+                                            <a asp-area="Admin"
+                                               asp-controller="ThanhToan"
+                                               asp-action="Create"
+                                               asp-route-maDon="@don.MaDon"
+                                               class="px-3 py-2 rounded-lg bg-primary text-on-primary text-sm font-semibold">
+                                                Ghi nhận
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                        @if (!Model.DanhSachDonHang.DuLieu.Any())
+                        {
+                            <tr>
+                                <td colspan="8" class="p-8 text-center text-secondary">
+                                    Không tìm thấy đơn hàng phù hợp.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="px-6 pb-6">
+                @await Html.PartialAsync("_AdminPagination", new QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.PaginationViewModel
+                {
+                    TrangHienTai = Model.DanhSachDonHang.TrangHienTai,
+                    TongSoTrang = Model.DanhSachDonHang.TongSoTrang,
+                    TongSoBanGhi = Model.DanhSachDonHang.TongSoBanGhi,
+                    SoBanGhiMoiTrang = Model.DanhSachDonHang.SoBanGhiMoiTrang,
+                    Area = "Admin",
+                    Controller = "ThanhToan",
+                    Action = "Index",
+                    BoLoc = new Dictionary<string, string?>
+                    {
+                        ["tuKhoa"] = Model.TuKhoa,
+                        ["tinhTrangThanhToan"] = Model.TinhTrangThanhToan,
+                        ["maDon"] = Model.MaDon?.ToString()
+                    }
+                })
+            </div>
         </div>
 
+        @* Chi tiết và lịch sử thanh toán của đơn được chọn. *@
         @if (Model.MaDon.HasValue)
         {
-            @* Nguyễn Thị Đào - Số liệu tiền từ SQL Server *@
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
                 <div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm">
                     <p class="text-secondary text-sm">TỔNG TIỀN ĐƠN</p>
-                    <h3 class="text-2xl font-bold text-primary mt-2">
-                        @Model.TongTien.ToString("N0")₫
-                    </h3>
+                    <h3 class="text-2xl font-bold text-primary mt-2">@Model.TongTien.ToString("N0")₫</h3>
                 </div>
-
                 <div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm">
                     <p class="text-secondary text-sm">ĐÃ THANH TOÁN</p>
-                    <h3 class="text-2xl font-bold text-green-700 mt-2">
-                        @Model.TongDaThanhToan.ToString("N0")₫
-                    </h3>
+                    <h3 class="text-2xl font-bold text-green-700 mt-2">@Model.TongDaThanhToan.ToString("N0")₫</h3>
                 </div>
-
                 <div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm">
                     <p class="text-secondary text-sm">SỐ TIỀN CÒN LẠI</p>
-                    <h3 class="text-2xl font-bold text-primary mt-2">
-                        @Model.SoTienConLai.ToString("N0")₫
-                    </h3>
+                    <h3 class="text-2xl font-bold text-primary mt-2">@Model.SoTienConLai.ToString("N0")₫</h3>
                 </div>
             </div>
 
             <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
-
                 <div class="p-6 border-b border-surface-container flex flex-wrap justify-between items-center gap-3">
-
                     <div>
-                        <h2 class="font-headline-sm text-xl">
-                            Lịch sử thanh toán
-                        </h2>
-                        <p class="text-secondary text-sm">
-                            Đơn #ORD-@Model.MaDon.Value.ToString("D4")
-                        </p>
+                        <h2 class="font-headline-sm text-xl">Lịch sử thanh toán</h2>
+                        <p class="text-secondary text-sm">Đơn #ORD-@Model.MaDon.Value.ToString("D4")</p>
                     </div>
 
                     @if (Model.SoTienConLai > 0)
@@ -120,11 +211,7 @@
                            asp-action="Create"
                            asp-route-maDon="@Model.MaDon"
                            class="inline-flex items-center gap-2 bg-primary text-on-primary px-5 py-3 rounded-lg font-semibold">
-
-                            <span class="material-symbols-outlined">
-                                add_circle
-                            </span>
-
+                            <span class="material-symbols-outlined">add_circle</span>
                             Ghi nhận thanh toán
                         </a>
                     }
@@ -148,47 +235,27 @@
                                 <th class="p-4">Ghi chú</th>
                             </tr>
                         </thead>
-
                         <tbody class="divide-y divide-surface-container">
-
                             @foreach (var t in Model.LichSu)
                             {
                                 <tr class="hover:bg-surface-container-low">
-
-                                    <td class="p-4 font-semibold text-primary">
-                                        TT-@t.MaThanhToan.ToString("D4")
-                                    </td>
-
+                                    <td class="p-4 font-semibold text-primary">TT-@t.MaThanhToan.ToString("D4")</td>
+                                    <td class="p-4">@t.NgayThanhToan.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td class="p-4 font-semibold">@t.SoTien.ToString("N0")₫</td>
+                                    <td class="p-4">@t.PhuongThuc</td>
                                     <td class="p-4">
-                                        @t.NgayThanhToan.ToString("dd/MM/yyyy HH:mm")
-                                    </td>
-
-                                    <td class="p-4 font-semibold">
-                                        @t.SoTien.ToString("N0")₫
-                                    </td>
-
-                                    <td class="p-4">
-                                        @t.PhuongThuc
-                                    </td>
-
-                                    <td class="p-4">
-                                        @(Model.TenNhanVien.TryGetValue(
-                                            t.NguoiGhiNhan, out var ten)
+                                        @(Model.TenNhanVien.TryGetValue(t.NguoiGhiNhan, out var ten)
                                             ? ten
                                             : $"#{t.NguoiGhiNhan}")
                                     </td>
-
-                                    <td class="p-4">
-                                        @(t.GhiChu ?? "Không có")
-                                    </td>
+                                    <td class="p-4">@(t.GhiChu ?? "Không có")</td>
                                 </tr>
                             }
 
                             @if (!Model.LichSu.Any())
                             {
                                 <tr>
-                                    <td colspan="6"
-                                        class="p-8 text-center text-secondary">
+                                    <td colspan="6" class="p-8 text-center text-secondary">
                                         Đơn hàng chưa có lịch sử thanh toán.
                                     </td>
                                 </tr>
@@ -200,10 +267,9 @@
         }
         else
         {
-            <div class="bg-surface-container-lowest p-10 rounded-xl text-center text-secondary">
-                Vui lòng chọn đơn đặt hoa để xem thông tin thanh toán.
+            <div class="bg-surface-container-lowest p-6 rounded-xl text-center text-secondary">
+                Chọn một đơn trong bảng để xem lịch sử thanh toán chi tiết.
             </div>
         }
-
     </div>
 </div>
