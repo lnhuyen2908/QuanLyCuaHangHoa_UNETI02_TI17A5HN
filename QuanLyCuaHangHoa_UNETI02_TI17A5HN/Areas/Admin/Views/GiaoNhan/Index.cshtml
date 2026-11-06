@@ -19,6 +19,14 @@
 
     @await Html.PartialAsync("_AdminPageHeader")
 
+   <div class="flex flex-wrap justify-end gap-3">
+        <a asp-area="Admin" asp-controller="GiaoNhan" asp-action="XuatExcel"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-700 text-white font-semibold hover:opacity-90">
+            <span class="material-symbols-outlined">table_view</span>
+            Xuất Excel
+        </a>
+    </div>
+
     @if (TempData["Success"] != null)
     {
         <div class="p-4 rounded-xl bg-green-100 text-green-800">
@@ -165,6 +173,9 @@
                         <th class="p-4">Người giao</th>
                         <th class="p-4">Ghi chú</th>
                         <th class="p-4 text-center">Trạng thái</th>
+                         <th class="p-4 text-center min-w-[150px] whitespace-nowrap">
+                            Xuất phiếu
+                        </th>
                         <th class="p-4 text-right min-w-[300px] whitespace-nowrap">
                             Thao tác
                         </th>
@@ -225,13 +236,25 @@
                                     "_AdminStatusBadge", g.TrangThai)
                             </td>
 
+                             <td class="p-3 text-center">
+                                <a asp-area="Admin"
+                                   asp-controller="GiaoNhan"
+                                   asp-action="XuatPdf"
+                                   asp-route-id="@g.MaGiaoNhan"
+                                   target="_blank"
+                                   title="Xuất phiếu giao nhận PDF"
+                                   class="inline-flex min-w-[120px] items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 hover:border-red-300 transition-all">
+                                    <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                                    Xuất PDF
+                                </a>
+                            </td>
+
                            
                         @* Nguyễn Thị Đào - 23103100245
                            Bổ sung nút sửa phiếu giao nhận. *@
 
                         <td class="p-3 text-right whitespace-nowrap">
                             <div class="flex items-center justify-end gap-3 flex-nowrap">
-
                                 @* Nút xem đơn *@
                                 <a asp-area="Admin"
                                    asp-controller="DonDatHoa"
@@ -318,7 +341,7 @@
                     @if (!Model.DanhSach.DuLieu.Any())
                     {
                         <tr>
-                            <td colspan="10" class="p-8 text-center text-secondary">
+                            <td colspan="11" class="p-8 text-center text-secondary">
                                 Không có phiếu giao nhận phù hợp.
                             </td>
                         </tr>

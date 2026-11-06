@@ -179,13 +179,14 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         public async Task<IActionResult> Create(
             ThanhToanCreateViewModel vm)
         {
-            // Hiện tại hệ thống chỉ triển khai ghi nhận thanh toán tiền mặt.
+            // Nhân viên được ghi nhận tiền mặt hoặc chuyển khoản sau khi đã kiểm tra thực tế.
             // Các phương thức khác chỉ hiển thị trên giao diện, không được phép gửi lên server.
-            if (vm.PhuongThuc != PhuongThucThanhToanConst.TienMat)
+            if (vm.PhuongThuc != PhuongThucThanhToanConst.TienMat
+                 && vm.PhuongThuc != PhuongThucThanhToanConst.ChuyenKhoan)
             {
                 ModelState.AddModelError(
                     nameof(vm.PhuongThuc),
-                    "Hiện tại chỉ hỗ trợ ghi nhận thanh toán bằng tiền mặt.");
+                    "Phương thức thanh toán không hợp lệ.");
             }
 
             var maTaiKhoan = HttpContext.Session.GetMaTaiKhoan();
