@@ -2,9 +2,10 @@
 // Mã sinh viên: 23103100267
 // Nội dung thực hiện: Lưu dữ liệu phục vụ thêm và sửa mẫu sản phẩm
 
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
 {
@@ -33,7 +34,13 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
 
         public IFormFile? TepAnh { get; set; }
 
-        [StringLength(1000)]
+        public List<IFormFile>? DanhSachAnh { get; set; }          // ảnh phụ upload thêm
+        public List<int>? XoaAnhIds { get; set; }                  // mã ảnh phụ cần xóa (khi sửa)
+        public bool XoaAnhChinh { get; set; }   // true: người dùng bấm xóa ảnh đại diện hiện tại
+        public List<AnhMauSanPham> AnhHienCo { get; set; } = new();// ảnh phụ đang có
+
+        [Required(ErrorMessage = "Vui lòng nhập mô tả mẫu sản phẩm.")]
+        [StringLength(1000, ErrorMessage = "Mô tả tối đa 1000 ký tự.")] 
         public string? MoTa { get; set; }
 
         public bool TrangThai { get; set; } = true;

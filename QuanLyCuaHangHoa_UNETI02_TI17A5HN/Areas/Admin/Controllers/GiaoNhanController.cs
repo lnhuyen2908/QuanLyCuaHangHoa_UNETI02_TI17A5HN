@@ -329,6 +329,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 TempData["Success"] =
                     "Tạo phiếu giao nhận thành công.";
             }
+
             catch (DbUpdateException ex)
                 when (ex.InnerException is SqlException sqlEx &&
                       (sqlEx.Number == 2601 ||  // lỗi trùng

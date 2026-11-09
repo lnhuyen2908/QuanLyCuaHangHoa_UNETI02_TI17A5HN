@@ -218,6 +218,22 @@
                         </select>
                     </div>
 
+                    <!-- Lọc theo loại hoa -->
+                    <div class="flex items-center gap-1 bg-surface-container px-3 py-2 rounded-xl">
+                        <span class="material-symbols-outlined text-[18px]">local_florist</span>
+                        <select name="loaiHoaId"
+                                class="bg-transparent text-on-surface text-sm focus:outline-none">
+                            <option value="">Tất cả loại hoa</option>
+                            @foreach (var item in Model.DanhSachLoaiHoa)
+                            {
+                                <option value="@item.Value"
+                                        selected="@(Model.LoaiHoaId?.ToString() == item.Value)">
+                                    @item.Text
+                                </option>
+                            }
+                        </select>
+                    </div>
+
                     <!-- Lọc theo kiểu sản phẩm -->
                     <div class="flex items-center gap-1 bg-surface-container px-3 py-2 rounded-xl">
                         <span class="material-symbols-outlined text-[18px]">local_florist</span>

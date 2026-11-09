@@ -88,6 +88,7 @@ Nội dung thực hiện:Thiết kế giao diện danh sách mẫu hoa, tìm ki�
 
                     <input type="hidden" name="tuKhoa" value="@Model.TuKhoa" />
                     <input type="hidden" name="maDip" value="@Model.MaDip" />
+                    <input type="hidden" name="maLoaiHoa" value="@Model.MaLoaiHoa" />
                     <input type="hidden" name="giaTu" value="@Model.GiaTu" />
                     <input type="hidden" name="giaDen" value="@Model.GiaDen" />
                     <input type="hidden" name="sapXep" value="@Model.SapXep" />
@@ -230,6 +231,12 @@ Nội dung thực hiện:Thiết kế giao diện danh sách mẫu hoa, tìm ki�
                 <!-- Bộ lọc đang bật: lấy từ lựa chọn thực tế -->
                 <div class="flex flex-wrap items-center gap-space-xs" id="active-filter-tags">
                     <span class="font-label-md text-label-md text-secondary uppercase tracking-wider mr-1">Bộ lọc đang bật:</span>
+                    @if (Model.MaLoaiHoa.HasValue)
+                    {
+                        <span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-body-sm">
+                            Loài hoa: @ViewBag.TenLoaiHoaDangLoc
+                        </span>
+                    }
                     @if (!string.IsNullOrWhiteSpace(Model.TuKhoa))
                     {
                         <span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-body-sm">Từ khóa: @Model.TuKhoa</span>
@@ -261,7 +268,14 @@ Nội dung thực hiện:Thiết kế giao diện danh sách mẫu hoa, tìm ki�
                             Sắp xếp: @Model.SapXep
                         </span>
                     }
-                    @if (string.IsNullOrWhiteSpace(Model.TuKhoa) && string.IsNullOrWhiteSpace(Model.KieuSanPham) && !Model.MaDip.HasValue && !Model.GiaTu.HasValue && !Model.GiaDen.HasValue && string.IsNullOrWhiteSpace(Context.Request.Query["mauSac"].ToString()) && (string.IsNullOrWhiteSpace(Model.SapXep) || Model.SapXep == "moi-nhat"))
+                    @if (string.IsNullOrWhiteSpace(Model.TuKhoa)
+                        && string.IsNullOrWhiteSpace(Model.KieuSanPham)
+                        && !Model.MaDip.HasValue
+                        && !Model.MaLoaiHoa.HasValue
+                        && !Model.GiaTu.HasValue
+                        && !Model.GiaDen.HasValue
+                        && string.IsNullOrWhiteSpace(Context.Request.Query["mauSac"].ToString())
+                        && (string.IsNullOrWhiteSpace(Model.SapXep) || Model.SapXep == "moi-nhat"))
                     {
                         <span class="text-sm text-secondary">Chưa áp dụng bộ lọc nào</span>
                     }
@@ -326,6 +340,7 @@ Nội dung thực hiện:Thiết kế giao diện danh sách mẫu hoa, tìm ki�
                            asp-route-page="@(Model.DanhSachMau.TrangHienTai - 1)"
                            asp-route-tuKhoa="@Model.TuKhoa"
                            asp-route-maDip="@Model.MaDip"
+                           asp-route-maLoaiHoa="@Model.MaLoaiHoa"
                            asp-route-kieuSanPham="@Model.KieuSanPham"
                            asp-route-giaTu="@Model.GiaTu"
                            asp-route-giaDen="@Model.GiaDen"
@@ -344,6 +359,7 @@ Nội dung thực hiện:Thiết kế giao diện danh sách mẫu hoa, tìm ki�
                            asp-route-page="@i"
                            asp-route-tuKhoa="@Model.TuKhoa"
                            asp-route-maDip="@Model.MaDip"
+                           asp-route-maLoaiHoa="@Model.MaLoaiHoa"
                            asp-route-kieuSanPham="@Model.KieuSanPham"
                            asp-route-giaTu="@Model.GiaTu"
                            asp-route-giaDen="@Model.GiaDen"
@@ -363,6 +379,8 @@ Nội dung thực hiện:Thiết kế giao diện danh sách mẫu hoa, tìm ki�
                            asp-route-page="@(Model.DanhSachMau.TrangHienTai + 1)"
                            asp-route-tuKhoa="@Model.TuKhoa"
                            asp-route-maDip="@Model.MaDip"
+                           asp-route-maLoaiHoa="@Model.MaLoaiHoa"
+                           asp-route-maLoaiHoa="@Model.MaLoaiHoa"
                            asp-route-kieuSanPham="@Model.KieuSanPham"
                            asp-route-giaTu="@Model.GiaTu"
                            asp-route-giaDen="@Model.GiaDen"

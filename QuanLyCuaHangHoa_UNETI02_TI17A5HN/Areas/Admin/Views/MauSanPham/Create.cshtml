@@ -19,9 +19,12 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
       method="post"
       enctype="multipart/form-data">
     @Html.AntiForgeryToken()
-    <div asp-validation-summary="All"
-     class="mb-4 rounded-xl border border-red-300 bg-red-50 p-4 text-red-700">
-    </div>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All"
+                class="mb-4 rounded-xl border border-red-300 bg-red-50 p-4 text-red-700">
+        </div>
+    }
 
     <!-- Main Create Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
@@ -46,11 +49,12 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
                         <!-- Product Title -->
                         <div class="md:col-span-12 space-y-1.5">
                             <label class="block font-title-sm text-title-sm text-on-surface">Tên mẫu sản phẩm *</label>                           
-                            <input type="text"
+                           <input  type="text"
                                    name="TenMau"
                                    required
                                    placeholder="VD: Bó Hoa Rosée Éternelle"
                                    class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low focus:bg-surface text-on-surface font-title-sm text-title-sm focus:outline-none shadow-sm" />
+                            <span asp-validation-for="TenMau" class="text-error text-sm"></span>
                         </div>
 
                         <!-- Floral Type / Kind -->
@@ -101,9 +105,12 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
                         </label>
 
                         <textarea name="MoTa"
+                                  required
                                   rows="4"
                                   placeholder="Nhập cảm hứng thiết kế, màu sắc chủ đạo và lời chúc..."
                                   class="block w-full p-3.5 rounded-lg bg-surface-container-low text-on-surface resize-y"></textarea>
+
+                       <span asp-validation-for="MoTa" class="text-error text-sm"></span>
                     </div>
                 </div>
             </section>
@@ -139,6 +146,7 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
                                 <th class="py-3 px-2 text-center">Số lượng TC</th>
                                 <th class="py-3 px-3 text-right">Đơn giá</th>
                                 <th class="py-3 px-3 text-right">Thành tiền</th>
+                                    <th class="py-3 px-3">Ghi chú</th>
                                 <th class="py-3 px-2 text-center">Xóa</th>
                             </tr>
                         </thead>
@@ -157,7 +165,7 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
                                             {
                                                 <option value="@hoa.Value"
                                                         selected="@(hoa.Value == Model.ChiTietMaus[i].MaHoa.ToString())">
-                                                    @hoa.Text
+                                                        @((hoa.Text ?? "").Split('|')[0])
                                                 </option>
                                             }
                                         </select>
@@ -172,6 +180,15 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
                                     </td>
                                     <td class="don-gia py-3 px-3 text-right text-secondary">—</td>
                                     <td class="thanh-tien py-3 px-3 text-right text-primary font-bold">—</td>
+                                    <td class="py-3 px-2 min-w-40">
+                                        <input type="text"
+                                                name="ChiTietMaus[@i].GhiChu"
+                                                value="@Model.ChiTietMaus[i].GhiChu"
+                                                list="goiYGhiChu"
+                                                maxlength="500"
+                                                placeholder="VD: Hoa chính"
+                                                class="ghi-chu w-full rounded-lg bg-surface-container-lowest px-2 py-1" />
+                                    </td>
                                     <td class="py-3 px-2 text-center">
                                         <button type="button"
                                                 class="btnXoaHoa text-red-600">✕</button>
@@ -181,7 +198,14 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
                         </tbody>
                     </table>
                 </div>
-                
+
+                <datalist id="goiYGhiChu">
+                    <option value="Hoa chính"></option>
+                    <option value="Hoa phụ"></option>
+                    <option value="Hoa điểm xuyết"></option>
+                    <option value="Lá phụ"></option>
+                    <option value="Phụ liệu"></option>
+                </datalist>
                 @{
                     var danhSachHoaJson = System.Text.Json.JsonSerializer.Serialize(
                         Model.DanhSachHoa.Select(hoa =>
@@ -207,26 +231,31 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
 
                     function capNhatChiTiet() {
                         const rows = [...tbodyHoa.querySelectorAll(".dong-hoa")];
+                        let tongTien = 0;
 
                         rows.forEach((row, index) => {
                             const select = row.querySelector(".select-hoa");
                             const inputSoLuong = row.querySelector(".so-luong");
+                            const inputGhiChu = row.querySelector(".ghi-chu");
 
                             select.name = `ChiTietMaus[${index}].MaHoa`;
                             inputSoLuong.name = `ChiTietMaus[${index}].SoLuongTieuChuan`;
+                            if (inputGhiChu) inputGhiChu.name = `ChiTietMaus[${index}].GhiChu`;
 
                             const hoa = danhSachHoa.find(x => x.value === select.value);
                             const soLuong = Number(inputSoLuong.value) || 0;
+                            const thanhTien = hoa ? soLuong * hoa.donGia : 0;
+                            tongTien += thanhTien;
 
-                            row.querySelector(".don-vi").textContent =
-                                hoa ? hoa.donVi : "—";
-
+                            row.querySelector(".don-vi").textContent = hoa ? hoa.donVi : "—";
                             row.querySelector(".don-gia").textContent =
                                 hoa ? hoa.donGia.toLocaleString("vi-VN") + "đ" : "—";
-
                             row.querySelector(".thanh-tien").textContent =
-                                hoa ? (soLuong * hoa.donGia).toLocaleString("vi-VN") + "đ" : "—";
+                                hoa ? thanhTien.toLocaleString("vi-VN") + "đ" : "—";
                         });
+
+                        const giaInput = document.getElementById("GiaCoBan");
+                        if (giaInput) giaInput.value = Math.round(tongTien);
                     }
 
                     document.getElementById("btnThemHoa").addEventListener("click", () => {
@@ -252,6 +281,11 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
                             </td>
                             <td class="don-gia py-3 px-3 text-right text-secondary">—</td>
                             <td class="thanh-tien py-3 px-3 text-right text-primary font-bold">—</td>
+                            <td class="py-3 px-2 min-w-40">
+                                <input type="text"
+                                        class="ghi-chu w-full rounded-lg bg-surface-container-lowest px-2 py-1"
+                                        list="goiYGhiChu" maxlength="500" placeholder="VD: Hoa chính" />
+                            </td>
                             <td class="py-3 px-2 text-center">
                                 <button type="button" class="btnXoaHoa text-red-600">✕</button>
                             </td>`;
@@ -292,7 +326,7 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
                         }
                     });
 
-                    capNhatChiTiet();
+                document.addEventListener("DOMContentLoaded", capNhatChiTiet);
                 </script>
             </section>
         </div>
@@ -306,12 +340,15 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
                 <div class="space-y-space-md">
                     <div>
                         <label class="block font-title-sm text-title-sm text-on-surface mb-1">Giá cơ bản (VNĐ) *</label>
-                        <input type="number"
-                           name="GiaCoBan"
-                           min="0"
-                           required
-                           value="1450000"
-                           class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-primary font-headline-sm font-bold focus:outline-none" />
+                            <input type="number"
+                                   id="GiaCoBan"
+                                   name="GiaCoBan"
+                                   min="0"
+                                   required
+                                   readonly
+                                   value="0"
+                                   class="w-full px-3.5 py-2.5 rounded-lg bg-surface-container-low text-primary font-headline-sm font-bold focus:outline-none" />
+                            <span asp-validation-for="GiaCoBan" class="text-error text-sm"></span>
                     </div>
 
                     <div>
@@ -334,21 +371,56 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
                                     Chọn ảnh mẫu bó hoa tươi (PNG, JPG, WEBP)
                                 </p>
                                 <input type="file"
-                                       id="TepAnh"
-                                       name="TepAnh"
-                                       accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-                                       class="mt-3 block w-full text-sm"
-                                       onchange="previewMauAnh(this)" />
+                                       required
+                                        id="TepAnh"
+                                        name="TepAnh"
+                                        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                        class="mt-3 block w-full text-sm"
+                                        onchange="previewMauAnh(this)" />
+                                <span asp-validation-for="TepAnh" class="text-error text-sm"></span>
                             </label>
 
-                            <img id="previewAnh"
-                                 src="#"
-                                 alt="Ảnh xem trước"
-                                 class="hidden mt-4 mx-auto max-h-56 rounded-xl object-contain" />
+                            <div id="previewAnhWrap" class="hidden relative mt-4 mx-auto w-fit">
+                                <img id="previewAnh"
+                                        src="#"
+                                        alt="Ảnh xem trước"
+                                        class="mx-auto max-h-56 rounded-xl object-contain" />
+                                <button type="button"
+                                        onclick="xoaAnhChinh()"
+                                        title="Xóa ảnh"
+                                        class="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-red-600 text-white shadow">
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <label class="block font-title-sm text-title-sm text-on-surface mb-1">
+                                Ảnh phụ (tối đa 5 ảnh, JPG/PNG/WEBP, mỗi ảnh ≤ 5 MB)
+                            </label>
+                            <div class="border-2 border-dashed border-outline-variant rounded-xl p-space-lg text-center bg-surface-container-low hover:bg-surface-container transition-colors">
+                                <label for="DanhSachAnh" class="block cursor-pointer">
+                                    <span class="material-symbols-outlined text-[36px] text-primary">add_photo_alternate</span>
+                                    <p class="font-body-sm text-body-sm text-secondary mt-1">
+                                        Chọn tối đa 5 ảnh phụ (PNG, JPG, WEBP)
+                                    </p>
+                                    <input type="file"
+                                            id="DanhSachAnh"
+                                            name="DanhSachAnh"
+                                            multiple
+                                            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                            class="mt-3 block w-full text-sm"
+                                            onchange="previewAnhPhu(this)" />
+                                </label>
+
+                                <div id="previewAnhPhu" class="hidden mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+                            </div>
+                            <span asp-validation-for="DanhSachAnh" class="text-error text-sm"></span>
                         </div>
 
                         <script>
                             function previewMauAnh(input) {
+                                const wrap = document.getElementById('previewAnhWrap');
                                 const preview = document.getElementById('previewAnh');
 
                                 if (input.files && input.files[0]) {
@@ -358,15 +430,93 @@ Nội dung thực hiện: Giao diện thêm mẫu sản phẩm và các hoa thà
                                     if (!allowed.includes(file.type)) {
                                         alert('Chỉ được chọn ảnh JPG, PNG hoặc WEBP.');
                                         input.value = '';
-                                        preview.classList.add('hidden');
+                                        wrap.classList.add('hidden');
                                         return;
                                     }
 
                                     preview.src = URL.createObjectURL(file);
-                                    preview.classList.remove('hidden');
+                                    wrap.classList.remove('hidden');
                                 } else {
-                                    preview.classList.add('hidden');
+                                    wrap.classList.add('hidden');
                                 }
+                            }
+
+                            function xoaAnhChinh() {
+                                document.getElementById('TepAnh').value = '';
+                                document.getElementById('previewAnhWrap').classList.add('hidden');
+                            }
+
+                            // ===== Ảnh phụ: có thể chọn thêm nhiều lần và xóa từng ảnh =====
+                            let dsAnhPhu = [];
+
+                            function previewAnhPhu(input) {
+                                const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+
+                                for (const f of [...input.files]) {
+                                    if (!allowed.includes(f.type)) {
+                                        alert('Chỉ được chọn ảnh JPG, PNG hoặc WEBP.');
+                                        continue;
+                                    }
+                                    if (f.size > 5 * 1024 * 1024) {
+                                        alert('Ảnh "' + f.name + '" vượt quá 5 MB.');
+                                        continue;
+                                    }
+                                    const trung = dsAnhPhu.some(x =>
+                                        x.name === f.name && x.size === f.size && x.lastModified === f.lastModified);
+                                    if (trung) continue;
+
+                                    if (dsAnhPhu.length >= 5) {
+                                        alert('Chỉ được chọn tối đa 5 ảnh phụ.');
+                                        break;
+                                    }
+                                    dsAnhPhu.push(f);
+                                }
+
+                                veAnhPhu();
+                            }
+
+                            function xoaAnhPhu(index) {
+                                dsAnhPhu.splice(index, 1);
+                                veAnhPhu();
+                            }
+
+                            function veAnhPhu() {
+                                const input = document.getElementById('DanhSachAnh');
+                                const box = document.getElementById('previewAnhPhu');
+
+                                // Đồng bộ lại danh sách file thật sẽ được gửi lên server
+                                const dt = new DataTransfer();
+                                dsAnhPhu.forEach(f => dt.items.add(f));
+                                input.files = dt.files;
+
+                                box.innerHTML = '';
+                                if (dsAnhPhu.length === 0) {
+                                    box.classList.add('hidden');
+                                    return;
+                                }
+
+                                dsAnhPhu.forEach((f, i) => {
+                                    const item = document.createElement('div');
+                                    item.className = 'relative';
+
+                                    const img = document.createElement('img');
+                                    img.src = URL.createObjectURL(f);
+                                    img.alt = f.name;
+                                    img.className = 'w-full h-32 rounded-xl object-cover';
+
+                                    const btn = document.createElement('button');
+                                    btn.type = 'button';
+                                    btn.title = 'Xóa ảnh';
+                                    btn.textContent = '✕';
+                                    btn.className = 'absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-red-600 text-white shadow';
+                                    btn.addEventListener('click', () => xoaAnhPhu(i));
+
+                                    item.appendChild(img);
+                                    item.appendChild(btn);
+                                    box.appendChild(item);
+                                });
+
+                                box.classList.remove('hidden');
                             }
                         </script>
 

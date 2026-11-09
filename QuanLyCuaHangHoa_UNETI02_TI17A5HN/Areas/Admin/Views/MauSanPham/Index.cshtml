@@ -1,6 +1,7 @@
-@* Họ và tên: Nguyễn Thị Phương Anh
-Mã sinh viên: 23103100267
-Nội dung thực hiện: Hiển thị danh sách, tìm kiếm, lọc và phân trang mẫu sản phẩm *@
+@* 
+    Họ và tên: Nguyễn Thị Phương Anh
+    Mã sinh viên: 23103100267
+    Nội dung thực hiện: Hiển thị danh sách, tìm kiếm, lọc và phân trang mẫu sản phẩm *@
 
 @model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.MauSanPhamListViewModel
 
@@ -11,6 +12,31 @@ Nội dung thực hiện: Hiển thị danh sách, tìm kiếm, lọc và phân 
 }
 
 <div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
+@if (TempData["Success"] != null)
+{
+    <div id="thongBaoMau"
+            class="flex items-center justify-between gap-3 rounded-xl bg-tertiary-fixed p-4 text-tertiary">
+        <span class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            @TempData["Success"]
+        </span>
+        <button type="button" onclick="this.closest('#thongBaoMau').remove()"
+                class="font-bold">✕</button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div id="thongBaoLoiMau"
+            class="flex items-center justify-between gap-3 rounded-xl bg-error-container p-4 text-error">
+        <span class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px]">error</span>
+            @TempData["Error"]
+        </span>
+        <button type="button" onclick="this.closest('#thongBaoLoiMau').remove()"
+                class="font-bold">✕</button>
+    </div>
+}
     <!-- Header Section -->
     @await Html.PartialAsync("_AdminPageHeader")
 
@@ -289,4 +315,9 @@ Nội dung thực hiện: Hiển thị danh sách, tìm kiếm, lọc và phân 
             </div>
         }
     </div>
+    <script>
+    setTimeout(() => {
+        document.getElementById('thongBaoMau')?.remove();
+    }, 4000);
+    </script>
 </div>

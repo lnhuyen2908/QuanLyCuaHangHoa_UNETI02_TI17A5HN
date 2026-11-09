@@ -1,6 +1,6 @@
 // Họ và tên: Nguyễn Thị Phương Anh
-// MSSV: 23103100267
-// Module 2: Mẫu sản phẩm, chi tiết thành phần, tìm kiếm và phân trang.
+// Mã sinh viên: 23103100267
+// Nội dung thực hiện: Quản lý mẫu sản phẩm, thành phần hoa, upload nhiều ảnh, tìm kiếm, lọc, sắp xếp và phân trang.
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -28,7 +28,7 @@ public class MauSanPhamController : Controller
         _env = env;
     }
 
-    public async Task<IActionResult> Index(string? tuKhoa, int? maDip, string? kieuSanPham,
+    public async Task<IActionResult> Index(string? tuKhoa, int? loaiHoaId, int? maDip, string? kieuSanPham,
         decimal? giaTu, decimal? giaDen, string? trangThai, string? sapXep, int page = 1)
     {
         // Thống kê luôn lấy toàn bộ dữ liệu, không phụ thuộc bộ lọc tìm kiếm.
@@ -54,9 +54,12 @@ public class MauSanPhamController : Controller
             query = query.Where(m => m.TenMau.Contains(key) ||
                 (m.MoTa != null && m.MoTa.Contains(key)) ||
                 m.DipSuDung.TenDip.Contains(key) ||
-                m.KieuSanPham.Contains(key));
+                m.KieuSanPham.Contains(key) ||
+                m.ChiTietMaus.Any(c => c.HoaTuoi.TenHoa.Contains(key) ||  c.HoaTuoi.MauSac.Contains(key)));
         }
         if (maDip.HasValue) query = query.Where(m => m.MaDip == maDip.Value);
+        if (loaiHoaId.HasValue)
+            query = query.Where(m => m.ChiTietMaus.Any(c => c.HoaTuoi.MaLoaiHoa == loaiHoaId.Value));
         if (!string.IsNullOrWhiteSpace(kieuSanPham)) query = query.Where(m => m.KieuSanPham == kieuSanPham);
         if (giaTu.HasValue) query = query.Where(m => m.GiaCoBan >= giaTu.Value);
         if (giaDen.HasValue) query = query.Where(m => m.GiaCoBan <= giaDen.Value);
@@ -69,7 +72,8 @@ public class MauSanPhamController : Controller
             "ten_desc" => query.OrderByDescending(m => m.TenMau),
             "gia_asc" => query.OrderBy(m => m.GiaCoBan),
             "gia_desc" => query.OrderByDescending(m => m.GiaCoBan),
-            "cu_nhat" => query.OrderBy(m => m.MaMau),
+            "moi_nhat" => query.OrderByDescending(m => m.NgayTao).ThenByDescending(m => m.MaMau),
+            "cu_nhat" => query.OrderBy(m => m.NgayTao).ThenBy(m => m.MaMau),
             _ => query.OrderBy(m => m.MaMau)
         };
 
@@ -112,7 +116,7 @@ public class MauSanPhamController : Controller
                 : trangThai == "false" ? false : null,
 
             SapXep = sapXep,
-            Placeholder = "Tìm tên mẫu, dịp sử dụng, kiểu sản phẩm...",
+            Placeholder = "Tìm tên mẫu, tên hoa, màu sắc, dịp, kiểu sản phẩm...",
             HienThiTrangThai = true,
 
             SapXepOptions = new List<AdminSortOption>
@@ -122,8 +126,15 @@ public class MauSanPhamController : Controller
                 new() { Value = "ten_desc", Text = "Tên Z-A" },
                 new() { Value = "gia_asc", Text = "Giá tăng dần" },
                 new() { Value = "gia_desc", Text = "Giá giảm dần" },
+                new() { Value = "moi_nhat", Text = "Mới nhất" },
                 new() { Value = "cu_nhat", Text = "Cũ nhất" }
             },
+
+            LoaiHoaId = loaiHoaId,
+            DanhSachLoaiHoa = await _context.LoaiHoas.AsNoTracking()
+                .OrderBy(l => l.TenLoaiHoa)
+                .Select(l => new SelectListItem(l.TenLoaiHoa, l.MaLoaiHoa.ToString()))
+                .ToListAsync(),
 
             HienThiBoLocMauSanPham = true,
             MaDip = maDip,
@@ -154,6 +165,7 @@ public class MauSanPhamController : Controller
             BoLoc = new Dictionary<string, string?>
             {
                 ["tuKhoa"] = tuKhoa,
+                ["loaiHoaId"] = loaiHoaId?.ToString(),
                 ["maDip"] = maDip?.ToString(),
                 ["kieuSanPham"] = kieuSanPham,
                 ["giaTu"] = giaTu?.ToString(),
@@ -204,13 +216,28 @@ public class MauSanPhamController : Controller
 
         await ValidateChiTietAsync(model);
 
+        var dsAnhPhu = await LuuNhieuAnhAsync(model.DanhSachAnh, nameof(model.DanhSachAnh));
+
+        string? image = null;
+        try
+        {
+            image = await LuuAnhAsync(model.TepAnh);
+        }
+        catch (InvalidOperationException ex)
+        {
+            ModelState.AddModelError(nameof(model.TepAnh), ex.Message);
+        }
+
+        if (model.TepAnh == null || model.TepAnh.Length == 0)
+        {
+            ModelState.AddModelError(nameof(model.TepAnh), "Vui lòng chọn ảnh đại diện cho mẫu sản phẩm.");
+        }
+
         if (!ModelState.IsValid)
         {
             await NapDanhSachAsync(model, true);
             return View("Create", model);
         }
-
-        var image = await LuuAnhAsync(model.TepAnh);
 
         var entity = new MauSanPham
         {
@@ -232,6 +259,12 @@ public class MauSanPhamController : Controller
                 SoLuongTieuChuan = item.SoLuongTieuChuan,
                 GhiChu = item.GhiChu
             });
+        }
+
+        int thuTu = 1;
+        foreach (var duongDan in dsAnhPhu)
+        {
+            entity.AnhMauSanPhams.Add(new AnhMauSanPham { DuongDan = duongDan, ThuTu = thuTu++ });
         }
 
         _context.MauSanPhams.Add(entity);
@@ -274,6 +307,7 @@ public class MauSanPhamController : Controller
     {
         var entity = await _context.MauSanPhams
             .Include(m => m.ChiTietMaus)
+            .Include(m => m.AnhMauSanPhams)
             .FirstOrDefaultAsync(m => m.MaMau == model.MaMau);
 
         if (entity == null)
@@ -284,6 +318,9 @@ public class MauSanPhamController : Controller
 
         // Kiểm tra dữ liệu một lần duy nhất
         await ValidateChiTietAsync(model);
+
+        int soAnhConLai = entity.AnhMauSanPhams.Count(a => model.XoaAnhIds == null || !model.XoaAnhIds.Contains(a.MaAnh));
+        var dsAnhPhu = await LuuNhieuAnhAsync(model.DanhSachAnh, nameof(model.DanhSachAnh), soAnhConLai);
 
         string tenMau = model.TenMau?.Trim() ?? "";
 
@@ -306,6 +343,13 @@ public class MauSanPhamController : Controller
                     "Tên mẫu sản phẩm đã tồn tại. Vui lòng nhập tên khác."
                 );
             }
+        }
+
+        // Sau khi lưu, mẫu phải còn ảnh đại diện: hoặc giữ ảnh cũ, hoặc chọn ảnh mới
+        bool conAnhDaiDien = !string.IsNullOrWhiteSpace(entity.HinhAnh) && !model.XoaAnhChinh;
+        if (!conAnhDaiDien && (model.TepAnh == null || model.TepAnh.Length == 0))
+        {
+            ModelState.AddModelError(nameof(model.TepAnh), "Vui lòng chọn ảnh đại diện cho mẫu sản phẩm.");
         }
 
         if (!ModelState.IsValid)
@@ -339,6 +383,44 @@ public class MauSanPhamController : Controller
             if (!string.IsNullOrWhiteSpace(anhMoi))
             {
                 entity.HinhAnh = anhMoi;
+            }
+            else if (model.XoaAnhChinh && !string.IsNullOrWhiteSpace(entity.HinhAnh))
+            {
+                var duongDanCu = entity.HinhAnh;
+                entity.HinhAnh = null;
+
+                // Chỉ xóa file thật nếu không còn mẫu nào khác dùng chung ảnh này
+                bool mauKhacDung = await _context.MauSanPhams
+                    .AnyAsync(m => m.MaMau != entity.MaMau && m.HinhAnh == duongDanCu);
+
+                if (!mauKhacDung)
+                {
+                    var fileVatLy = Path.Combine(_env.WebRootPath,
+                        duongDanCu.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                    if (System.IO.File.Exists(fileVatLy)) System.IO.File.Delete(fileVatLy);
+                }
+            }
+
+            // Xóa ảnh phụ được chọn
+            if (model.XoaAnhIds != null && model.XoaAnhIds.Count > 0)
+            {
+                var anhCanXoa = entity.AnhMauSanPhams
+                    .Where(a => model.XoaAnhIds.Contains(a.MaAnh)).ToList();
+
+                foreach (var anh in anhCanXoa)
+                {
+                    var fileVatLy = Path.Combine(_env.WebRootPath,
+                        anh.DuongDan.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                    if (System.IO.File.Exists(fileVatLy)) System.IO.File.Delete(fileVatLy);
+                }
+                _context.AnhMauSanPhams.RemoveRange(anhCanXoa);
+            }
+
+            // Thêm ảnh phụ mới
+            int thuTu = entity.AnhMauSanPhams.Any() ? entity.AnhMauSanPhams.Max(a => a.ThuTu) + 1 : 1;
+            foreach (var duongDan in dsAnhPhu)
+            {
+                entity.AnhMauSanPhams.Add(new AnhMauSanPham { DuongDan = duongDan, ThuTu = thuTu++ });
             }
 
             // Cập nhật thành phần hoa
@@ -380,6 +462,7 @@ public class MauSanPhamController : Controller
             .Include(m => m.DipSuDung)
             .Include(m => m.ChiTietMaus)
                 .ThenInclude(c => c.HoaTuoi)
+            .Include(m => m.AnhMauSanPhams)
             .FirstOrDefaultAsync(m => m.MaMau == id);
 
         if (entity == null)
@@ -395,6 +478,7 @@ public class MauSanPhamController : Controller
             HinhAnh = entity.HinhAnh,
             MoTa = entity.MoTa,
             TrangThai = entity.TrangThai,
+            AnhHienCo = entity.AnhMauSanPhams.OrderBy(a => a.ThuTu).ToList(),
 
             ChiTietMaus = entity.ChiTietMaus.Select(c =>
                 new ChiTietMauFormItem
@@ -428,6 +512,8 @@ public class MauSanPhamController : Controller
         var mau = await _context.MauSanPhams
             .AsNoTracking()
             .Include(m => m.DipSuDung)
+            .Include(m => m.ChiTietMaus).ThenInclude(c => c.HoaTuoi)
+            .Include(m => m.AnhMauSanPhams)
             .FirstOrDefaultAsync(m => m.MaMau == id);
 
         if (mau == null)
@@ -484,6 +570,15 @@ public class MauSanPhamController : Controller
 
         if (model.ChiTietMaus.Count == 0)
             model.ChiTietMaus.Add(new ChiTietMauFormItem());
+
+        if (model.MaMau > 0)
+        {
+            model.AnhHienCo = await _context.AnhMauSanPhams
+                .AsNoTracking()
+                .Where(a => a.MaMau == model.MaMau)
+                .OrderBy(a => a.ThuTu)
+                .ToListAsync();
+        }
     }
 
 
@@ -530,6 +625,33 @@ public class MauSanPhamController : Controller
                 nameof(model.MaDip),
                 "Dịp sử dụng không tồn tại hoặc đã ngừng hoạt động.");
         }
+    }
+
+    private async Task<List<string>> LuuNhieuAnhAsync(List<IFormFile>? files, string tenTruong, int soAnhDaCo = 0)
+    {
+        var ketQua = new List<string>();
+        if (files == null) return ketQua;
+
+        var hopLe = files.Where(f => f != null && f.Length > 0).ToList();
+        if (soAnhDaCo + hopLe.Count > 5)
+        {
+            ModelState.AddModelError(tenTruong, "Mỗi mẫu chỉ được tối đa 5 ảnh phụ.");
+            return ketQua;
+        }
+
+        foreach (var f in hopLe)
+        {
+            try
+            {
+                var duongDan = await LuuAnhAsync(f);
+                if (duongDan != null) ketQua.Add(duongDan);
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError(tenTruong, ex.Message);
+            }
+        }
+        return ketQua;
     }
 
     private async Task<string?> LuuAnhAsync(IFormFile? file)
