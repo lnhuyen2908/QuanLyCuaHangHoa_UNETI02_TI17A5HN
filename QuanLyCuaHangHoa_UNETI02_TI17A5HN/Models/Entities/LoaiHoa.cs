@@ -29,6 +29,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities
         public bool TrangThai { get; set; } = true;
 
         // Navigation Property: LoaiHoa (1) - (n) HoaTuoi (Module 2)
+        //ICollection: Tập hợp nhiều đối tượng thuộc kiểu HoaTuoi
         public virtual ICollection<HoaTuoi> HoaTuois { get; set; } = new List<HoaTuoi>();
     }
 }
