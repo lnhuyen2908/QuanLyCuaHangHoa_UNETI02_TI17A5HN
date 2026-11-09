@@ -211,7 +211,9 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
             var mauSanPhams = mauData.Select((m, idx) => new MauSanPham
             {
                 TenMau = m.Ten, MaDip = dipSuDungs[m.Dip].MaDip, KieuSanPham = m.Kieu, GiaCoBan = m.Gia,
-                HinhAnh = $"/images/mau/mau{idx + 1:D2}.jpg",
+                HinhAnh = File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "mau", $"mau{idx + 1:D2}.webp"))
+                    ? $"/images/mau/mau{idx + 1:D2}.webp"
+                    : $"/images/mau/mau{idx + 1:D2}.jpg",
                 MoTa = $"{m.Ten} - {m.Kieu.ToLower()} thiết kế bởi Master Florist.",
                 TrangThai = m.Active, NgayTao = DateTime.Today.AddDays(-200 + idx * 5)
             }).ToList();

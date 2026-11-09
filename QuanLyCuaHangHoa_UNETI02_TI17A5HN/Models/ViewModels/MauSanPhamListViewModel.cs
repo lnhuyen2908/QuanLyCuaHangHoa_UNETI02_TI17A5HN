@@ -13,6 +13,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
         public PagedList<MauSanPham> DanhSachMau { get; set; } = new();
         public string? TuKhoa { get; set; }
         public int? MaDip { get; set; }
+        public int? MaLoaiHoa { get; set; }
         public string? KieuSanPham { get; set; }
         public string? MauSac { get; set; }
         public decimal? GiaTu { get; set; }

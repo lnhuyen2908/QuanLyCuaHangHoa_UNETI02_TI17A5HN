@@ -19,6 +19,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
         public DbSet<HoaTuoi> HoaTuois => Set<HoaTuoi>();
         public DbSet<MauSanPham> MauSanPhams => Set<MauSanPham>();
         public DbSet<ChiTietMau> ChiTietMaus => Set<ChiTietMau>();
+        public DbSet<AnhMauSanPham> AnhMauSanPhams => Set<AnhMauSanPham>();
 
         // Module 3
         public DbSet<KhachHang> KhachHangs => Set<KhachHang>();
@@ -71,6 +72,13 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
               .WithMany(h => h.ChiTietMaus)
               .HasForeignKey(c => c.MaHoa)
               .OnDelete(DeleteBehavior.Restrict);
+
+            // MauSanPham (1) - (n) AnhMauSanPham
+            mb.Entity<AnhMauSanPham>()
+              .HasOne(a => a.MauSanPham)
+              .WithMany(m => m.AnhMauSanPhams)
+              .HasForeignKey(a => a.MaMau)
+              .OnDelete(DeleteBehavior.Cascade);
 
             // Một loại hoa không lặp nhiều dòng trong cùng mẫu
             mb.Entity<ChiTietMau>()

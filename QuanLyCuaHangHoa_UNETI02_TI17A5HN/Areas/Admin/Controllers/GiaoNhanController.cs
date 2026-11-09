@@ -159,7 +159,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 })
                 .ToListAsync();
 
-            vm.DonHopLe = Seds.lect(d =>
+            vm.DonHopLe = ds.Select(d =>
                 new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
                 {
                     Value = d.MaDon.ToString(),
@@ -321,10 +321,11 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                     "Tạo phiếu giao nhận thành công.";
             }
             
-            {catch (DbUpdateException ex)
+            catch (DbUpdateException ex)
                 when (ex.InnerException is SqlException sqlEx &&
                       (sqlEx.Number == 2601 ||  // lỗi trùng
                        sqlEx.Number == 2627))   // lỗi vi phạm ràng buộc UNIQUE và PRIMARY
+            {
                 // SQL Server phát hiện trùng Unique Index.
                 TempData["Error"] =
                     "Đơn này đã có phiếu giao nhận. " +
