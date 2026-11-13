@@ -18,6 +18,16 @@
 <div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
     <!-- Header Section -->
     @await Html.PartialAsync("_AdminPageHeader")
+    
+    <!-- Giao diện nút excel-->
+    <div class="flex flex-wrap justify-end gap-3">
+        <a asp-area="Admin" asp-controller="LoaiHoa" asp-action="XuatExcel"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-700 text-white font-semibold hover:opacity-90">
+            <span class="material-symbols-outlined">table_view</span>
+            Xuất Excel
+        </a>
+    </div>
+
 
     <!-- Thông báo kết quả thao tác -->
     @if (TempData["ThanhCong"] != null)
