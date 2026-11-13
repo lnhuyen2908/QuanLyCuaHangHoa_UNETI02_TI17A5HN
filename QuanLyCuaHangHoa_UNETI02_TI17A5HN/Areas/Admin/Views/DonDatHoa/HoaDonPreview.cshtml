@@ -1,0 +1,182 @@
+﻿@model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.HoaDonPreviewViewModel
+@using System.Globalization
+
+@{
+    ViewBag.Title = "Xem trước hóa đơn";
+    ViewBag.ActiveMenu = "DonDatHoa";
+    ViewBag.Breadcrumb = "Bán hàng & Vận hành";
+
+    var vi = CultureInfo.GetCultureInfo("vi-VN");
+    string Tien(decimal value) => value.ToString("N0", vi) + " đ";
+}
+
+<div class="px-space-xl py-space-lg space-y-space-md">
+
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <a asp-action="Details"
+           asp-route-id="@Model.MaDon"
+           class="text-primary underline">
+            ← Quay lại chi tiết đơn
+        </a>
+    </div>
+
+    <div class="mx-auto max-w-4xl rounded-xl bg-surface-container-lowest p-6 shadow-sm md:p-10">
+
+        <div class="border-b pb-6 text-center">
+            <h1 class="text-2xl font-bold text-primary md:text-3xl">
+                HÓA ĐƠN ĐẶT HOA
+            </h1>
+            <p class="mt-2 font-semibold">
+                Mã đơn: #ORD-@Model.MaDon.ToString("D4")
+            </p>
+            <p class="mt-1 text-sm text-secondary">
+                Cảm ơn quý khách đã tin tưởng và sử dụng dịch vụ!
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 border-b py-6 md:grid-cols-2">
+            <div class="space-y-2">
+                <h2 class="font-bold">Thông tin đơn hàng</h2>
+                <p>Ngày đặt: @Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</p>
+                <p>Khách hàng: @Model.TenKhachHang</p>
+                <p>Hình thức nhận: @Model.HinhThucNhan</p>
+            </div>
+
+            <div class="space-y-2">
+                <h2 class="font-bold">Thông tin người nhận</h2>
+                <p>Người nhận: @Model.NguoiNhan</p>
+                <p>Số điện thoại: @Model.SoDienThoaiNguoiNhan</p>
+                <p>Địa chỉ: @Model.DiaChiGiao</p>
+                <p>Thời gian nhận: @Model.ThoiGianNhanGiao.ToString("dd/MM/yyyy HH:mm")</p>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.LoiNhan))
+            {
+                <div class="md:col-span-2">
+                    <strong>Lời nhắn:</strong> @Model.LoiNhan
+                </div>
+            }
+        </div>
+
+        <div class="py-6">
+            <h2 class="mb-4 text-lg font-bold">Chi tiết sản phẩm</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[600px] text-left text-sm">
+                    <thead class="bg-surface-container">
+                        <tr>
+                            <th class="p-3">STT</th>
+                            <th class="p-3">Sản phẩm</th>
+                            <th class="p-3 text-center">SL</th>
+                            <th class="p-3 text-right">Đơn giá</th>
+                            <th class="p-3 text-right">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.ChiTiet.Count; i++)
+                        {
+                            var item = Model.ChiTiet[i];
+
+                            <tr class="border-b">
+                                <td class="p-3">@(i + 1)</td>
+                                <td class="p-3">
+                                    <strong>@item.TenSanPham</strong>
+                                    @if (!string.IsNullOrWhiteSpace(item.YeuCauRieng))
+                                    {
+                                        <p class="mt-1 text-xs text-secondary">
+                                            @item.YeuCauRieng
+                                        </p>
+                                    }
+                                </td>
+                                <td class="p-3 text-center">@item.SoLuong</td>
+                                <td class="p-3 text-right">@Tien(item.DonGia)</td>
+                                <td class="p-3 text-right font-semibold">@Tien(item.ThanhTien)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="ml-auto max-w-md space-y-3 border-b pb-6">
+            <div class="flex justify-between gap-4">
+                <span>Phí giao hàng</span>
+                <span>@Tien(Model.PhiGiaoHang)</span>
+            </div>
+            <div class="flex justify-between gap-4">
+                <span>Phụ phí</span>
+                <span>@Tien(Model.PhuPhi)</span>
+            </div>
+            <div class="flex justify-between gap-4 border-t pt-3 text-lg font-bold">
+                <span>Tổng giá trị đơn hàng</span>
+                <span class="text-primary">@Tien(Model.TongTien)</span>
+            </div>
+        </div>
+
+        <div class="py-6">
+            <h2 class="mb-4 text-lg font-bold">Các lần thanh toán</h2>
+
+            @if (!Model.ThanhToans.Any())
+            {
+                <p class="text-secondary">Chưa ghi nhận khoản thanh toán nào.</p>
+            }
+            else
+            {
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[500px] text-left text-sm">
+                        <thead class="bg-surface-container">
+                            <tr>
+                                <th class="p-3">Thời gian</th>
+                                <th class="p-3">Phương thức</th>
+                                <th class="p-3 text-right">Số tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var payment in Model.ThanhToans)
+                            {
+                                <tr class="border-b">
+                                    <td class="p-3">
+                                        @payment.NgayThanhToan.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+                                    <td class="p-3">@payment.PhuongThuc</td>
+                                    <td class="p-3 text-right font-semibold">
+                                        @Tien(payment.SoTien)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        <div class="rounded-xl border p-5">
+            <div class="flex justify-between gap-4 py-2">
+                <span>Tổng giá trị đơn hàng</span>
+                <strong>@Tien(Model.TongTien)</strong>
+            </div>
+            <div class="flex justify-between gap-4 py-2">
+                <span>Tổng đã thanh toán</span>
+                <strong class="text-tertiary">@Tien(Model.DaThanhToan)</strong>
+            </div>
+            <div class="flex justify-between gap-4 border-t pt-4 text-lg font-bold">
+                <span>Còn phải thanh toán</span>
+                <strong class="text-error">@Tien(Model.ConLai)</strong>
+            </div>
+        </div>
+
+        <p class="mt-8 text-center text-sm text-secondary">
+            Hóa đơn được xuất từ hệ thống quản lý cửa hàng hoa.
+        </p>
+    </div>
+
+    <div class="flex justify-center">
+        <a asp-action="XuatHoaDonPdf"
+           asp-route-id="@Model.MaDon"
+           class="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-base font-semibold text-on-primary">
+            Xuất hóa đơn PDF
+        </a>
+    </div>
+</div>

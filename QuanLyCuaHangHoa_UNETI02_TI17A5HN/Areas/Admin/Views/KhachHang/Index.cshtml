@@ -80,10 +80,31 @@
                     @Model.DanhSach.TongSoBanGhi.ToString("N0") khách hàng
                 </span>
             </div>
-            <button type="button" onclick="openAddKhachHangModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[18px]">person_add</span>
-                <span>Thêm Khách Hàng Mới</span>
-            </button>
+            <div class="flex items-center gap-space-sm">
+                <!-- Nút xuất Excel -->
+                <a asp-area="Admin"
+                   asp-controller="KhachHang"
+                   asp-action="PreviewExcel"
+                   asp-route-tuKhoa="@Model.TuKhoa"
+                   asp-route-trangThai="@Model.TrangThai"
+                   asp-route-sapXep="@Model.SapXep"
+                   class="flex items-center gap-2 px-5 py-2.5
+                    rounded-xl bg-surface-container
+                    text-primary font-semibold hover:bg-surface-container-high
+                    transition-all">
+
+                    <span class="material-symbols-outlined text-[18px]">
+                        download
+                    </span>
+
+                    <span>Xuất Excel</span>
+                </a>
+
+                <button type="button" onclick="openAddKhachHangModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">person_add</span>
+                    <span>Thêm Khách Hàng Mới</span>
+                </button>
+            </div>
         </div>
 
         <div class="overflow-x-auto">
