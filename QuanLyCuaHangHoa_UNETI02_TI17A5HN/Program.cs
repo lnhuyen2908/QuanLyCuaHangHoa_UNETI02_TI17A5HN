@@ -28,6 +28,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN
             builder.Services.AddScoped<GioHangService>();
             builder.Services.AddScoped<TaiKhoanService>();
             builder.Services.AddHostedService<DonChuyenKhoanHetHanService>();
+            QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
             var app = builder.Build();
 

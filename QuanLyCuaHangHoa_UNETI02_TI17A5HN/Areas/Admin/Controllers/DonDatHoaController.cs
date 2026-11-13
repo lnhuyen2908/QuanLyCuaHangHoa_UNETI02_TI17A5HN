@@ -9,6 +9,8 @@ using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels;
+using System.Globalization;
+
 // BỔ SUNG MODULE 4 - Nguyễn Thị Đào (23103100245)
 // Sử dụng Service xử lý trạng thái đơn hàng.
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services;
@@ -297,6 +299,108 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             TempData["Success"] = "Đã hủy đơn hàng.";
             return RedirectToAction(nameof(Details), new { id });
         }
+
+
+        // =========================================================
+        // HÓA ĐƠN ĐẶT HOA - CHỈ ĐƠN ĐÃ HOÀN THÀNH MỚI ĐƯỢC XUẤT
+        // =========================================================
+
+        // Lấy dữ liệu hóa đơn trực tiếp từ database.
+        private async Task<HoaDonPreviewViewModel?> LayDuLieuHoaDon(int id)
+        {
+            var d = await _db.DonDatHoas
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(x => x.KhachHang)
+                .Include(x => x.ChiTietDonHoas)
+                    .ThenInclude(x => x.MauSanPham)
+                .Include(x => x.ThanhToans)
+                .FirstOrDefaultAsync(x => x.MaDon == id);
+
+            // Không cho xem/xuất hóa đơn nếu đơn chưa hoàn thành.
+            if (d == null || d.TrangThai != TrangThaiDon.HoanThanh)
+                return null;
+
+            var daThanhToan = d.ThanhToans.Sum(x => x.SoTien);
+
+            return new HoaDonPreviewViewModel
+            {
+                MaDon = d.MaDon,
+                NgayDat = d.NgayDat,
+                ThoiGianNhanGiao = d.ThoiGianNhanGiao,
+
+                TenKhachHang = d.KhachHang?.HoTen ?? "Không có thông tin",
+                NguoiNhan = d.NguoiNhan,
+                SoDienThoaiNguoiNhan = d.SoDienThoaiNguoiNhan,
+                HinhThucNhan = d.HinhThucNhan,
+                DiaChiGiao = string.IsNullOrWhiteSpace(d.DiaChiGiao)
+                    ? "Nhận tại cửa hàng"
+                    : d.DiaChiGiao,
+                LoiNhan = d.LoiNhan ?? "",
+
+                PhiGiaoHang = d.PhiGiaoHang,
+                PhuPhi = d.PhuPhi,
+                TongTien = d.TongTien,
+                DaThanhToan = daThanhToan,
+                ConLai = Math.Max(0, d.TongTien - daThanhToan),
+
+                ChiTiet = d.ChiTietDonHoas.Select(ct => new HoaDonChiTietViewModel
+                {
+                    TenSanPham = ct.MauSanPham?.TenMau ?? "Thiết kế riêng",
+                    SoLuong = ct.SoLuong,
+                    DonGia = ct.DonGia,
+                    ThanhTien = ct.ThanhTien,
+                    YeuCauRieng = ct.YeuCauRieng ?? ""
+                }).ToList(),
+
+                ThanhToans = d.ThanhToans
+                    .OrderBy(x => x.NgayThanhToan)
+                    .Select(x => new HoaDonThanhToanViewModel
+                    {
+                        NgayThanhToan = x.NgayThanhToan,
+                        PhuongThuc = x.PhuongThuc,
+                        SoTien = x.SoTien
+                    }).ToList()
+            };
+        }
+
+        // GET: /Admin/DonDatHoa/XemTruocHoaDon/5
+        public async Task<IActionResult> XemTruocHoaDon(int id)
+        {
+            var hoaDon = await LayDuLieuHoaDon(id);
+
+            if (hoaDon == null)
+            {
+                TempData["Error"] =
+                    "Không tìm thấy đơn hàng hoặc đơn hàng chưa hoàn thành. Không thể xuất hóa đơn.";
+
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            return View("HoaDonPreview", hoaDon);
+        }
+
+        // GET: /Admin/DonDatHoa/XuatHoaDonPdf/5
+        public async Task<IActionResult> XuatHoaDonPdf(int id)
+        {
+            var hoaDon = await LayDuLieuHoaDon(id);
+
+            if (hoaDon == null)
+            {
+                TempData["Error"] =
+                    "Không tìm thấy đơn hàng hoặc đơn hàng chưa hoàn thành. Không thể xuất hóa đơn.";
+
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            var pdfBytes = DonDatHoaInvoicePdf.TaoPdf(hoaDon);
+            var tenFile = $"HoaDon_Don_{hoaDon.MaDon:D4}.pdf";
+
+            return File(pdfBytes, "application/pdf", tenFile);
+        }
+
+
+
 
 
         // Họ và tên: Nguyễn Thị Đào
