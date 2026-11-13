@@ -81,6 +81,10 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
             @Html.AntiForgeryToken()
 
             <input type="hidden"
+                   id="sender_address_source"
+                   value="@Model.DiaChiGiao" />
+
+            <input type="hidden"
                    name="muaNgay"
                    value="@(muaNgay ? "true" : "false")" />
 
@@ -287,17 +291,6 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                         <span id="cardCharCount" class="">0/500 ký tự</span>
                     </div>
                 </div>
-
-                <!-- Duyệt ảnh hoa trước khi giao -->
-                <div class="mt-5 p-4 rounded-xl bg-surface-container-low border border-primary/20 flex items-center gap-3">
-                    <div class="flex-1">
-                        <span class="font-title-sm text-sm text-primary font-semibold block">Duyệt ảnh tác phẩm thực tế trước khi xuất xưởng</span>
-                        <p class="font-body-sm text-xs text-on-surface-variant mt-0.5">
-                            Web quản lý hoa tươi sẽ chụp ảnh 360° tác phẩm hoàn thiện gửi qua Zalo/SMS cho bạn duyệt trước khi shipper nhận hoa 30 phút.
-                        </p>
-                    </div>
-                    <span class="material-symbols-outlined text-tertiary text-[20px]">check_circle</span>
-                </div>
             </div>
 
             @* Nguyễn Thị Đào - 23103100245
@@ -453,9 +446,6 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                             <span>Phí giao hàng</span>
                             <strong id="shippingFee">@phiGiao.ToString("N0")₫</strong>
                         </div>
-                        <p class="text-xs text-secondary">
-                            Chưa áp dụng voucher. Phí/phụ phí phát sinh chỉ được cập nhật theo quy trình của cửa hàng trước thanh toán.
-                        </p>
                     </div>
 
                     <div class="flex items-center justify-between py-4">
@@ -474,7 +464,7 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                                    type="checkbox"
                                    required
                                    form="checkoutSubmitForm">
-                            <span class="">Tôi xác nhận thông tin đặt hoa chính xác và đồng ý gửi yêu cầu đặt hàng đến cửa hàng.</span>
+                            <span class="whitespace-nowrap">Tôi xác nhận thông tin đặt hoa chính xác và đồng ý gửi yêu cầu đặt hàng.</span>
                         </label>
                     </div>
 
@@ -533,42 +523,87 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
 
 @section Scripts {
     <script>
-        const phiGiaoTanNoi = @(DonHangService.PhiGiaoTanNoi.ToString(
-                    System.Globalization.CultureInfo.InvariantCulture));
-        const tamTinhDon = @(tamTinh.ToString(
-                    System.Globalization.CultureInfo.InvariantCulture));
+        // 1. Đếm ký tự và chọn mẫu lời nhắn
+        const textArea = document.getElementById('card_content');
+        const counter = document.getElementById('cardCharCount');
 
-        const address = document.querySelector('[name="DiaChiGiao"]');
+        function updateCounter() {
+            counter.textContent = `${textArea.value.length}/500 ký tự`;
+        }
 
-        function capNhatHinhThucNhan() {
-            const hinhThuc = document.querySelector(
+        if (textArea && counter) {
+            textArea.addEventListener('input', updateCounter);
+            updateCounter();
+        }
+
+        window.setCardPreset = function(name) {
+            if (!textArea) return;
+
+            textArea.value = name === 'Sinh nhật'
+                ? 'Chúc mừng sinh nhật!'
+                : name === 'Tình yêu'
+                    ? 'Yêu thương và trân trọng!'
+                    : 'Khai trương hồng phát!';
+
+            textArea.dispatchEvent(new Event('input'));
+        };
+
+        // 2. Cập nhật phí giao hàng và tổng tiền
+        const phiGiao = @(DonHangService.PhiGiaoTanNoi.ToString(
+            System.Globalization.CultureInfo.InvariantCulture));
+        const tamTinh = @(tamTinh.ToString(
+            System.Globalization.CultureInfo.InvariantCulture));
+
+        const address = document.getElementById('recipient_address');
+
+        function capNhatTongTien() {
+            const giaoTanNoi = document.querySelector(
                 'input[name="HinhThucNhan"]:checked'
-            )?.value;
+            )?.value === 'Giao tận nơi';
 
-            const giaoTanNoi = hinhThuc === 'Giao tận nơi';
-            const phiGiao = giaoTanNoi ? phiGiaoTanNoi : 0;
+            const phi = giaoTanNoi ? phiGiao : 0;
+            const tong = tamTinh + phi;
+            const tien = so => so.toLocaleString('vi-VN') + '₫';
 
-            if (address) {
-                address.required = giaoTanNoi;
-            }
-
-            const dinhDang = soTien =>
-                soTien.toLocaleString('vi-VN') + '₫';
-
-            document.getElementById('shippingFee').textContent =
-                dinhDang(phiGiao);
-
-            document.getElementById('orderTotal').textContent =
-                dinhDang(tamTinhDon + phiGiao);
-
+            address.required = giaoTanNoi;
+            document.getElementById('shippingFee').textContent = tien(phi);
+            document.getElementById('orderTotal').textContent = tien(tong);
             document.getElementById('checkoutButtonTotal').innerHTML =
-                `Xác nhận đặt hàng (${dinhDang(tamTinhDon + phiGiao)})<br>Chưa thu tiền`;
+                `Xác nhận đặt hàng (${tien(tong)})<br>Chưa thu tiền`;
         }
 
         document.querySelectorAll('input[name="HinhThucNhan"]')
-            .forEach(radio =>
-                radio.addEventListener('change', capNhatHinhThucNhan));
+            .forEach(r => r.addEventListener('change', capNhatTongTien));
 
-        capNhatHinhThucNhan();
+        capNhatTongTien();
+
+        // 3. Đồng bộ thông tin người nhận
+        const self = document.getElementById('NguoiNhanLaNguoiDat');
+        const name = document.getElementById('recipient_name');
+        const phone = document.getElementById('recipient_phone');
+        const senderAddress = document.getElementById('sender_address_source');
+
+        function syncRecipient() {
+            name.value = self.checked
+                ? document.getElementById('sender_name').value : '';
+
+            phone.value = self.checked
+                ? document.getElementById('sender_phone').value : '';
+
+            address.value = self.checked ? senderAddress.value : '';
+
+            name.readOnly = phone.readOnly = address.readOnly = self.checked;
+        }
+
+        self.addEventListener('change', syncRecipient);
+        syncRecipient();
+
+        // 4. Tránh gửi đơn hàng nhiều lần
+        document.getElementById('checkoutSubmitForm')
+            .addEventListener('submit', function() {
+                document.querySelector(
+                    'button[form="checkoutSubmitForm"]'
+                ).disabled = true;
+            });
     </script>
 }

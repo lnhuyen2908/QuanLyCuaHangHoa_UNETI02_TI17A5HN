@@ -31,15 +31,6 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                 Kiểm tra các mẫu hoa đã chọn trước khi đặt hàng.
             </p>
         </div>
-
-        <!-- Các bước đặt hàng -->
-        <div class="flex items-center gap-space-sm font-label-md uppercase tracking-wider text-on-surface-variant bg-surface-container-low px-space-md py-2 rounded-full shadow-sm">
-            <span class="text-primary">1. Giỏ hàng</span>
-            <span>/</span>
-            <span class="opacity-60">2. Địa chỉ &amp; lời chúc</span>
-            <span>/</span>
-            <span class="opacity-60">3. Hoàn tất</span>
-        </div>
     </div>
 
     <!-- Thông báo -->
@@ -101,8 +92,10 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                     </form>
                     @foreach (var item in Model)
                     {
-                        <div class="grid grid-cols-[64px_1fr_auto] gap-3 items-start
-                            rounded-xl border border-outline-variant/40 p-3">
+                        <div data-cart-item
+                             data-so-luong="@item.SoLuong"
+                             data-thanh-tien="@item.ThanhTien.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                             class="grid grid-cols-[64px_1fr_auto] gap-3 items-start rounded-xl border border-outline-variant/40 p-3">
 
                             <img src="@(string.IsNullOrWhiteSpace(item.HinhAnh)
                                                                             ? "/images/mau/mau01.jpg"
@@ -117,8 +110,10 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                                            name="maMauChon"
                                            value="@item.MaMau"
                                            form="chonHoaForm"
+                                           class="js-chon-mau"
                                            checked="@item.ConBan"
-                                           disabled="@(!item.ConBan)" />
+                                           disabled="@(!item.ConBan)"
+                                           onchange="capNhatTomTatGioHang()" />
 
                                     Chọn đặt mẫu này
                                 </label>
@@ -221,35 +216,41 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
                 <div class="h-px bg-surface-container"></div>
 
                 <div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
-                    <span>Số mẫu hoa</span>
-                    <span class="font-title-sm text-on-surface">
-                        @Model.Count
+                    <span>Số mẫu hoa đã chọn</span>
+                    <span id="soMauDaChon" class="font-title-sm text-on-surface">
+                        @Model.Count(x => x.ConBan)
                     </span>
                 </div>
 
                 <div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
                     <span>Tổng số lượng</span>
-                    <span class="font-title-sm text-on-surface">
-                        @Model.Sum(x => x.SoLuong)
+                    <span id="tongSoLuongDaChon" class="font-title-sm text-on-surface">
+                        @Model.Where(x => x.ConBan).Sum(x => x.SoLuong)
                     </span>
                 </div>
 
                 <div class="h-px bg-surface-container"></div>
 
                 <p class="font-body-sm text-body-sm text-on-surface-variant">
-                    Tạm tính toàn bộ giỏ:
-                    @Model.Sum(x => x.ThanhTien).ToString("N0")₫.
-                    Tổng tiền các mẫu được chọn sẽ hiển thị ở bước Checkout. đơn).
+                    Tạm tính các mẫu đã chọn:
+                    <strong id="tongTienDaChon" class="text-on-surface">
+                        @Model.Where(x => x.ConBan).Sum(x => x.ThanhTien).ToString("N0")₫
+                    </strong>
+                </p>
+
+                <p id="thongBaoChonMau" class="text-error text-sm" aria-live="polite">
                 </p>
 
                 @if (Model.Count > 0)
                 {
-                    @* Chỉ mở đường sang Checkout khi tất cả mẫu trong giỏ vẫn được kinh doanh. *@
                     @if (Model.Any(x => x.ConBan))
                     {
-                        <button type="submit"
+                        <button id="btnDatMauDaChon"
+                                type="submit"
                                 form="chonHoaForm"
-                                class="block w-full text-center py-3.5 px-space-lg rounded-full bg-primary text-on-primary font-label-lg">
+                                class="block w-full text-center py-3.5 px-space-lg rounded-full
+                            bg-primary text-on-primary font-label-lg
+                            disabled:opacity-50 disabled:cursor-not-allowed">
                             Đặt những mẫu đã chọn
                         </button>
                     }
@@ -264,3 +265,26 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
         </div>
     </div>
 </div>
+
+<script>
+    function capNhatTomTatGioHang() {
+        const daChon = [...document.querySelectorAll('[data-cart-item]')]
+            .filter(dong => {
+                const checkbox = dong.querySelector('.js-chon-mau');
+                return checkbox && checkbox.checked && !checkbox.disabled;
+            });
+
+        const soMau = daChon.length;
+        const tongSoLuong = daChon.reduce((sum, x) => sum + Number(x.dataset.soLuong), 0);
+        const tongTien = daChon.reduce((sum, x) => sum + Number(x.dataset.thanhTien), 0);
+
+        document.getElementById('soMauDaChon').textContent = soMau;
+        document.getElementById('tongSoLuongDaChon').textContent = tongSoLuong;
+        document.getElementById('tongTienDaChon').textContent = tongTien.toLocaleString('vi-VN') + '₫';
+
+        const nut = document.getElementById('btnDatMauDaChon');
+        if (nut) nut.disabled = soMau === 0;
+    }
+
+    document.addEventListener('DOMContentLoaded', capNhatTomTatGioHang);
+</script>
