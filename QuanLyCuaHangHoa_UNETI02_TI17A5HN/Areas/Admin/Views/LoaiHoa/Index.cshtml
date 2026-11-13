@@ -133,6 +133,15 @@
                     <option value="false" selected="@(Model.TrangThai == false)">Ngừng dùng</option>
                 </select>
             </div>
+            <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
+                <span class="material-symbols-outlined text-[18px]">sort</span>
+                <select name="sapXep" class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+                    <option value="name_asc" selected="@(Model.SapXep == "name_asc")">Tên (A-Z)</option>
+                    <option value="name_desc" selected="@(Model.SapXep == "name_desc")">Tên (Z-A)</option>
+                    <option value="date_new" selected="@(Model.SapXep == "date_new")">Mã mới nhất</option>
+                    <option value="date_old" selected="@(Model.SapXep == "date_old")">Mã cũ nhất</option>
+                </select>
+            </div>
             <button type="submit" class="flex items-center gap-space-xs bg-primary text-on-primary px-4 py-2 rounded-xl font-title-sm text-title-sm hover:opacity-90 transition-all shadow-sm">
                 <span class="material-symbols-outlined text-[18px]">search</span>
                 <span>Tìm kiếm</span>
@@ -250,7 +259,8 @@
                 BoLoc = new Dictionary<string, string?>
                 {
                     ["tuKhoa"] = Model.TuKhoa,
-                    ["trangThai"] = Model.TrangThai?.ToString().ToLowerInvariant()
+                    ["trangThai"] = Model.TrangThai?.ToString().ToLowerInvariant(),
+                    ["sapXep"] = Model.SapXep
                 }
             })
         </div>

@@ -15,6 +15,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
         public string? TuKhoa { get; set; }
         public string? VaiTro { get; set; }
         public bool? TrangThai { get; set; }
+        public string SapXep { get; set; } = "date_new";
         public int TongTaiKhoan { get; set; }
         public int TongAdmin { get; set; }
         public int TongNhanVien { get; set; }

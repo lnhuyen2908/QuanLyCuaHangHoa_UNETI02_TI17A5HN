@@ -38,7 +38,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         }
 
         // GET: /Admin/TaiKhoan/Index (Tìm kiếm, Lọc, Phân trang)
-        public async Task<IActionResult> Index(string? tuKhoa, string? vaiTro, bool? trangThai, int page = 1)
+        public async Task<IActionResult> Index(string? tuKhoa, string? vaiTro, bool? trangThai, string sapXep = "date_new", int page = 1)
         {
             const int pageSize = 10;
             var query = _context.TaiKhoans.Include(t => t.KhachHang).AsNoTracking().AsQueryable();
@@ -61,7 +61,20 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 query = query.Where(t => t.TrangThai == trangThai.Value);
             }
 
-            query = query.OrderByDescending(t => t.MaTaiKhoan);
+            // Sắp xếp
+            query = sapXep switch
+            {
+                "name_desc" => query.OrderByDescending(t => t.HoTen).ThenBy(t => t.MaTaiKhoan),
+                "name_asc" => query.OrderBy(t => t.HoTen).ThenBy(t => t.MaTaiKhoan),
+                "date_old" => query.OrderBy(t => t.MaTaiKhoan),
+                _ => query.OrderByDescending(t => t.MaTaiKhoan)
+            };
+
+            if (sapXep != "name_desc" && sapXep != "name_asc" && sapXep != "date_old")
+            {
+                sapXep = "date_new";
+            }
+
             var danhSach = await PagedList<TaiKhoan>.CreateAsync(query, page, pageSize);
 
             var vm = new TaiKhoanAdminIndexViewModel
@@ -70,6 +83,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 TuKhoa = tuKhoa,
                 VaiTro = vaiTro,
                 TrangThai = trangThai,
+                SapXep = sapXep,
                 TongTaiKhoan = await _context.TaiKhoans.CountAsync(),
                 TongAdmin = await _context.TaiKhoans.CountAsync(t => t.VaiTro == VaiTroConst.Admin),
                 TongNhanVien = await _context.TaiKhoans.CountAsync(t => t.VaiTro == VaiTroConst.NhanVien),
