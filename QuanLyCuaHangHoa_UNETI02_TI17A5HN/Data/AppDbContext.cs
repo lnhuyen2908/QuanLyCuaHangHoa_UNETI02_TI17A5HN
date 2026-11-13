@@ -19,6 +19,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
         public DbSet<HoaTuoi> HoaTuois => Set<HoaTuoi>();
         public DbSet<MauSanPham> MauSanPhams => Set<MauSanPham>();
         public DbSet<ChiTietMau> ChiTietMaus => Set<ChiTietMau>();
+        public DbSet<AnhMauSanPham> AnhMauSanPhams => Set<AnhMauSanPham>();
 
         // Module 3
         public DbSet<KhachHang> KhachHangs => Set<KhachHang>();
@@ -38,10 +39,10 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
             // ===== Module 1 =====
             // TaiKhoan (1) - (0..1) KhachHang
             mb.Entity<KhachHang>()
-              .HasOne(k => k.TaiKhoan)
-              .WithOne(t => t.KhachHang)
-              .HasForeignKey<KhachHang>(k => k.MaTaiKhoan)
-              .OnDelete(DeleteBehavior.Restrict);
+              .HasOne(k => k.TaiKhoan) //Khai báo quan hệ một đối tượng ở phía KhachHang
+              .WithOne(t => t.KhachHang) //Khai báo quan hệ một-một ở phía TaiKhoan
+              .HasForeignKey<KhachHang>(k => k.MaTaiKhoan) //Chỉ định khóa ngoại nằm trong KhachHang
+              .OnDelete(DeleteBehavior.Restrict); //Hạn chế xóa khi việc xóa vi phạm ràng buộc khóa ngoại
 
             // ===== Module 2 =====
             // LoaiHoa (1) - (n) HoaTuoi
@@ -71,6 +72,13 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
               .WithMany(h => h.ChiTietMaus)
               .HasForeignKey(c => c.MaHoa)
               .OnDelete(DeleteBehavior.Restrict);
+
+            // MauSanPham (1) - (n) AnhMauSanPham
+            mb.Entity<AnhMauSanPham>()
+              .HasOne(a => a.MauSanPham)
+              .WithMany(m => m.AnhMauSanPhams)
+              .HasForeignKey(a => a.MaMau)
+              .OnDelete(DeleteBehavior.Cascade);
 
             // Một loại hoa không lặp nhiều dòng trong cùng mẫu
             mb.Entity<ChiTietMau>()

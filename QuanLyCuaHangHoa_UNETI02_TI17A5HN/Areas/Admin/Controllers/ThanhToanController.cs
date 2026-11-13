@@ -27,25 +27,91 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             _db = db;
         }
 
-        // Nguyễn Thị Đào - Xem thông tin và lịch sử thanh toán.
-        public async Task<IActionResult> Index(int? maDon)
+        // Nguyễn Thị Đào - Chọn đơn, tra cứu và xem lịch sử thanh toán.
+        // Danh sách có tìm kiếm, lọc tình trạng và phân trang để xử lý nhiều đơn.
+        public async Task<IActionResult> Index(
+            int? maDon,
+            string? tuKhoa,
+            string? tinhTrangThanhToan,
+            int page = 1)
         {
-            var vm = new ThanhToanViewModel
-            {
-                MaDon = maDon                   // gán sẵn mã đơn hàng thu tiền
-            };
-
-            vm.DonHang = await _db.DonDatHoas
+            var query = _db.DonDatHoas
                 .AsNoTracking()
                 .Where(d => d.TrangThai != TrangThaiDon.DaHuy)
-                .OrderByDescending(d => d.MaDon)
-                .ToListAsync();
+                .Select(d => new ThanhToanDonHangViewModel
+                {
+                    MaDon = d.MaDon,
+                    NguoiNhan = d.NguoiNhan,
+                    SoDienThoaiNguoiNhan = d.SoDienThoaiNguoiNhan,
+                    NgayDat = d.NgayDat,
+                    TrangThaiDon = d.TrangThai,
+                    TongTien = d.TongTien,
+                    TongDaThanhToan = _db.ThanhToans
+                        .Where(t => t.MaDon == d.MaDon)
+                        .Sum(t => (decimal?)t.SoTien) ?? 0m
+                });
 
+            // Tìm theo mã đơn, tên hoặc số điện thoại người nhận.
+            if (!string.IsNullOrWhiteSpace(tuKhoa))
+            {
+                tuKhoa = tuKhoa.Trim();
+                var maTimKiem = tuKhoa;
+
+                if (maTimKiem.StartsWith("#ORD-", StringComparison.OrdinalIgnoreCase))
+                    maTimKiem = maTimKiem.Substring(5);
+                else if (maTimKiem.StartsWith("ORD-", StringComparison.OrdinalIgnoreCase))
+                    maTimKiem = maTimKiem.Substring(4);
+                else
+                    maTimKiem = maTimKiem.TrimStart('#');
+
+                if (int.TryParse(maTimKiem, out int ma))
+                {
+                    query = query.Where(d =>
+                        d.MaDon == ma ||
+                        d.NguoiNhan.Contains(tuKhoa) ||
+                        d.SoDienThoaiNguoiNhan.Contains(tuKhoa));
+                }
+                else
+                {
+                    query = query.Where(d =>
+                        d.NguoiNhan.Contains(tuKhoa) ||
+                        d.SoDienThoaiNguoiNhan.Contains(tuKhoa));
+                }
+            }
+
+            // Lọc theo số tiền còn phải thu hoặc đã thanh toán đủ.
+            if (tinhTrangThanhToan == "con-no")
+            {
+                query = query.Where(d => d.TongDaThanhToan < d.TongTien);
+            }
+            else if (tinhTrangThanhToan == "da-du")
+            {
+                query = query.Where(d => d.TongDaThanhToan >= d.TongTien);
+            }
+            else
+            {
+                tinhTrangThanhToan = "";
+            }
+
+            query = query.OrderByDescending(d => d.MaDon);
+
+            var vm = new ThanhToanViewModel
+            {
+                MaDon = maDon,
+                TuKhoa = tuKhoa,
+                TinhTrangThanhToan = tinhTrangThanhToan,
+                DanhSachDonHang = await PagedList<ThanhToanDonHangViewModel>
+                    .CreateAsync(query, page, 10)
+            };
+
+            // Nếu đã chọn một đơn thì nạp tổng tiền và lịch sử thanh toán của đơn đó.
             if (maDon.HasValue)
             {
                 var don = await _db.DonDatHoas
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(d => d.MaDon == maDon.Value);
+                    .FirstOrDefaultAsync(d =>
+                        d.MaDon == maDon.Value &&
+                        d.TrangThai != TrangThaiDon.DaHuy);
 
                 if (don == null)
                     return NotFound();
@@ -58,8 +124,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                     .OrderByDescending(t => t.NgayThanhToan)
                     .ToListAsync();
 
-                vm.TongDaThanhToan =
-                    vm.LichSu.Sum(t => t.SoTien);
+                vm.TongDaThanhToan = vm.LichSu.Sum(t => t.SoTien);
 
                 var ids = vm.LichSu
                     .Select(t => t.NguoiGhiNhan)
@@ -103,7 +168,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             {
                 MaDon = maDon,
                 TongTien = don.TongTien,
-                TongDaThanhToan = daTra
+                TongDaThanhToan = daTra,
+                PhuongThuc = PhuongThucThanhToanConst.TienMat
             });
         }
 
@@ -113,22 +179,17 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         public async Task<IActionResult> Create(
             ThanhToanCreateViewModel vm)
         {
-            var phuongThucs = new[]
-            {
-                PhuongThucThanhToanConst.TienMat,
-                PhuongThucThanhToanConst.ChuyenKhoan,
-                PhuongThucThanhToanConst.ViDienTu,
-                PhuongThucThanhToanConst.TheNganHang
-            };
-
-            if (!phuongThucs.Contains(vm.PhuongThuc))
+            // Nhân viên được ghi nhận tiền mặt hoặc chuyển khoản sau khi đã kiểm tra thực tế.
+            // Các phương thức khác chỉ hiển thị trên giao diện, không được phép gửi lên server.
+            if (vm.PhuongThuc != PhuongThucThanhToanConst.TienMat
+                 && vm.PhuongThuc != PhuongThucThanhToanConst.ChuyenKhoan)
             {
                 ModelState.AddModelError(
                     nameof(vm.PhuongThuc),
                     "Phương thức thanh toán không hợp lệ.");
             }
 
-            var maTaiKhoan =  HttpContext.Session.GetMaTaiKhoan();
+            var maTaiKhoan = HttpContext.Session.GetMaTaiKhoan();
 
             if (!maTaiKhoan.HasValue)
                 return Unauthorized();
@@ -192,6 +253,82 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 
             return RedirectToAction(
                 nameof(Index), new { maDon = vm.MaDon });
+        }
+
+        // Nguyễn Thị Đào - Xem lịch sử chi tiết giao dịch thanh toán
+        [HttpGet]
+        public async Task<IActionResult> LichSu(int maDon)
+        {
+            // 1. Lấy thông tin đơn hàng
+            var don = await _db.DonDatHoas
+                .AsNoTracking()
+                .FirstOrDefaultAsync(d => d.MaDon == maDon);
+
+            if (don == null)
+                return NotFound();
+
+            // 2. Lấy toàn bộ giao dịch của đơn
+            var giaoDich = await _db.ThanhToans
+                .AsNoTracking()
+                .Where(t => t.MaDon == maDon)
+                .OrderByDescending(t => t.NgayThanhToan)
+                .Select(t => new
+                {
+                    t.MaThanhToan,
+                    t.NgayThanhToan,
+                    t.SoTien,
+                    t.PhuongThuc,
+                    t.NguoiGhiNhan,
+                    t.GhiChu
+                })
+                .ToListAsync();
+
+            // 3. Lấy tên nhân viên ghi nhận
+            var ids = giaoDich
+                .Select(t => t.NguoiGhiNhan)
+                .Distinct()
+                .ToList();
+
+            var tenNhanVien = await _db.TaiKhoans
+                .AsNoTracking()
+                .Where(t => ids.Contains(t.MaTaiKhoan))
+                .ToDictionaryAsync(
+                    t => t.MaTaiKhoan,
+                    t => t.HoTen
+                );
+
+            // 4. Chuyển dữ liệu sang ViewModel
+            var danhSach = new List<ThanhToanLichSuItemViewModel>();
+
+            foreach (var gd in giaoDich)
+            {
+                tenNhanVien.TryGetValue(
+                    gd.NguoiGhiNhan, out var ten);
+
+                danhSach.Add(new ThanhToanLichSuItemViewModel
+                {
+                    MaThanhToan = gd.MaThanhToan,
+                    NgayThanhToan = gd.NgayThanhToan,
+                    SoTien = gd.SoTien,
+                    PhuongThuc = gd.PhuongThuc,
+                    TenNguoiGhiNhan = ten ?? "Không xác định",
+                    GhiChu = gd.GhiChu
+                });
+            }
+
+            // 5. Tính tổng tiền
+            var tongDaThanhToan = danhSach.Sum(t => t.SoTien);
+
+            var vm = new ThanhToanLichSuViewModel
+            {
+                DonHang = don,
+                GiaoDich = danhSach,
+                TongDaThanhToan = tongDaThanhToan,
+                SoTienConLai = Math.Max(
+                    0, don.TongTien - tongDaThanhToan)
+            };
+
+            return View(vm);
         }
     }
 }

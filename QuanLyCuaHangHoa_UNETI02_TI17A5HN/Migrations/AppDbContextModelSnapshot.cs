@@ -22,6 +22,32 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.AnhMauSanPham", b =>
+                {
+                    b.Property<int>("MaAnh")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaAnh"));
+
+                    b.Property<string>("DuongDan")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("MaMau")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ThuTu")
+                        .HasColumnType("int");
+
+                    b.HasKey("MaAnh");
+
+                    b.HasIndex("MaMau");
+
+                    b.ToTable("AnhMauSanPhams");
+                });
+
             modelBuilder.Entity("QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.ChiTietDonHoa", b =>
                 {
                     b.Property<int>("MaChiTiet")
@@ -552,6 +578,17 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Migrations
                     b.ToTable("ThanhToans");
                 });
 
+            modelBuilder.Entity("QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.AnhMauSanPham", b =>
+                {
+                    b.HasOne("QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.MauSanPham", "MauSanPham")
+                        .WithMany("AnhMauSanPhams")
+                        .HasForeignKey("MaMau")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MauSanPham");
+                });
+
             modelBuilder.Entity("QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.ChiTietDonHoa", b =>
                 {
                     b.HasOne("QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.DonDatHoa", "DonDatHoa")
@@ -732,6 +769,8 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Migrations
 
             modelBuilder.Entity("QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities.MauSanPham", b =>
                 {
+                    b.Navigation("AnhMauSanPhams");
+
                     b.Navigation("ChiTietMaus");
                 });
 

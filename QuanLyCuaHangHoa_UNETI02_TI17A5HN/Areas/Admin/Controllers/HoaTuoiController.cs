@@ -475,7 +475,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         }
 
         // ================================================================
-        // POST: /Admin/HoaTuoi/Delete - Xóa mềm hoa tươi
+        // POST: /Admin/HoaTuoi/Delete - Xóa hoa tươi
         // ================================================================
 
 

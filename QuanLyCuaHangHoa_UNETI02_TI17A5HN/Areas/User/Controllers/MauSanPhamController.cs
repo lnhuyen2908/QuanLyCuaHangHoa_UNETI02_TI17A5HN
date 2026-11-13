@@ -35,6 +35,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             decimal? giaDen,
             string? sapXep,
             string? mauSac,
+            int? maLoaiHoa,
             int page = 1)
         {
             if (giaTu < 0) giaTu = null;
@@ -57,11 +58,22 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 query = query.Where(m =>
                     m.TenMau.Contains(tuKhoa) ||
                     m.KieuSanPham.Contains(tuKhoa) ||
-                    (m.DipSuDung != null && m.DipSuDung.TenDip.Contains(tuKhoa)));
+                    (m.DipSuDung != null && m.DipSuDung.TenDip.Contains(tuKhoa)) ||
+                    m.ChiTietMaus.Any(ct => ct.HoaTuoi != null &&
+                        (ct.HoaTuoi.TenHoa.Contains(tuKhoa) || ct.HoaTuoi.MauSac.Contains(tuKhoa))));
             }
 
             if (maDip.HasValue)
                 query = query.Where(m => m.MaDip == maDip.Value);
+
+            // Lọc theo loại hoa có trong mẫu sản phẩm
+            if (maLoaiHoa.HasValue)
+            {
+                query = query.Where(m =>
+                    m.ChiTietMaus.Any(ct =>
+                        ct.HoaTuoi != null &&
+                        ct.HoaTuoi.MaLoaiHoa == maLoaiHoa.Value));
+            }
 
             if (!string.IsNullOrWhiteSpace(kieuSanPham))
             {
@@ -125,11 +137,20 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 new() { Text = "Mẫu khác", Value = "Mẫu khác" }
             };
 
+            ViewBag.TenLoaiHoaDangLoc = maLoaiHoa.HasValue
+                ? await _context.LoaiHoas
+                    .AsNoTracking()
+                    .Where(x => x.MaLoaiHoa == maLoaiHoa.Value)
+                    .Select(x => x.TenLoaiHoa)
+                    .FirstOrDefaultAsync()
+                : null;
+
             var model = new MauSanPhamListViewModel
             {
                 DanhSachMau = danhSachMau,
                 TuKhoa = tuKhoa,
                 MaDip = maDip,
+                MaLoaiHoa = maLoaiHoa,
                 KieuSanPham = kieuSanPham,
                 GiaTu = giaTu,
                 GiaDen = giaDen,
@@ -152,6 +173,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 .Include(m => m.DipSuDung)
                 .Include(m => m.ChiTietMaus)
                     .ThenInclude(c => c.HoaTuoi)
+                .Include(m => m.AnhMauSanPhams)
                 .FirstOrDefaultAsync(m =>
                     m.MaMau == id &&
                     m.TrangThai &&

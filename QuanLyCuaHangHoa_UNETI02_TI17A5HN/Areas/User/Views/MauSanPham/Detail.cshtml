@@ -76,18 +76,30 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
             </div>
 
             <!-- Thumbnails Gallery -->
-            <div class="grid grid-cols-4 gap-space-sm">
-                <button type="button"
-                        onclick="switchMainVisual(this, document.getElementById('mainProductVisual').src)"
-                        class="thumb-btn active relative aspect-square rounded-xl overflow-hidden
-                    bg-surface-container-low ring-2 ring-primary">
-                    <img alt="@Model.TenMau"
-                         class="w-full h-full object-cover"
-                         src="@Url.Content(string.IsNullOrWhiteSpace(Model.HinhAnh)
-                                                  ? "~/images/no-image.png"
-                                                  : Model.HinhAnh)" />
-                </button>
-            </div>
+            @{
+                var dsAnh = new List<string>();
+                if (!string.IsNullOrWhiteSpace(Model.HinhAnh))
+                {
+                    dsAnh.Add(Model.HinhAnh);
+                }
+                dsAnh.AddRange(Model.AnhMauSanPhams.OrderBy(a => a.ThuTu).Select(a => a.DuongDan));
+            }
+
+            @if (dsAnh.Count > 0)
+            {
+                <div class="flex flex-wrap gap-space-sm">
+                    @for (int i = 0; i < dsAnh.Count; i++)
+                    {
+                        <button type="button"
+                                onclick="switchMainVisual(this, this.querySelector('img').src)"
+                                class="thumb-btn @(i == 0 ? "active ring-2 ring-primary" : "") relative aspect-square w-24 rounded-xl overflow-hidden bg-surface-container-low">
+                            <img alt="@Model.TenMau"
+                                 class="w-full h-full object-cover"
+                                 src="@Url.Content(dsAnh[i])" />
+                        </button>
+                    }
+                </div>
+            }
 
 
             <!-- Quality Commitment Box -->

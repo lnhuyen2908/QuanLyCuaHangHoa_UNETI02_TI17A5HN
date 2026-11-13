@@ -1,6 +1,10 @@
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Services
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers
 @using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
+@using Microsoft.EntityFrameworkCore
+@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data
+
+@inject AppDbContext _context
 
 @{
     var maTaiKhoan = Context.Session.GetMaTaiKhoan();
@@ -62,49 +66,44 @@
                             <div class="col-span-3 space-y-3 border-r border-outline-variant/30 pr-4">
                                 <div class="flex items-center gap-1.5 pb-1 border-b border-outline-variant/20">
                                     <span class="material-symbols-outlined text-primary text-[18px]">spa</span>
-                                    <span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">Loài hoa nổi bật</span>
+                                    <span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">
+                                        Loài hoa nổi bật
+                                    </span>
                                 </div>
-                                <ul class="space-y-2 font-body-sm text-body-sm">
-                                    <li>
-                                        <a href="/User/Products" class="flex items-center justify-between py-1 text-on-surface hover:text-primary transition-colors group/item">
-                                            <span class="flex items-center gap-2">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary transition-colors"></span>
-                                                Hoa hồng Ecuador
-                                            </span>
-                                            <span class="bg-primary-fixed text-primary font-label-md text-[10px] px-1.5 py-0.5 rounded-full uppercase">Bán chạy</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/User/Products" class="flex items-center gap-2 py-1 text-on-surface hover:text-primary transition-colors group/item">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary transition-colors"></span>
-                                            <span>Tulip Hà Lan cao cấp</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/User/Products" class="flex items-center gap-2 py-1 text-on-surface hover:text-primary transition-colors group/item">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary transition-colors"></span>
-                                            <span>Cẩm tú cầu Hydrangea</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/User/Products" class="flex items-center gap-2 py-1 text-on-surface hover:text-primary transition-colors group/item">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary transition-colors"></span>
-                                            <span>Mẫu đơn Peony</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/User/Products" class="flex items-center gap-2 py-1 text-on-surface hover:text-primary transition-colors group/item">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary transition-colors"></span>
-                                            <span>Lan hồ điệp Grand Luxe</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/User/Products" class="flex items-center gap-2 py-1 text-on-surface hover:text-primary transition-colors group/item">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary transition-colors"></span>
-                                            <span>Hoa baby & Scabiosa</span>
-                                        </a>
-                                    </li>
-                                </ul>
+
+                               @{
+                                    var danhSachLoaiHoaMenu = await _context.LoaiHoas
+                                        .AsNoTracking()
+                                        .OrderBy(x => x.TenLoaiHoa)
+                                        .ToListAsync();
+                                }
+
+                                @if (danhSachLoaiHoaMenu != null && danhSachLoaiHoaMenu.Any())
+                                {
+                                    <ul class="space-y-2 font-body-sm text-body-sm">
+                                        @foreach (var loai in danhSachLoaiHoaMenu)
+                                        {
+                                            <li>
+                                                <a asp-area="User"
+                                                   asp-controller="MauSanPham"
+                                                   asp-action="Index"
+                                                   asp-route-maLoaiHoa="@loai.MaLoaiHoa"
+                                                   class="flex items-center gap-2 py-1 text-on-surface hover:text-primary transition-colors group/item">
+
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:bg-primary transition-colors"></span>
+
+                                                    <span>@loai.TenLoaiHoa</span>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="text-sm text-secondary">
+                                        Chưa có dữ liệu loại hoa.
+                                    </p>
+                                }
                             </div>
 
                             <!-- Cột 2: KIỂU DÁNG CẮM HOA -->
@@ -115,34 +114,29 @@
                                 </div>
                                 <ul class="space-y-2 font-body-sm text-body-sm">
                                     <li>
-                                        <a href="/User/Products" class="flex items-center justify-between py-1 text-on-surface hover:text-primary transition-colors">
-                                            <span>Bó hoa thiết kế riêng</span>
-                                            <span class="text-secondary font-label-md text-[11px]">140+ mẫu</span>
+                                        <a href="/User/Products?kieuSanPham=Bó%20hoa">
+                                            Bó hoa thiết kế riêng
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/User/Products" class="flex items-center justify-between py-1 text-on-surface hover:text-primary transition-colors">
-                                            <span>Giỏ hoa nghệ thuật</span>
-                                            <span class="text-secondary font-label-md text-[11px]">95+ mẫu</span>
+                                        <a href="/User/Products?kieuSanPham=Giỏ%20hoa">
+                                            Giỏ hoa nghệ thuật
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/User/Products" class="flex items-center justify-between py-1 text-on-surface hover:text-primary transition-colors">
-                                            <span>Hộp hoa cao cấp</span>
-                                            <span class="text-secondary font-label-md text-[11px]">75+ mẫu</span>
+                                        <a href="/User/Products?kieuSanPham=Hộp%20hoa">
+                                            Hộp hoa cao cấp
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/User/Products" class="flex items-center justify-between py-1 text-on-surface hover:text-primary transition-colors">
-                                            <span>Bình gốm để bàn</span>
-                                            <span class="text-secondary font-label-md text-[11px]">45+ mẫu</span>
+                                        <a href="/User/Products?kieuSanPham=Kệ%20hoa">
+                                            Kệ hoa chúc mừng sang trọng
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/User/Products" class="flex items-center justify-between py-1 text-on-surface hover:text-primary transition-colors">
-                                            <span>Kệ hoa chúc mừng sang trọng</span>
-                                            <span class="text-secondary font-label-md text-[11px]">80+ mẫu</span>
-                                        </a>
+                                       <a href="/User/Products?maDip=2">
+                                            Kỷ niệm &amp; Tình yêu
+                                       </a>
                                     </li>
                                 </ul>
                             </div>
@@ -155,33 +149,23 @@
                                 </div>
                                 <ul class="space-y-2.5 font-body-sm text-body-sm">
                                     <li>
-                                        <a href="/User/Products" class="flex items-center gap-2 text-on-surface hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined text-[16px] text-secondary">cake</span>
-                                            <span>Hoa sinh nhật tinh tế</span>
+                                        <a href="/User/Products?maDip=1">
+                                            Hoa sinh nhật tinh tế
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/User/Products" class="flex items-center gap-2 text-on-surface hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined text-[16px] text-secondary">favorite</span>
-                                            <span>Kỷ niệm & Tình yêu</span>
+                                        <a href="/User/Products?maDip=2">
+                                            Kỷ niệm &amp; Tình yêu
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/User/Products" class="flex items-center gap-2 text-on-surface hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined text-[16px] text-secondary">storefront</span>
-                                            <span>Chúc mừng khai trương</span>
+                                        <a href="/User/Products?maDip=3">
+                                            Chúc mừng khai trương
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/User/Products" class="flex items-center gap-2 text-on-surface hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined text-[16px] text-secondary">handshake</span>
-                                            <span>Cảm ơn & Tri ân</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/User/Products" class="flex items-center gap-2 text-on-surface hover:text-primary transition-colors">
-                                            <span class="material-symbols-outlined text-[16px] text-secondary">diamond</span>
-                                            <span>Bộ sưu tập Haute Couture</span>
+                                        <a href="/User/Products?maDip=4">
+                                            Cảm ơn &amp; Tri ân
                                         </a>
                                     </li>
                                 </ul>
@@ -199,9 +183,21 @@
                                         <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-0.5">Cam kết hoa giữ độ nở tươi nguyên vẹn 5 - 7 ngày cùng hướng dẫn dưỡng hoa.</p>
                                     </div>
                                 </div>
-                                <a href="/User/Products" class="inline-flex items-center gap-1 font-label-lg text-label-lg text-primary hover:text-primary-container font-semibold pt-2">
-                                    <span>Xem tất cả bộ sưu tập</span>
-                                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                <a href="/User/Products"
+                                   class="group inline-flex items-center gap-2 mt-3 px-3 py-2 rounded-lg
+                                       bg-primary text-on-primary
+                                       hover:bg-primary-container hover:text-on-primary-container
+                                       transition-all duration-300 shadow-sm hover:shadow-md">
+
+                                    <span class="font-semibold text-sm tracking-wide">
+                                        Khám phá bộ sưu tập
+                                    </span>
+
+                                    <span class="material-symbols-outlined text-[20px]
+                                                 transition-transform duration-300
+                                                 group-hover:translate-x-1">
+                                        arrow_forward
+                                    </span>
                                 </a>
                             </div>
                         </div>
@@ -232,13 +228,40 @@
         <!-- Right Utility Cluster -->
         <div class="flex items-center gap-space-sm md:gap-space-md flex-shrink-0">
             <!-- Search Bar -->
-            <form action="/User/Products" method="get" class="relative hidden md:flex items-center">
-                <span class="material-symbols-outlined absolute left-3 text-[18px] text-outline pointer-events-none">search</span>
-                <input name="search" class="w-52 lg:w-64 pl-9 pr-4 py-2 rounded-full bg-surface-container text-on-surface placeholder:text-outline font-body-sm text-body-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all" placeholder="Tìm kiếm hoa tươi, quà tặng..." type="text">
+            <form action="/User/Products" method="get"
+                  class="relative hidden md:flex items-center">
+
+                <span class="material-symbols-outlined absolute left-3 text-[18px] text-outline pointer-events-none">
+                    search
+                </span>
+
+                <input
+                    type="text"
+                    name="tuKhoa"
+                    value="@Context.Request.Query["tuKhoa"]"
+                    class="w-52 lg:w-64 pl-9 pr-10 py-2 rounded-full
+                           bg-surface-container text-on-surface
+                           placeholder:text-outline font-body-sm text-body-sm
+                           focus:outline-none focus:ring-2 focus:ring-primary/40
+                           transition-all"
+                    placeholder="Tìm kiếm hoa tươi, quà tặng..."
+                    autocomplete="off">
+
+                <button type="submit"
+                        class="absolute right-3 text-primary hover:scale-110 transition-transform"
+                        aria-label="Tìm kiếm">
+                    <span class="material-symbols-outlined text-[19px]">search</span>
+                </button>
             </form>
-            <a aria-label="Tìm kiếm" href="/User/Products" class="md:hidden p-2 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center">
-                <span class="material-symbols-outlined text-[22px]">search</span>
-            </a>
+
+            <!-- Search Mobile -->
+            <form action="/User/Products" method="get"
+                  class="md:hidden flex items-center">
+                <button type="submit" aria-label="Tìm kiếm"
+                        class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container">
+                    <span class="material-symbols-outlined text-[22px]">search</span>
+                </button>
+            </form>
 
             <!-- Wishlist -->
             <a aria-label="Danh sách yêu thích" class="relative p-2 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors flex items-center" href="/User/Wishlist">

@@ -14,6 +14,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
         public int MaDon { get; set; }
 
         public string TenNguoiNhan { get; set; } = "";
+        public string SoDienThoaiNguoiNhan { get; set; } = "";
 
         public string HinhThuc { get; set; } = "";
 

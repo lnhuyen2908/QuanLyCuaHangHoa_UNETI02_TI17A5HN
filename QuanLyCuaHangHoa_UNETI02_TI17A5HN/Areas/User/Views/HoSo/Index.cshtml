@@ -419,19 +419,49 @@
                                             <span class="text-xs text-secondary font-label-md">
                                                 @(don.ChiTietDonHoas.Count) sản phẩm
                                             </span>
-                                            <a class="text-primary text-xs underline" href="/User/HoSo/ChiTietDon?maDon=@don.MaDon">Xem chi tiết đơn</a>
 
-                                            @* Khách chỉ thấy nút Hủy cho đơn chờ xác nhận và chưa có thanh toán; POST còn kiểm tra server. *@
-                                            @if (don.TrangThai == TrangThaiDon.ChoXacNhan && !don.ThanhToans.Any())
-                                            {
-                                                <form method="post"
-                                                      action="/User/HoSo/HuyDon"
-                                                      onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn này?')">
-                                                    @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="maDon" value="@don.MaDon" />
-                                                    <button type="submit" class="text-error text-xs underline">Hủy đơn</button>
-                                                </form>
-                                            }
+                                            @*NGUYỄN THỊ ĐÀO -23103100245*@
+                                           <div class="flex flex-col items-stretch gap-2 mt-2 w-[125px]">
+
+                                                @* Nút xem chi tiết: luôn hiển thị *@
+                                                <a href="/User/HoSo/ChiTietDon?maDon=@don.MaDon"
+                                                   class="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-primary text-primary text-xs font-semibold hover:bg-primary/10 transition-colors">
+                                                    <span class="material-symbols-outlined text-[16px]">visibility</span>
+                                                    Xem chi tiết
+                                                </a>
+
+                                                @* Nút thanh toán lại: chỉ hiện với đơn chuyển khoản chưa thanh toán và còn hạn *@
+                                                @if (don.TrangThai == TrangThaiDon.ChoXacNhan
+                                                    && don.GhiChu?.StartsWith("[PTTT=CHUYENKHOAN]") == true
+                                                    && !don.ThanhToans.Any()
+                                                    && DateTime.Now < don.NgayDat.AddHours(24))
+                                                {
+                                                    <a href="/User/Checkout/ChuyenKhoan?maDon=@don.MaDon"
+                                                       class="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-primary text-on-primary text-xs font-semibold hover:opacity-90 transition-colors">
+                                                        <span class="material-symbols-outlined text-[16px]">qr_code</span>
+                                                        Thanh toán lại
+                                                    </a>
+                                                }
+
+                                                @* Nút hủy đơn: chỉ hiện khi đơn chờ xác nhận và chưa có thanh toán *@
+                                                @if (don.TrangThai == TrangThaiDon.ChoXacNhan && !don.ThanhToans.Any())
+                                                {
+                                                    <form method="post"
+                                                          action="/User/HoSo/HuyDon"
+                                                          class="w-full"
+                                                          onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn này?')">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="maDon" value="@don.MaDon" />
+
+                                                        <button type="submit"
+                                                                class="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-error text-error text-xs font-semibold hover:bg-error/10 transition-colors">
+                                                            <span class="material-symbols-outlined text-[16px]">cancel</span>
+                                                            Hủy đơn
+                                                        </button>
+                                                    </form>
+                                                }
+
+                                            </div>
                                         </div>
                                     </div>
                                 }

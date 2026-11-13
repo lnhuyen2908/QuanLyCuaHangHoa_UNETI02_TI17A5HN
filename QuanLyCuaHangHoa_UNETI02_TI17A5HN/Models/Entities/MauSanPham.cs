@@ -41,5 +41,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities
         public virtual DipSuDung DipSuDung { get; set; } = null!;
 
         public virtual ICollection<ChiTietMau> ChiTietMaus { get; set; } = new List<ChiTietMau>();
+
+        public virtual ICollection<AnhMauSanPham> AnhMauSanPhams { get; set; } = new List<AnhMauSanPham>();
     }
 }

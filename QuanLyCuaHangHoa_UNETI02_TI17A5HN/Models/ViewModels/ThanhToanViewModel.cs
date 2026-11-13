@@ -1,29 +1,49 @@
-﻿
-// Họ và tên: Nguyễn Thị Đào
+﻿// Họ và tên: Nguyễn Thị Đào
 // Mã sinh viên: 23103100245
-// Nội dung: Tuần 6 - ViewModel quản lý thanh toán.
+// Nội dung: Tuần 6 - ViewModel quản lý thanh toán và lựa chọn đơn hàng.
 
 using System.ComponentModel.DataAnnotations;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
+using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
 {
-    public class ThanhToanViewModel
+    // Dữ liệu một đơn hàng trong bảng lựa chọn đơn cần ghi nhận thanh toán.
+    public class ThanhToanDonHangViewModel
     {
-        public int? MaDon { get; set; }
-
+        public int MaDon { get; set; }
+        public string NguoiNhan { get; set; } = string.Empty;
+        public string SoDienThoaiNguoiNhan { get; set; } = string.Empty;
+        public DateTime NgayDat { get; set; }
+        public string TrangThaiDon { get; set; } = string.Empty;
         public decimal TongTien { get; set; }
         public decimal TongDaThanhToan { get; set; }
 
         public decimal SoTienConLai =>
-            Math.Max(0, TongTien - TongDaThanhToan);
+            Math.Max(0m, TongTien - TongDaThanhToan);
+    }
+
+    public class ThanhToanViewModel
+    {
+        // Bộ lọc danh sách đơn hàng.
+        public string? TuKhoa { get; set; }
+        public string? TinhTrangThanhToan { get; set; }
+        public int? MaDon { get; set; }
+
+        public PagedList<ThanhToanDonHangViewModel> DanhSachDonHang { get; set; }
+            = new();
+
+        // Thông tin và lịch sử của đơn đang được chọn.
+        public decimal TongTien { get; set; }
+        public decimal TongDaThanhToan { get; set; }
+
+        public decimal SoTienConLai =>
+            Math.Max(0m, TongTien - TongDaThanhToan);
 
         public List<ThanhToan> LichSu { get; set; } = new();
 
         public Dictionary<int, string> TenNhanVien { get; set; }
-            = new();
-
-        public List<DonDatHoa> DonHang { get; set; }
             = new();
     }
 
@@ -38,7 +58,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
 
         [Required(ErrorMessage = "Vui lòng chọn phương thức.")]
         [StringLength(30)]
-        public string PhuongThuc { get; set; } = "";
+        public string PhuongThuc { get; set; } = PhuongThucThanhToanConst.TienMat;
 
         [StringLength(500)]
         public string? GhiChu { get; set; }
@@ -47,6 +67,6 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
         public decimal TongDaThanhToan { get; set; }
 
         public decimal SoTienConLai =>
-            Math.Max(0, TongTien - TongDaThanhToan);
+            Math.Max(0m, TongTien - TongDaThanhToan);
     }
 }

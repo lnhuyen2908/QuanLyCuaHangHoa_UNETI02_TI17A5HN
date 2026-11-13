@@ -111,7 +111,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             var taiKhoan = new TaiKhoan
             {
                 TenDangNhap = tenDangNhap,
-                MatKhau = vm.MatKhau,
+                MatKhau = MatKhauHelper.MaHoa(vm.MatKhau),
                 HoTen = vm.HoTen.Trim(),
                 Email = email,
                 VaiTro = vm.VaiTro,
@@ -190,7 +190,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                     TempData["Loi"] = "Mật khẩu mới phải có tối thiểu 6 ký tự!";
                     return RedirectToAction(nameof(Index));
                 }
-                tk.MatKhau = vm.MatKhauMoi;
+                tk.MatKhau = MatKhauHelper.MaHoa(vm.MatKhauMoi);
             }
 
             // Đồng bộ sang bảng KhachHang
@@ -385,7 +385,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             // Đổi mật khẩu nếu có nhập
             if (!string.IsNullOrWhiteSpace(matKhauMoi))
             {
-                if (string.IsNullOrWhiteSpace(matKhauHienTai) || tk.MatKhau != matKhauHienTai)
+                if (string.IsNullOrWhiteSpace(matKhauHienTai) || !MatKhauHelper.KiemTra(matKhauHienTai, tk.MatKhau))
                 {
                     TempData["Loi"] = "Mật khẩu hiện tại không chính xác!";
                     return View(tk);
@@ -395,7 +395,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                     TempData["Loi"] = "Mật khẩu mới phải có tối thiểu 6 ký tự!";
                     return View(tk);
                 }
-                tk.MatKhau = matKhauMoi;
+                tk.MatKhau = MatKhauHelper.MaHoa(matKhauMoi);
             }
 
             tk.HoTen = hoTen.Trim();
