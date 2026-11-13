@@ -119,6 +119,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             {
                 vm.NguoiNhan = kh.HoTen;
                 vm.SoDienThoaiNguoiNhan = kh.SoDienThoai;
+                vm.DiaChiGiao = kh.DiaChi;
             }
 
             // Chuẩn hóa dữ liệu chuỗi để tránh lưu khoảng trắng thừa.

@@ -81,26 +81,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 TongBiKhoa = await _context.KhachHangs.CountAsync(k => !k.TrangThai)
             });
         }
-
-        // GET: Sửa khách hàng
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var kh = await _context.KhachHangs.AsNoTracking().FirstOrDefaultAsync(k => k.MaKhachHang == id);
-
-            if (kh == null)
-                return NotFound();
-
-            return View(new KhachHangEditViewModel
-            {
-                MaKhachHang = kh.MaKhachHang,
-                HoTen = kh.HoTen,
-                SoDienThoai = kh.SoDienThoai,
-                Email = kh.Email,
-                DiaChi = kh.DiaChi
-            });
-        }
-
+        
         // POST: Sửa khách hàng
         [HttpPost]
         [ValidateAntiForgeryToken]
