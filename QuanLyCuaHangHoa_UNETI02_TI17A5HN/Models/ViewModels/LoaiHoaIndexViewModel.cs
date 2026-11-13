@@ -21,6 +21,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels
         public PagedList<LoaiHoaItemViewModel> DanhSach { get; set; } = null!;
         public string? TuKhoa { get; set; }
         public bool? TrangThai { get; set; }
+        public string SapXep { get; set; } = "date_new";
         public int TongLoaiHoa { get; set; }
         public int TongDangKinhDoanh { get; set; }
         public int TongTamNgung { get; set; }
