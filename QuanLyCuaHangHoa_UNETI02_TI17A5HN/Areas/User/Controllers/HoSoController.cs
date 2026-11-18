@@ -8,8 +8,6 @@ using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 {
@@ -227,7 +225,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 
             if (count != 1)
             {
-                TempData["Loi"] = "Đơn đã được xử lý, vui lòng tải lại.";
+                TempData["Loi"] = "Hủy thất bại";
                 return Redirect("/User/Profile#orders");
             }
 

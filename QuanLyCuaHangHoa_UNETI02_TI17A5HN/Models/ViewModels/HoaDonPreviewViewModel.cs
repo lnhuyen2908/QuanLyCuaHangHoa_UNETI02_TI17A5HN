@@ -1,4 +1,6 @@
-﻿
+﻿// Họ và tên: Đặng Thị Mai Hương
+// Mã sinh viên: 23103100293
+// Nội dung thực hiện: lưu trữ thông tin hóa đơn đặt hoa, chi tiết sản phẩm và lịch sử thanh toán để hiển thị bản xem trước.
 using System;
 using System.Collections.Generic;
 
