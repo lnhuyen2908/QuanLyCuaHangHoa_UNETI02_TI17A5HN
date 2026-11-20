@@ -10,6 +10,7 @@ using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels;
+using ClosedXML.Excel;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 {
@@ -24,12 +25,24 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             _context = context;
         }
 
-        // GET: Danh sách khách hàng
-        public async Task<IActionResult> Index(string? tuKhoa, bool? trangThai,
-                                                string sapXep = "date_new",
-                                                int page = 1)
+        // Chuẩn hóa lựa chọn sắp xếp
+        private string ChuanHoaSapXep(string? sapXep)
         {
-            const int pageSize = 10;
+            return sapXep switch
+            {
+                "name_asc" => "name_asc",
+                "name_desc" => "name_desc",
+                "date_old" => "date_old",
+                _ => "date_new"
+            };
+        }
+
+        // Truy vấn khách hàng theo bộ lọc
+        private IQueryable<KhachHang> TaoQueryKhachHang(
+            string? tuKhoa,
+            bool? trangThai,
+            string? sapXep)
+        {
             var query = _context.KhachHangs
                 .Include(k => k.TaiKhoan)
                 .AsNoTracking()
@@ -56,16 +69,76 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             // Sắp xếp
             query = sapXep switch
             {
-                "name_desc" => query.OrderByDescending(k => k.HoTen).ThenBy(k => k.MaKhachHang),
-                "date_new" => query.OrderByDescending(k => k.MaKhachHang),
+                "name_asc" => query.OrderBy(k => k.HoTen)
+                                   .ThenBy(k => k.MaKhachHang),
+
+                "name_desc" => query.OrderByDescending(k => k.HoTen)
+                                    .ThenBy(k => k.MaKhachHang),
+
                 "date_old" => query.OrderBy(k => k.MaKhachHang),
-                _ => query.OrderBy(k => k.HoTen).ThenBy(k => k.MaKhachHang)
+
+                _ => query.OrderByDescending(k => k.MaKhachHang)
             };
 
-            if (sapXep != "name_desc" && sapXep != "name_asc" && sapXep != "date_old")
+            return query;
+        }
+
+        // Lấy tên trạng thái
+        private string LayTenTrangThai(bool? trangThai)
+        {
+            return trangThai switch
             {
-                sapXep = "date_new";
+                true => "Đang hoạt động",
+                false => "Đã khóa",
+                _ => "Tất cả khách hàng"
+            };
+        }
+
+        // Lấy tên kiểu sắp xếp
+        private string LayTenSapXep(string sapXep)
+        {
+            return sapXep switch
+            {
+                "name_asc" => "Tên (A-Z)",
+                "name_desc" => "Tên (Z-A)",
+                "date_old" => "Khách hàng cũ nhất",
+                _ => "Khách hàng mới nhất"
+            };
+        }
+
+        // Tạo tiêu đề báo cáo theo bộ lọc
+        private string TaoTieuDeBaoCao(
+            string? tuKhoa,
+            bool? trangThai)
+        {
+            string tieuDe = trangThai switch
+            {
+                true => "DANH SÁCH KHÁCH HÀNG ĐANG HOẠT ĐỘNG",
+                false => "DANH SÁCH KHÁCH HÀNG ĐÃ KHÓA",
+                _ => "DANH SÁCH TẤT CẢ KHÁCH HÀNG"
+            };
+
+            if (!string.IsNullOrWhiteSpace(tuKhoa))
+            {
+                tieuDe += " - KẾT QUẢ TÌM KIẾM";
             }
+
+            return tieuDe;
+        }
+                
+        // GET: Danh sách khách hàng
+        public async Task<IActionResult> Index(string? tuKhoa, bool? trangThai,
+                                                string sapXep = "date_new",
+                                                int page = 1)
+        {
+            const int pageSize = 10;
+
+            // Chuẩn hóa sắp xếp
+            sapXep = ChuanHoaSapXep(sapXep);
+
+            // Sử dụng truy vấn dùng chung
+            var query = TaoQueryKhachHang(
+                tuKhoa, trangThai, sapXep);
 
             // Phân trang
             var danhSach = await PagedList<KhachHang>.CreateAsync(query, page, pageSize);
@@ -81,11 +154,11 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 TongBiKhoa = await _context.KhachHangs.CountAsync(k => !k.TrangThai)
             });
         }
-        
+
         // POST: Sửa khách hàng
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,  KhachHangEditViewModel model)
+        public async Task<IActionResult> Edit(int id, KhachHangEditViewModel model)
         {
             if (id != model.MaKhachHang)
                 return BadRequest();
@@ -389,6 +462,222 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Xem trước báo cáo khách hàng
+        [HttpGet]
+        public async Task<IActionResult> PreviewExcel(
+            string? tuKhoa,
+            bool? trangThai,
+            string sapXep = "date_new")
+        {
+            sapXep = ChuanHoaSapXep(sapXep);
+
+            // Truy vấn theo đúng bộ lọc
+            var danhSach = await TaoQueryKhachHang(
+                tuKhoa, trangThai, sapXep)
+                .ToListAsync();
+
+            // Không có dữ liệu thì quay lại Index
+            if (!danhSach.Any())
+            {
+                TempData["ThongBao"] =
+                    "Không có khách hàng nào phù hợp với điều kiện lọc. Không thể xuất Excel!";
+
+                return RedirectToAction(nameof(Index), new
+                {
+                    tuKhoa,
+                    trangThai,
+                    sapXep
+                });
+            }
+
+            // Thông tin hiển thị trên Preview
+            ViewBag.TuKhoa = tuKhoa;
+            ViewBag.TrangThai = trangThai;
+            ViewBag.SapXep = sapXep;
+
+            ViewBag.TenTrangThai = LayTenTrangThai(trangThai);
+            ViewBag.TenSapXep = LayTenSapXep(sapXep);
+
+            ViewBag.TieuDeBaoCao = TaoTieuDeBaoCao(
+                tuKhoa, trangThai);
+
+            return View("PreviewExcel", danhSach);
+        }
+
+
+        // POST: Xuất danh sách khách hàng ra Excel
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> XuatExcel(
+            string? tuKhoa,
+            bool? trangThai,
+            string sapXep = "date_new")
+        {
+            sapXep = ChuanHoaSapXep(sapXep);
+
+            // 1. Truy vấn lại dữ liệu theo bộ lọc
+            var danhSach = await TaoQueryKhachHang(
+                tuKhoa, trangThai, sapXep)
+                .ToListAsync();
+
+            // 2. Kiểm tra dữ liệu trước khi xuất
+            if (!danhSach.Any())
+            {
+                TempData["ThongBao"] =
+                    "Không có khách hàng nào phù hợp với điều kiện lọc. Không thể xuất Excel!";
+
+                return RedirectToAction(nameof(Index), new
+                {
+                    tuKhoa,
+                    trangThai,
+                    sapXep
+                });
+            }
+
+            // 3. Tạo Workbook và Worksheet
+            using var workbook = new XLWorkbook();
+            var sheet = workbook.Worksheets.Add("KhachHang");
+
+            // 4. Tạo tiêu đề báo cáo động
+            string tieuDeBaoCao = TaoTieuDeBaoCao(
+                tuKhoa, trangThai);
+
+            sheet.Cell(1, 1).Value = tieuDeBaoCao;
+            sheet.Range(1, 1, 1, 7).Merge();
+
+            var tieuDe = sheet.Range(1, 1, 1, 7);
+            tieuDe.Style.Font.Bold = true;
+            tieuDe.Style.Font.FontSize = 16;
+            tieuDe.Style.Alignment.Horizontal =
+                XLAlignmentHorizontalValues.Center;
+            tieuDe.Style.Alignment.Vertical =
+                XLAlignmentVerticalValues.Center;
+
+            sheet.Row(1).Height = 30;
+
+            // 5. Tiêu đề phụ
+            sheet.Cell(2, 1).Value = "BÁO CÁO QUẢN LÝ KHÁCH HÀNG";
+            sheet.Range(2, 1, 2, 7).Merge();
+
+            var tieuDePhu = sheet.Range(2, 1, 2, 7);
+            tieuDePhu.Style.Font.Italic = true;
+            tieuDePhu.Style.Alignment.Horizontal =
+                XLAlignmentHorizontalValues.Center;
+
+            // 6. Thông tin bộ lọc
+            sheet.Cell(4, 1).Value = "THÔNG TIN BỘ LỌC";
+            sheet.Range(4, 1, 4, 7).Merge();
+
+            var thongTinLoc = sheet.Range(4, 1, 4, 7);
+            thongTinLoc.Style.Font.Bold = true;
+            thongTinLoc.Style.Fill.BackgroundColor = XLColor.LightBlue;
+
+            sheet.Cell(5, 1).Value = "Từ khóa:";
+            sheet.Cell(5, 2).Value =
+                string.IsNullOrWhiteSpace(tuKhoa) ? "Không có" : tuKhoa.Trim();
+
+            sheet.Cell(6, 1).Value = "Trạng thái:";
+            sheet.Cell(6, 2).Value = LayTenTrangThai(trangThai);
+
+            sheet.Cell(7, 1).Value = "Sắp xếp:";
+            sheet.Cell(7, 2).Value = LayTenSapXep(sapXep);
+
+            sheet.Cell(8, 1).Value = "Ngày xuất:";
+            sheet.Cell(8, 2).Value = DateTime.Now;
+            sheet.Cell(8, 2).Style.DateFormat.Format = "dd/MM/yyyy HH:mm";
+
+            // 7. Tiêu đề các cột dữ liệu
+            int dongTieuDe = 10;
+
+            string[] tieuDeCot =
+            {
+                "Mã khách hàng",
+                "Họ và tên",
+                "Số điện thoại",
+                "Email",
+                "Địa chỉ",
+                "Tên đăng nhập",
+                "Trạng thái"
+            };
+
+            for (int cot = 0; cot < tieuDeCot.Length; cot++)
+            {
+                sheet.Cell(dongTieuDe, cot + 1).Value = tieuDeCot[cot];
+            }
+
+            var header = sheet.Range(dongTieuDe, 1, dongTieuDe, 7);
+
+            header.Style.Font.Bold = true;
+            header.Style.Fill.BackgroundColor = XLColor.LightBlue;
+            header.Style.Alignment.Horizontal =
+                XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical =
+                XLAlignmentVerticalValues.Center;
+
+            // 8. Ghi dữ liệu khách hàng
+            int dong = dongTieuDe + 1;
+
+            foreach (var kh in danhSach)
+            {
+                sheet.Cell(dong, 1).Value = $"KH-{kh.MaKhachHang:D3}";
+                sheet.Cell(dong, 2).Value = kh.HoTen;
+                sheet.Cell(dong, 3).Value = kh.SoDienThoai;
+                sheet.Cell(dong, 4).Value = kh.Email;
+                sheet.Cell(dong, 5).Value = kh.DiaChi ?? "Chưa cập nhật";
+
+                sheet.Cell(dong, 6).Value =
+                    kh.TaiKhoan?.TenDangNhap ?? "Chưa có tài khoản";
+
+                sheet.Cell(dong, 7).Value =
+                    kh.TrangThai ? "Hoạt động" : "Đã khóa";
+
+                dong++;
+            }
+
+            // 9. Định dạng bảng dữ liệu
+            var bang = sheet.Range(
+                dongTieuDe, 1,
+                dong - 1, 7);
+
+            bang.Style.Border.OutsideBorder =
+                XLBorderStyleValues.Thin;
+
+            bang.Style.Border.InsideBorder =
+                XLBorderStyleValues.Thin;
+
+            // Tạo bảng Excel từ dòng dữ liệu
+            sheet.Range(
+                dongTieuDe + 1, 1,
+                dong - 1, 7)
+                .CreateTable()
+                .Theme = XLTableTheme.TableStyleMedium2;
+
+            // 10. Điều chỉnh độ rộng cột
+            sheet.Column(1).Width = 18;
+            sheet.Column(2).Width = 25;
+            sheet.Column(3).Width = 18;
+            sheet.Column(4).Width = 30;
+            sheet.Column(5).Width = 35;
+            sheet.Column(6).Width = 22;
+            sheet.Column(7).Width = 18;
+
+            sheet.Columns().AdjustToContents(1, dong);
+
+            // 11. Cố định dòng tiêu đề
+            sheet.SheetView.FreezeRows(dongTieuDe);
+
+            // 12. Lưu Workbook vào MemoryStream
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+
+            // 13. Trả file Excel về trình duyệt
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "DanhSachKhachHang.xlsx"
+            );
         }
     }
 }

@@ -1,0 +1,232 @@
+﻿@using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities
+@model List<KhachHang>
+
+@{
+    ViewBag.Title = "Xem trước báo cáo khách hàng";
+    ViewBag.ActiveMenu = "KhachHang";
+    ViewBag.Breadcrumb = "Quản lý khách hàng / Xem trước Excel";
+
+    bool? trangThai = ViewBag.TrangThai;
+    string tuKhoa = ViewBag.TuKhoa ?? "";
+    string sapXep = ViewBag.SapXep ?? "date_new";
+
+    string tenTrangThai = trangThai switch
+    {
+        true => "Đang hoạt động",
+        false => "Đã khóa",
+        _ => "Tất cả khách hàng"
+    };
+
+    string tenSapXep = sapXep switch
+    {
+        "name_asc" => "Tên (A-Z)",
+        "name_desc" => "Tên (Z-A)",
+        "date_old" => "Mã KH cũ nhất",
+        _ => "Mã KH mới nhất"
+    };
+
+    string tieuDe = trangThai switch
+    {
+        true => "DANH SÁCH KHÁCH HÀNG ĐANG HOẠT ĐỘNG",
+        false => "DANH SÁCH KHÁCH HÀNG ĐÃ KHÓA",
+        _ => "DANH SÁCH TẤT CẢ KHÁCH HÀNG"
+    };
+
+    if (!string.IsNullOrWhiteSpace(tuKhoa))
+    {
+        tieuDe = trangThai.HasValue
+            ? "DANH SÁCH KHÁCH HÀNG THEO ĐIỀU KIỆN TÌM KIẾM"
+            : "DANH SÁCH KHÁCH HÀNG - KẾT QUẢ TÌM KIẾM";
+    }
+}
+
+<div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
+
+    @await Html.PartialAsync("_AdminPageHeader")
+
+    <!-- Tiêu đề báo cáo -->
+    <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-space-xl">
+
+        <div class="text-center mb-space-lg">
+            <h2 class="font-headline-lg text-headline-lg text-primary font-bold">
+                @tieuDe
+            </h2>
+
+            <p class="text-on-surface-variant mt-2">
+                BÁO CÁO QUẢN LÝ KHÁCH HÀNG
+            </p>
+        </div>
+
+        <!-- Thông tin bộ lọc -->
+        <div class="bg-surface-container-low rounded-xl p-space-lg mb-space-lg">
+
+            <h3 class="font-title-md text-title-md font-bold mb-space-md">
+                Thông tin bộ lọc
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+
+                <div>
+                    <span class="text-on-surface-variant">Từ khóa:</span>
+                    <span class="font-semibold text-on-surface">
+                        @(string.IsNullOrWhiteSpace(tuKhoa)
+                            ? "Không có"
+                            : tuKhoa)
+                    </span>
+                </div>
+
+                <div>
+                    <span class="text-on-surface-variant">Trạng thái:</span>
+                    <span class="font-semibold text-on-surface">
+                        @tenTrangThai
+                    </span>
+                </div>
+
+                <div>
+                    <span class="text-on-surface-variant">Sắp xếp:</span>
+                    <span class="font-semibold text-on-surface">
+                        @tenSapXep
+                    </span>
+                </div>
+
+                <div>
+                    <span class="text-on-surface-variant">Ngày xem báo cáo:</span>
+                    <span class="font-semibold text-on-surface">
+                        @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Thống kê -->
+        <div class="flex items-center justify-between mb-space-md">
+            <div>
+                <h3 class="font-title-md text-title-md font-semibold">
+                    Danh sách khách hàng
+                </h3>
+                <p class="text-on-surface-variant text-body-sm">
+                    Có @Model.Count khách hàng phù hợp với bộ lọc.
+                </p>
+            </div>
+        </div>
+
+        <!-- Bảng dữ liệu -->
+        <div class="overflow-x-auto border border-surface-container rounded-xl">
+
+            <table class="w-full text-left border-collapse">
+
+                <thead>
+                    <tr class="bg-surface-container-low text-outline uppercase text-label-md">
+                        <th class="p-space-md">Mã KH</th>
+                        <th class="p-space-md">Họ tên</th>
+                        <th class="p-space-md">Số điện thoại</th>
+                        <th class="p-space-md">Email</th>
+                        <th class="p-space-md">Địa chỉ</th>
+                        <th class="p-space-md">Tài khoản</th>
+                        <th class="p-space-md text-center">Trạng thái</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-surface-container text-body-sm">
+
+                    @foreach (var kh in Model)
+                    {
+                        <tr class="hover:bg-surface-container-low/50">
+
+                            <td class="p-space-md font-mono text-primary font-bold">
+                                KH-@kh.MaKhachHang.ToString("D3")
+                            </td>
+
+                            <td class="p-space-md font-semibold">
+                                @kh.HoTen
+                            </td>
+
+                            <td class="p-space-md">
+                                @kh.SoDienThoai
+                            </td>
+
+                            <td class="p-space-md">
+                                @kh.Email
+                            </td>
+
+                            <td class="p-space-md">
+                                @(kh.DiaChi ?? "Chưa cập nhật")
+                            </td>
+
+                            <td class="p-space-md">
+                                @(kh.TaiKhoan?.TenDangNhap ?? "Chưa có tài khoản")
+                            </td>
+
+                            <td class="p-space-md text-center">
+                                @await Html.PartialAsync(
+                                    "_AdminStatusBadge",
+                                    kh.TrangThai ? "Hoạt động" : "Đã khóa")
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- Nút thao tác -->
+        <div class="flex flex-wrap justify-end gap-space-sm mt-space-xl">
+
+            <a asp-area="Admin"
+               asp-controller="KhachHang"
+               asp-action="Index"
+               asp-route-tuKhoa="@tuKhoa"
+               asp-route-trangThai="@trangThai"
+               asp-route-sapXep="@sapXep"
+               class="px-5 py-2.5 rounded-xl border border-outline-variant
+                text-on-surface font-semibold hover:bg-surface-container
+                transition-all">
+
+                <span class="material-symbols-outlined text-[18px] align-middle">
+                    arrow_back
+                </span>
+
+                Quay lại
+            </a>
+
+            <!-- Xác nhận xuất Excel -->
+            <form asp-area="Admin"
+                  asp-controller="KhachHang"
+                  asp-action="XuatExcel"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="tuKhoa" value="@tuKhoa" />
+
+                <input type="hidden"
+                       name="trangThai"
+                       value="@(trangThai.HasValue
+                                           ? trangThai.Value.ToString().ToLowerInvariant()
+                                       : "")" />
+
+                <input type="hidden" name="sapXep" value="@sapXep" />
+
+                <button type="submit"
+                        class="flex items-center gap-2 px-5 py-2.5
+                    rounded-xl bg-primary text-on-primary
+                    font-semibold hover:bg-primary-container
+                    transition-all shadow-sm">
+
+                    <span class="material-symbols-outlined text-[20px]">
+                        download
+                    </span>
+
+                    Xuất Excel
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>

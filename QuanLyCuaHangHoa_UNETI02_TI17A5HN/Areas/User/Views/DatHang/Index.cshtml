@@ -534,6 +534,7 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
     </div>
 </section>
 
+
 @section Scripts {
     <script>
         // 1. Đếm ký tự và chọn mẫu lời nhắn
@@ -544,35 +545,10 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
             counter.textContent = `${textArea.value.length}/500 ký tự`;
         }
 
-         // Mặc định cho phép nhập người nhận khác; chỉ khóa và đồng bộ hồ sơ
-        // khi khách chủ động tích "Người nhận chính là tôi".
-        const checkboxNguoiNhan = document.getElementById('NguoiNhanLaNguoiDat');
-        const inputTenNguoiNhan = document.getElementById('recipient_name');
-        const inputSdtNguoiNhan = document.getElementById('recipient_phone');
-
-        function capNhatNguoiNhan() {
-            const dungThongTinNguoiDat = checkboxNguoiNhan?.checked === true;
-            if (inputTenNguoiNhan) {
-                inputTenNguoiNhan.readOnly = dungThongTinNguoiDat;
-                if (dungThongTinNguoiDat) {
-                    inputTenNguoiNhan.value = checkboxNguoiNhan.dataset.profileName || '';
-                }
-            }
-            if (inputSdtNguoiNhan) {
-                inputSdtNguoiNhan.readOnly = dungThongTinNguoiDat;
-                if (dungThongTinNguoiDat) {
-                    inputSdtNguoiNhan.value = checkboxNguoiNhan.dataset.profilePhone || '';
-                }
-            }
+        if (textArea && counter) {
+            textArea.addEventListener('input', updateCounter);
+            updateCounter();
         }
-
-        checkboxNguoiNhan?.addEventListener('change', capNhatNguoiNhan);
-        capNhatNguoiNhan();
-
-        function capNhatHinhThucNhan() {
-            const hinhThuc = document.querySelector(
-                'input[name="HinhThucNhan"]:checked'
-            )?.value;
 
         window.setCardPreset = function(name) {
             if (!textArea) return;
@@ -588,9 +564,9 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
 
         // 2. Cập nhật phí giao hàng và tổng tiền
         const phiGiao = @(DonHangService.PhiGiaoTanNoi.ToString(
-            System.Globalization.CultureInfo.InvariantCulture));
+                                    System.Globalization.CultureInfo.InvariantCulture));
         const tamTinh = @(tamTinh.ToString(
-            System.Globalization.CultureInfo.InvariantCulture));
+                                    System.Globalization.CultureInfo.InvariantCulture));
 
         const address = document.getElementById('recipient_address');
 
@@ -645,3 +621,4 @@ Nội dung thực hiện: Kết nối giao diện gốc với dữ liệu DB và
             });
     </script>
 }
+

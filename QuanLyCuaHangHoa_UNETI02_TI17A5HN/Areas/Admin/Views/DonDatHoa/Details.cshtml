@@ -21,6 +21,15 @@ Nội dung thực hiện: Hiển thị dữ liệu thật, form GET lọc và PO
 
     <a asp-action="Index" class="text-primary underline">← Trở lại danh sách đơn</a>
 
+    @if (d.TrangThai == TrangThaiDon.HoanThanh)
+    {
+        <a asp-action="XemTruocHoaDon"
+           asp-route-id="@d.MaDon"
+           class="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-on-primary">
+            Xuất pdf
+        </a>
+    }
+
     @if (TempData["Error"] != null)
     {
         <p class="p-3 rounded-xl bg-error-container text-error">@TempData["Error"]</p>
