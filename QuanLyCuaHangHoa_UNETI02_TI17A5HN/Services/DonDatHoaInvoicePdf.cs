@@ -1,4 +1,7 @@
-﻿using System.Globalization;
+﻿// Họ và tên: Đặng Thị Mai Hương
+// Mã sinh viên: 23103100293
+// Nội dung thực hiện: Xây dựng chức năng tạo và xuất hóa đơn đặt hoa dưới định dạng PDF bằng QuestPDF.
+using System.Globalization;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;

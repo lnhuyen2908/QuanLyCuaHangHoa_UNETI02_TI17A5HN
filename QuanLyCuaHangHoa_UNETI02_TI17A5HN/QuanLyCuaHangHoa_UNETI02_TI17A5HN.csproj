@@ -20,4 +20,8 @@
     <PackageReference Include="QuestPDF" Version="2026.9.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\thiet-ke-rieng\" />
+  </ItemGroup>
+
 </Project>
