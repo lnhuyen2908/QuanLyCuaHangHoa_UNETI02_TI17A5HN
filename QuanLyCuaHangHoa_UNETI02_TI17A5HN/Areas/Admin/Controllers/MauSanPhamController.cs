@@ -2,6 +2,7 @@
 // Mã sinh viên: 23103100267
 // Nội dung thực hiện: Quản lý mẫu sản phẩm, thành phần hoa, upload nhiều ảnh, tìm kiếm, lọc, sắp xếp và phân trang.
 
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -371,7 +372,7 @@ public class MauSanPhamController : Controller
         try
         {
             // Cập nhật thông tin mẫu
-            entity.TenMau = model.TenMau.Trim();
+            entity.TenMau =     model.TenMau.Trim();
             entity.MaDip = model.MaDip;
             entity.KieuSanPham = model.KieuSanPham;
             entity.GiaCoBan = model.GiaCoBan;
@@ -667,4 +668,211 @@ public class MauSanPhamController : Controller
         await file.CopyToAsync(stream);
         return $"/images/mau/{name}";
     }
+
+
+    // ================================================================
+    // GET: /Admin/MauSanPham/ExportExcel
+    // Xuất danh sách mẫu sản phẩm ra file Excel
+    // Bao gồm cả các hoa thành phần và số lượng tiêu chuẩn
+    // ================================================================
+    [HttpGet]
+    public async Task<IActionResult> ExportExcel()
+    {
+        // BƯỚC 1: Lấy danh sách mẫu sản phẩm từ database
+        // Include DipSuDung để lấy tên dịp sử dụng
+        // ThenInclude HoaTuoi để lấy các loại hoa thành phần
+
+        var danhSachMau = await _context.MauSanPhams
+            .AsNoTracking()
+            .Include(m => m.DipSuDung)
+            .Include(m => m.ChiTietMaus)
+                .ThenInclude(ct => ct.HoaTuoi)
+            .OrderBy(m => m.MaMau)
+            .ToListAsync();
+
+        // BƯỚC 2: Tạo Workbook
+        using var workbook = new XLWorkbook();
+
+        // BƯỚC 3: Tạo Worksheet
+        var worksheet = workbook.Worksheets.Add("DanhSachMauSanPham");
+
+        // BƯỚC 4: Tạo tiêu đề
+        worksheet.Cell(1, 1).Value = "DANH SÁCH MẪU SẢN PHẨM";
+
+        // Gộp các ô từ A1 đến I1
+        worksheet.Range("A1:I1").Merge();
+
+        var title = worksheet.Range("A1:I1");
+
+        title.Style.Font.Bold = true;
+        title.Style.Font.FontSize = 16;
+        title.Style.Alignment.Horizontal =
+            XLAlignmentHorizontalValues.Center;
+        title.Style.Alignment.Vertical =
+            XLAlignmentVerticalValues.Center;
+
+        worksheet.Row(1).Height = 30;
+
+        // BƯỚC 5: Tạo tiêu đề các cột
+        string[] headers =
+        {
+            "Mã mẫu",
+            "Tên mẫu sản phẩm",
+            "Dịp sử dụng",
+            "Kiểu sản phẩm",
+            "Giá cơ bản",
+            "Hoa thành phần",
+            "Số lượng tiêu chuẩn",
+            "Ngày tạo",
+            "Trạng thái"
+        };
+
+        for (int i = 0; i < headers.Length; i++)
+        {
+            worksheet.Cell(3, i + 1).Value = headers[i];
+        }
+
+        // Định dạng hàng tiêu đề
+        var header = worksheet.Range("A3:I3");
+
+        header.Style.Font.Bold = true;
+        header.Style.Font.FontColor = XLColor.White;
+        header.Style.Fill.BackgroundColor = XLColor.DarkGreen;
+
+        header.Style.Alignment.Horizontal =
+            XLAlignmentHorizontalValues.Center;
+
+        header.Style.Alignment.Vertical =
+            XLAlignmentVerticalValues.Center;
+
+        header.Style.Alignment.WrapText = true;
+
+        header.Style.Border.OutsideBorder =
+            XLBorderStyleValues.Thin;
+
+        header.Style.Border.InsideBorder =
+            XLBorderStyleValues.Thin;
+
+        worksheet.Row(3).Height = 35;
+
+        // BƯỚC 6: Đổ dữ liệu mẫu sản phẩm vào Excel
+        int row = 4;
+
+        foreach (var mau in danhSachMau)
+        {
+            // Lấy danh sách tên hoa thành phần
+            var danhSachHoa = mau.ChiTietMaus
+                .Where(ct => ct.HoaTuoi != null)
+                .Select(ct => ct.HoaTuoi.TenHoa)
+                .ToList();
+
+            // Lấy số lượng tương ứng của từng loại hoa
+            var danhSachSoLuong = mau.ChiTietMaus
+                .Where(ct => ct.HoaTuoi != null)
+                .Select(ct => ct.SoLuongTieuChuan.ToString())
+                .ToList();
+
+            // Mã mẫu
+            worksheet.Cell(row, 1).Value = mau.MaMau;
+
+            // Tên mẫu
+            worksheet.Cell(row, 2).Value = mau.TenMau;
+
+            // Dịp sử dụng
+            worksheet.Cell(row, 3).Value =
+                mau.DipSuDung?.TenDip ?? "";
+
+            // Kiểu sản phẩm
+            worksheet.Cell(row, 4).Value = mau.KieuSanPham;
+
+            // Giá cơ bản
+            worksheet.Cell(row, 5).Value = mau.GiaCoBan;
+
+            // Tên các hoa thành phần
+            worksheet.Cell(row, 6).Value =
+                danhSachHoa.Count > 0
+                    ? string.Join("\n", danhSachHoa)
+                    : "Chưa có hoa thành phần";
+
+            // Số lượng tiêu chuẩn
+            worksheet.Cell(row, 7).Value =
+                danhSachSoLuong.Count > 0
+                    ? string.Join("\n", danhSachSoLuong)
+                    : "";
+
+            // Ngày tạo
+            worksheet.Cell(row, 8).Value = mau.NgayTao;
+
+            // Trạng thái
+            worksheet.Cell(row, 9).Value =
+                mau.TrangThai ? "Đang mở bán" : "Tạm ngừng bán";
+
+            row++;
+        }
+
+        // BƯỚC 7: Định dạng dữ liệu
+
+        // Định dạng tiền Việt Nam
+        worksheet.Column(5).Style.NumberFormat.Format = "#,##0";
+
+        // Định dạng ngày tháng
+        worksheet.Column(8).Style.DateFormat.Format = "dd/MM/yyyy";
+
+        // Căn giữa mã mẫu, số lượng và trạng thái
+        worksheet.Column(1).Style.Alignment.Horizontal =
+            XLAlignmentHorizontalValues.Center;
+
+        worksheet.Column(7).Style.Alignment.Horizontal =
+            XLAlignmentHorizontalValues.Center;
+
+        worksheet.Column(9).Style.Alignment.Horizontal =
+            XLAlignmentHorizontalValues.Center;
+
+        // Cho phép xuống dòng trong cột hoa thành phần
+        worksheet.Column(6).Style.Alignment.WrapText = true;
+        worksheet.Column(7).Style.Alignment.WrapText = true;
+
+        // Kẻ đường viền dữ liệu
+        if (row > 4)
+        {
+            var dataRange = worksheet.Range(4, 1, row - 1, 9);
+
+            dataRange.Style.Border.OutsideBorder =
+                XLBorderStyleValues.Thin;
+
+            dataRange.Style.Border.InsideBorder =
+                XLBorderStyleValues.Thin;
+
+            dataRange.Style.Alignment.Vertical =
+                XLAlignmentVerticalValues.Center;
+        }
+
+        // BƯỚC 8: Tạo bộ lọc
+        worksheet.Range(3, 1, Math.Max(3, row - 1), 9)
+            .SetAutoFilter();
+
+        // Cố định 3 hàng đầu
+        worksheet.SheetView.FreezeRows(3);
+
+        // Tự động điều chỉnh độ rộng các cột
+        worksheet.Columns().AdjustToContents();
+
+        // Giới hạn độ rộng một số cột dài
+        worksheet.Column(2).Width = 28;
+        worksheet.Column(6).Width = 30;
+        worksheet.Column(7).Width = 22;
+
+        // BƯỚC 9: Lưu file Excel vào bộ nhớ
+        using var stream = new MemoryStream();
+
+        workbook.SaveAs(stream);
+
+        // BƯỚC 10: Trả file Excel về trình duyệt
+        return File(
+            stream.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"DanhSachMauSanPham_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+        );
+    }
+
 }

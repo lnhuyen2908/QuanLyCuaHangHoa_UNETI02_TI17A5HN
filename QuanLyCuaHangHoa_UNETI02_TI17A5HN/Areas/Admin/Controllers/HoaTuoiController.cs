@@ -11,6 +11,7 @@ using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.Entities;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels;
 using System.Globalization;
+using ClosedXML.Excel;
 
 namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 {
@@ -527,6 +528,156 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+
+        // ================================================================
+        // GET: /Admin/HoaTuoi/ExportExcel
+        // Xuất danh sách hoa tươi ra file Excel
+        // ================================================================
+        [HttpGet]
+        public async Task<IActionResult> ExportExcel()
+        {
+            // BƯỚC 1: Lấy danh sách hoa tươi từ database
+            var danhSachHoa = await _context.HoaTuois
+                .AsNoTracking()
+                .Include(h => h.LoaiHoa)
+                .OrderBy(h => h.MaHoa)
+                .ToListAsync();
+
+            // BƯỚC 2: Tạo một Workbook (tệp Excel)
+            using var workbook = new XLWorkbook();
+
+            // BƯỚC 3: Tạo Worksheet (trang tính)
+            var worksheet = workbook.Worksheets.Add("DanhSachHoaTuoi");
+
+            // BƯỚC 4: Tạo tiêu đề bảng
+            worksheet.Cell(1, 1).Value = "DANH SÁCH HOA TƯƠI";
+
+            // Gộp các ô từ A1 đến H1
+            worksheet.Range("A1:H1").Merge();
+
+            // Định dạng tiêu đề
+            var title = worksheet.Range("A1:H1");
+            title.Style.Font.Bold = true;
+            title.Style.Font.FontSize = 16;
+            title.Style.Alignment.Horizontal =
+                XLAlignmentHorizontalValues.Center;
+            title.Style.Alignment.Vertical =
+                XLAlignmentVerticalValues.Center;
+
+            worksheet.Row(1).Height = 30;
+
+            // BƯỚC 5: Tạo tên các cột
+            string[] headers =
+            {
+                "Mã hoa",
+                "Tên hoa",
+                "Loại hoa",
+                "Màu sắc",
+                "Đơn vị tính",
+                "Đơn giá tham khảo",
+                "Mô tả",
+                "Trạng thái"
+            };
+
+            for (int i = 0; i < headers.Length; i++)
+            {
+                worksheet.Cell(3, i + 1).Value = headers[i];
+            }
+
+            // Định dạng hàng tiêu đề cột
+            var header = worksheet.Range("A3:H3");
+            header.Style.Font.Bold = true;
+            header.Style.Fill.BackgroundColor = XLColor.LightBlue;
+            header.Style.Alignment.Horizontal =
+                XLAlignmentHorizontalValues.Center;
+            header.Style.Alignment.Vertical =
+                XLAlignmentVerticalValues.Center;
+            header.Style.Border.OutsideBorder =
+                XLBorderStyleValues.Thin;
+            header.Style.Border.InsideBorder =
+                XLBorderStyleValues.Thin;
+
+            // BƯỚC 6: Đổ dữ liệu hoa tươi vào Excel
+            int row = 4;
+
+            foreach (var hoa in danhSachHoa)
+            {
+                worksheet.Cell(row, 1).Value =
+                    $"HT-{hoa.MaHoa:D3}";
+
+                worksheet.Cell(row, 2).Value = hoa.TenHoa;
+
+                worksheet.Cell(row, 3).Value =
+                    hoa.LoaiHoa?.TenLoaiHoa ?? "";
+
+                worksheet.Cell(row, 4).Value = hoa.MauSac;
+
+                worksheet.Cell(row, 5).Value = hoa.DonViTinh;
+
+                worksheet.Cell(row, 6).Value =
+                    hoa.DonGiaThamKhao;
+
+                worksheet.Cell(row, 7).Value =
+                    hoa.MoTa ?? "";
+
+                worksheet.Cell(row, 8).Value =
+                    hoa.TrangThai ? "Đang hoạt động" : "Ngừng hoạt động";
+
+                row++;
+            }
+
+            // BƯỚC 7: Định dạng dữ liệu trong Excel
+
+            // Định dạng tiền Việt Nam
+            worksheet.Column(6).Style.NumberFormat.Format =
+                "#,##0";
+
+            // Căn giữa mã hoa và trạng thái
+            worksheet.Column(1).Style.Alignment.Horizontal =
+                XLAlignmentHorizontalValues.Center;
+
+            worksheet.Column(8).Style.Alignment.Horizontal =
+                XLAlignmentHorizontalValues.Center;
+
+            // Kẻ đường viền cho vùng dữ liệu
+            if (row > 4)
+            {
+                var dataRange = worksheet.Range(4, 1, row - 1, 8);
+
+                dataRange.Style.Border.OutsideBorder =
+                    XLBorderStyleValues.Thin;
+
+                dataRange.Style.Border.InsideBorder =
+                    XLBorderStyleValues.Thin;
+            }
+
+            // Bật bộ lọc ở hàng tiêu đề
+            worksheet.Range(3, 1, Math.Max(3, row - 1), 8)
+                .SetAutoFilter();
+
+            // Cố định các hàng phía trên
+            worksheet.SheetView.FreezeRows(3);
+
+            // Tự động điều chỉnh độ rộng cột
+            worksheet.Columns().AdjustToContents();
+
+            // Giới hạn độ rộng cột mô tả để tránh quá rộng
+            worksheet.Column(7).Width = 35;
+            worksheet.Column(7).Style.Alignment.WrapText = true;
+
+            // BƯỚC 8: Lưu Workbook vào bộ nhớ
+            using var stream = new MemoryStream();
+
+            workbook.SaveAs(stream);
+
+            // BƯỚC 9: Trả file Excel về trình duyệt
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"DanhSachHoaTuoi_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+            );
         }
 
     }
