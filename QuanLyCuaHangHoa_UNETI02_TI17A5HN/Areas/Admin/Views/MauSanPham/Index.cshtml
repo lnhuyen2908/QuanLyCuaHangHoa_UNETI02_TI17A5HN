@@ -170,19 +170,48 @@
 
     <!-- Products Table -->
     <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+        
         <!-- Table Top Bar -->
         <div class="p-space-md bg-surface-container-lowest flex items-center justify-between gap-space-sm border-b border-surface-container">
             <div class="flex items-center gap-space-sm">
-                <span class="font-headline-sm text-headline-sm text-on-surface">Danh Sách Mẫu Sản Phẩm</span>
-                <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">@Model.DanhSachMau.TongSoBanGhi mẫu hoa phù hợp</span>
+                <span class="font-headline-sm text-headline-sm text-on-surface">
+                    Danh Sách Mẫu Sản Phẩm
+                </span>
+
+                <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">
+                    @Model.DanhSachMau.TongSoBanGhi mẫu hoa phù hợp
+                </span>
             </div>
-            <a asp-area="Admin"
-               asp-controller="MauSanPham"
-               asp-action="Create"
-               class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[18px]">add_circle</span>
-                <span>Thêm Mẫu Sản Phẩm Mới</span>
-            </a>
+
+            <div class="flex items-center gap-2">
+
+                <!-- Nút xuất Excel -->
+                <a asp-area="Admin"
+                   asp-controller="MauSanPham"
+                   asp-action="ExportExcel"
+                   class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-green-600 text-white font-title-sm hover:bg-green-700 transition-all shadow-sm">
+
+                    <span class="material-symbols-outlined text-[18px]">
+                        description
+                    </span>
+
+                    <span>Xuất Excel</span>
+                </a>
+
+                <!-- Nút thêm mẫu sản phẩm -->
+                <a asp-area="Admin"
+                   asp-controller="MauSanPham"
+                   asp-action="Create"
+                   class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-container transition-all shadow-sm">
+
+                    <span class="material-symbols-outlined text-[18px]">
+                        add_circle
+                    </span>
+
+                    <span>Thêm Mẫu Sản Phẩm Mới</span>
+                </a>
+
+            </div>
         </div>
 
         <div class="overflow-x-auto">
