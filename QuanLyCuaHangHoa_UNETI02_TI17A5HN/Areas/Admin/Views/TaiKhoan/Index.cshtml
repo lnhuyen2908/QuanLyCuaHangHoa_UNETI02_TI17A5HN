@@ -21,6 +21,15 @@
     <!-- Header Section -->
     @await Html.PartialAsync("_AdminPageHeader")
 
+     <!-- Giao diện nút excel-->
+    <div class="flex flex-wrap justify-end gap-3">
+        <a asp-area="Admin" asp-controller="TaiKhoan" asp-action="XuatExcel"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-700 text-white font-semibold hover:opacity-90">
+            <span class="material-symbols-outlined">table_view</span>
+            Xuất Excel
+        </a>
+    </div>
+
     <!-- Thông báo kết quả thao tác -->
     @if (TempData["ThanhCong"] != null)
     {
@@ -113,11 +122,20 @@
         TuKhoa = Model.TuKhoa,
         TrangThai = Model.TrangThai,
         VaiTro = Model.VaiTro,
+        SapXep = Model.SapXep,
 
         Placeholder = "Tìm theo tên đăng nhập, họ tên, email...",
 
         HienThiTrangThai = true,
-        HienThiVaiTro = true
+        HienThiVaiTro = true,
+
+        SapXepOptions = new()
+        {
+            new() { Value = "name_asc", Text = "Tên (A-Z)" },
+            new() { Value = "name_desc", Text = "Tên (Z-A)" },
+            new() { Value = "date_new", Text = "Mã KH mới nhất" },
+            new() { Value = "date_old", Text = "Mã KH cũ nhất" }
+        }
     })
 
     <!-- Account Data Table Container -->
@@ -238,7 +256,8 @@
                 {
                     ["tuKhoa"] = Model.TuKhoa,
                     ["vaiTro"] = Model.VaiTro,
-                    ["trangThai"] = Model.TrangThai?.ToString().ToLowerInvariant()
+                    ["trangThai"] = Model.TrangThai?.ToString().ToLowerInvariant(),
+                    ["sapXep"] = Model.SapXep
                 }
             })
         </div>

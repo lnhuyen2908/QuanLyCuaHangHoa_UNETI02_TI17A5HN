@@ -299,7 +299,17 @@
                         var donGannhat = Model.DonHangGanNhat;
                         var ctFirst = donGannhat.ChiTietDonHoas.FirstOrDefault();
                         var tenSp = ctFirst?.MauSanPham?.TenMau ?? "Đơn hoa thiết kế riêng";
-                        var anhSp = ctFirst?.MauSanPham?.HinhAnh ?? "/images/mau/mau01.jpg";
+
+                        var yeuCau = ctFirst?.YeuCauRieng ?? "";
+                        const string tienToAnh = "Ảnh tham khảo: ";
+                        var viTriAnh = yeuCau.IndexOf(tienToAnh, StringComparison.Ordinal);
+                        var anhThamKhao = viTriAnh >= 0
+                            ? yeuCau[(viTriAnh + tienToAnh.Length)..].Split(';')[0].Trim()
+                            : null;
+                        var anhSp = !string.IsNullOrWhiteSpace(anhThamKhao)
+                            ? anhThamKhao
+                            : ctFirst?.MauSanPham?.HinhAnh ?? "/images/mau/mau01.jpg";
+
                         var moTa = ctFirst?.MauSanPham?.MoTa ?? ctFirst?.YeuCauRieng ?? "Mẫu hoa tươi thiết kế độc bản";
 
                         <section class="bg-surface-container-lowest rounded-xl p-space-lg md:p-space-xl shadow-sm space-y-space-md">

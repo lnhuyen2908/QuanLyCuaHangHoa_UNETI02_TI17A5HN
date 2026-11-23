@@ -310,23 +310,18 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
                         </button>
                     </form>
                     <script>
-                                            // Lấy các tùy chọn khách đang chọn để chuyển sang Checkout.
-                                            function guiMuaNgay(form) {
+                            function guiMuaNgay(form) {
+                                form.elements["soLuong"].value =
+                                    document.getElementById("quantityInput").value;
 
-                                                // Số lượng hoa
-                                                form.elements["soLuong"].value =
-                                                    document.getElementById("quantityInput").value;
+                                form.elements["giayGoiRuyBang"].value =
+                                    document.getElementById("selectedWrapLabel").textContent.trim();
 
-                                                // Giấy gói và ruy-băng
-                                                form.elements["giayGoiRuyBang"].value =
-                                                    document.getElementById("selectedWrapLabel").textContent.trim();
+                                form.elements["loiChuc"].value =
+                                    document.querySelector("#greetingContainer textarea").value;
 
-                                                // Lời chúc (có thể để trống)
-                                                form.elements["loiChuc"].value =
-                                                    document.querySelector("#greetingContainer textarea").value;
-
-                                                return true;
-                                            }
+                                return true;
+                            }
                     </script>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
@@ -347,18 +342,18 @@ Nội dung thực hiện: Thiết kế giao diện chi tiết mẫu hoa, hiển 
                     </form>
 
                     <script>
-                                            function guiVaoGio(form) {
-                                                form.elements["soLuong"].value =
-                                                    document.getElementById("quantityInput").value;
+                            function guiVaoGio(form) {
+                                form.elements["soLuong"].value =
+                                    document.getElementById("quantityInput").value;
 
-                                                form.elements["giayGoiRuyBang"].value =
-                                                    document.getElementById("selectedWrapLabel").textContent.trim();
+                                form.elements["giayGoiRuyBang"].value =
+                                    document.getElementById("selectedWrapLabel").textContent.trim();
 
-                                                form.elements["loiChuc"].value =
-                                                    document.querySelector("#greetingContainer textarea").value;
+                                form.elements["loiChuc"].value =
+                                    document.querySelector("#greetingContainer textarea").value;
 
-                                                return true;
-                                            }
+                                return true;
+                            }
                     </script>
                     @* HẾT PHẦN CỦA HƯƠNG *@
 

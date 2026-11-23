@@ -55,6 +55,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 {
                     vm.NguoiNhan = kh.HoTen;
                     vm.SoDienThoai = kh.SoDienThoai;
+                    vm.DiaChiGiao = kh.DiaChi;
                 }
             }
 
@@ -158,9 +159,9 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             }
 
             var kh = await _db.KhachHangs
-    .AsNoTracking()
-    .FirstOrDefaultAsync(x =>
-        x.MaTaiKhoan == account.Value && x.TrangThai);
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x =>
+                        x.MaTaiKhoan == account.Value && x.TrangThai);
 
             if (kh == null)
             {

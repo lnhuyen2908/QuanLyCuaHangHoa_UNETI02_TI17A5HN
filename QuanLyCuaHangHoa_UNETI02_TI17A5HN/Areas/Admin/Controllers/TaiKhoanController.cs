@@ -2,6 +2,7 @@
 // MSV: 23103100271
 // Nội dung thực hiện: Quản trị tài khoản (chỉ Admin): danh sách tìm/lọc, thêm, sửa, khóa/mở khóa, kiểm tra trùng tên đăng nhập.
 
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data;
@@ -37,7 +38,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         }
 
         // GET: /Admin/TaiKhoan/Index (Tìm kiếm, Lọc, Phân trang)
-        public async Task<IActionResult> Index(string? tuKhoa, string? vaiTro, bool? trangThai, int page = 1)
+        public async Task<IActionResult> Index(string? tuKhoa, string? vaiTro, bool? trangThai, string sapXep = "date_new", int page = 1)
         {
             const int pageSize = 10;
             var query = _context.TaiKhoans.Include(t => t.KhachHang).AsNoTracking().AsQueryable();
@@ -60,7 +61,20 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 query = query.Where(t => t.TrangThai == trangThai.Value);
             }
 
-            query = query.OrderByDescending(t => t.MaTaiKhoan);
+            // Sắp xếp
+            query = sapXep switch
+            {
+                "name_desc" => query.OrderByDescending(t => t.HoTen).ThenBy(t => t.MaTaiKhoan),
+                "name_asc" => query.OrderBy(t => t.HoTen).ThenBy(t => t.MaTaiKhoan),
+                "date_old" => query.OrderBy(t => t.MaTaiKhoan),
+                _ => query.OrderByDescending(t => t.MaTaiKhoan)
+            };
+
+            if (sapXep != "name_desc" && sapXep != "name_asc" && sapXep != "date_old")
+            {
+                sapXep = "date_new";
+            }
+
             var danhSach = await PagedList<TaiKhoan>.CreateAsync(query, page, pageSize);
 
             var vm = new TaiKhoanAdminIndexViewModel
@@ -69,6 +83,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 TuKhoa = tuKhoa,
                 VaiTro = vaiTro,
                 TrangThai = trangThai,
+                SapXep = sapXep,
                 TongTaiKhoan = await _context.TaiKhoans.CountAsync(),
                 TongAdmin = await _context.TaiKhoans.CountAsync(t => t.VaiTro == VaiTroConst.Admin),
                 TongNhanVien = await _context.TaiKhoans.CountAsync(t => t.VaiTro == VaiTroConst.NhanVien),
@@ -407,6 +422,56 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
 
             TempData["ThanhCong"] = "Cập nhật thông tin cá nhân thành công!";
             return View(tk);
+        }
+
+
+        // ================================================================
+        // GET: /Admin/TaiKhoan/XuatExcel
+        // ================================================================
+        [HttpGet]
+        public async Task<IActionResult> XuatExcel ()
+        {
+            var ds = await _context.TaiKhoans
+                            .AsNoTracking()
+                            .Include(a => a.KhachHang)
+                            .OrderByDescending(a => a.MaTaiKhoan)
+                            .ToListAsync();
+
+            using var workbook = new XLWorkbook();
+            var sheet = workbook.Worksheets.Add("TaiKhoan");
+            sheet.Cell(1, 1).Value = "DANH SÁCH TÀI KHOẢN";
+            sheet.Range(1, 1, 1, 6).Merge();
+            sheet.Cell(1, 1).Style.Font.Bold = true;
+            sheet.Cell(1, 1).Style.Font.FontSize = 16;
+            sheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            string[] tieude = { "Mã tài khoản", "Tên đăng nhập", "Họ và tên", "Email", "Vai trò", "Trạng thái"};
+            for (int cot = 0; cot < tieude.Length; cot++)
+            {
+                sheet.Cell(3, cot + 1).Value = tieude[cot];
+            }
+
+            var header = sheet.Range(3, 1, 3, 6);
+            header.Style.Font.Bold = true;
+            header.Style.Fill.BackgroundColor = XLColor.LightBlue;
+
+            int dong = 4;
+            foreach (var l in ds)
+            {
+                sheet.Cell(dong, 1).Value = l.MaTaiKhoan;
+                sheet.Cell(dong, 2).Value = l.TenDangNhap;
+                sheet.Cell(dong, 3).Value = l.HoTen;
+                sheet.Cell(dong, 4).Value = l.Email;
+                sheet.Cell(dong, 5).Value = l.VaiTro;
+                sheet.Cell(dong, 6).Value = l.TrangThai ? "Hoạt động" : "Đã khóa";
+                dong++;
+            }  
+
+            sheet.Columns().AdjustToContents();
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument." + "spreadsheetml.sheet", "DanhSachTaiKhoan.xlsx");
         }
     }
 }

@@ -159,9 +159,22 @@
                             <td class="p-4 text-primary font-semibold">@d.TongTien.ToString("N0")₫</td>
                             <td class="p-4">@await Html.PartialAsync("_AdminStatusBadge", d.TrangThai)</td>
                             <td class="p-4">
-                                <a class="text-primary font-semibold underline"
-                                   asp-action="Details"
-                                   asp-route-id="@d.MaDon">Xem chi tiết</a>
+                                <div class="flex flex-col items-start gap-2">
+                                    <a class="text-primary font-semibold underline"
+                                       asp-action="Details"
+                                       asp-route-id="@d.MaDon">
+                                        Chi tiết
+                                    </a>
+
+                                    @if (d.TrangThai == TrangThaiDon.HoanThanh)
+                                    {
+                                        <a class="text-sm font-semibold text-tertiary underline"
+                                           asp-action="XemTruocHoaDon"
+                                           asp-route-id="@d.MaDon">
+                                            Xuất pdf
+                                        </a>
+                                    }
+                                </div>
                             </td>
                         </tr>
                     }

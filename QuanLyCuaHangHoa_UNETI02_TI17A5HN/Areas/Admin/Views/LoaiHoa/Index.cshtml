@@ -18,6 +18,16 @@
 <div class="px-space-xl py-space-lg flex flex-col w-full space-y-space-md">
     <!-- Header Section -->
     @await Html.PartialAsync("_AdminPageHeader")
+    
+    <!-- Giao diện nút excel-->
+    <div class="flex flex-wrap justify-end gap-3">
+        <a asp-area="Admin" asp-controller="LoaiHoa" asp-action="XuatExcel"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-700 text-white font-semibold hover:opacity-90">
+            <span class="material-symbols-outlined">table_view</span>
+            Xuất Excel
+        </a>
+    </div>
+
 
     <!-- Thông báo kết quả thao tác -->
     @if (TempData["ThanhCong"] != null)
@@ -121,6 +131,15 @@
                     <option value="" selected="@(Model.TrangThai == null)">Tất cả trạng thái</option>
                     <option value="true" selected="@(Model.TrangThai == true)">Đang dùng (Hoạt động)</option>
                     <option value="false" selected="@(Model.TrangThai == false)">Ngừng dùng</option>
+                </select>
+            </div>
+            <div class="flex items-center gap-2 bg-surface-container px-3 py-2 rounded-xl font-title-sm text-title-sm text-on-surface-variant">
+                <span class="material-symbols-outlined text-[18px]">sort</span>
+                <select name="sapXep" class="bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+                    <option value="name_asc" selected="@(Model.SapXep == "name_asc")">Tên (A-Z)</option>
+                    <option value="name_desc" selected="@(Model.SapXep == "name_desc")">Tên (Z-A)</option>
+                    <option value="date_new" selected="@(Model.SapXep == "date_new")">Mã mới nhất</option>
+                    <option value="date_old" selected="@(Model.SapXep == "date_old")">Mã cũ nhất</option>
                 </select>
             </div>
             <button type="submit" class="flex items-center gap-space-xs bg-primary text-on-primary px-4 py-2 rounded-xl font-title-sm text-title-sm hover:opacity-90 transition-all shadow-sm">
@@ -240,7 +259,8 @@
                 BoLoc = new Dictionary<string, string?>
                 {
                     ["tuKhoa"] = Model.TuKhoa,
-                    ["trangThai"] = Model.TrangThai?.ToString().ToLowerInvariant()
+                    ["trangThai"] = Model.TrangThai?.ToString().ToLowerInvariant(),
+                    ["sapXep"] = Model.SapXep
                 }
             })
         </div>

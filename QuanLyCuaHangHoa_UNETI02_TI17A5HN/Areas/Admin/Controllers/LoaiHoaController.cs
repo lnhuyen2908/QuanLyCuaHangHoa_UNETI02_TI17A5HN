@@ -2,6 +2,7 @@
 // Mã sinh viên: 23103100271
 // Nội dung thực hiện: Controller Quản lý Loại hoa (CRUD, kiểm tra trùng tên loại hoa, không xóa vật lý nếu đã có hoa tươi sử dụng, đếm số giống hoa bằng LINQ).
 
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data;
@@ -26,7 +27,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         // ================================================================
         // GET: /Admin/LoaiHoa/Index (Danh sách, tìm kiếm, lọc, đếm LINQ)
         // ================================================================
-        public async Task<IActionResult> Index(string? tuKhoa, bool? trangThai, int page = 1)
+        public async Task<IActionResult> Index(string? tuKhoa, bool? trangThai, string sapXep = "date_new", int page = 1)
         {
             const int pageSize = 10;
             var query = _context.LoaiHoas.AsNoTracking().AsQueryable();
@@ -43,7 +44,19 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 query = query.Where(l => l.TrangThai == trangThai.Value);
             }
 
-            query = query.OrderByDescending(l => l.MaLoaiHoa);
+            // Sắp xếp
+            query = sapXep switch
+            {
+                "name_desc" => query.OrderByDescending(l => l.TenLoaiHoa).ThenBy(l => l.MaLoaiHoa),
+                "name_asc" => query.OrderBy(l => l.TenLoaiHoa).ThenBy(l => l.MaLoaiHoa),
+                "date_old" => query.OrderBy(l => l.MaLoaiHoa),
+                _ => query.OrderByDescending(l => l.MaLoaiHoa)
+            };
+
+            if (sapXep != "name_desc" && sapXep != "name_asc" && sapXep != "date_old")
+            {
+                sapXep = "date_new";
+            }
 
             // Số giống hoa trực thuộc đếm bằng LINQ
             var projectedQuery = query.Select(l => new LoaiHoaItemViewModel
@@ -63,6 +76,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 DanhSach = danhSach,
                 TuKhoa = tuKhoa,
                 TrangThai = trangThai,
+                SapXep = sapXep,
                 TongLoaiHoa = await _context.LoaiHoas.CountAsync(),
                 TongDangKinhDoanh = await _context.LoaiHoas.CountAsync(l => l.TrangThai),
                 TongTamNgung = await _context.LoaiHoas.CountAsync(l => !l.TrangThai),
@@ -206,5 +220,54 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
                 thongBao = daTonTai ? "Tên loại hoa này đã tồn tại!" : "Tên loại hoa hợp lệ."
             });
         }
+
+
+        // ================================================================
+        // GET: /Admin/LoaiHoa/XuatExcel
+        // ================================================================
+        [HttpGet]
+        public async Task <IActionResult> XuatExcel ()
+        {
+            var ds = await _context.LoaiHoas
+                .AsNoTracking()
+                .Include(a => a.HoaTuois)
+                .OrderByDescending(a => a.MaLoaiHoa)
+                .ToListAsync();
+
+            using var workbook = new XLWorkbook();
+            var sheet = workbook.Worksheets.Add("LoaiHoa");
+            sheet.Cell(1, 1).Value = "DANH SÁCH LOẠI HOA";
+            sheet.Range(1, 1, 1, 4).Merge();
+            sheet.Cell(1,1).Style.Font.Bold = true;
+            sheet.Cell(1, 1).Style.Font.FontSize = 16;
+            sheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            string[] tieude = { "Mã loại hoa", "Tên loại hoa", "Số lượng", "Mô tả" };
+            for (int cot = 0; cot < tieude.Length; cot++)
+            {
+                sheet.Cell(3,cot +1).Value = tieude[cot];
+            }
+
+            var header = sheet.Range(3, 1, 3, 4);
+            header.Style.Font.Bold = true;
+            header.Style.Fill.BackgroundColor = XLColor.LightBlue;
+
+            int dong = 4;
+            foreach (var l in ds)
+            {
+                sheet.Cell(dong, 1).Value = l.MaLoaiHoa;
+                sheet.Cell(dong, 2).Value = l.TenLoaiHoa;
+                sheet.Cell(dong, 3).Value = l.HoaTuois.Count;
+                sheet.Cell(dong, 4).Value = l.MoTa;
+                dong++;
+            }
+
+            sheet.Columns().AdjustToContents();
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument."+ "spreadsheetml.sheet", "DanhSachLoaiHoa.xlsx");
+        }
+
     }
 }

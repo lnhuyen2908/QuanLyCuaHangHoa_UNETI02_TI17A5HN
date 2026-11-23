@@ -49,8 +49,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
         {
             if (!TuyChonHopLe(giayGoiRuyBang, loiChuc))
             {
-                TempData["Error"] =
-                    "Giấy gói tối đa 100 ký tự, lời chúc tối đa 180 ký tự.";
+                TempData["Error"] = "Giấy gói tối đa 100 ký tự, lời chúc tối đa 180 ký tự.";
 
                 return RedirectToAction(nameof(Index));
             }
@@ -101,9 +100,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
         {
             if (!TuyChonHopLe(giayGoiRuyBang, loiChuc))
             {
-                TempData["Error"] =
-                    "Giấy gói tối đa 100 ký tự, lời chúc tối đa 180 ký tự.";
-
+                TempData["Error"] = "Giấy gói tối đa 100 ký tự, lời chúc tối đa 180 ký tự.";
                 return RedirectToAction(nameof(Index));
             }
 
