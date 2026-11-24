@@ -14,23 +14,10 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.x" # Chỉnh lại nếu dự án dùng bản khác
+          dotnet-version: "10.0.x"
 
       - name: Publish project
-        run: dotnet publish -c Release -o ./publish
-
-      - name: Create app_offline.htm to unlock IIS files
-        run: echo "<h1>Dang cap nhat he thong, vui long quay lai sau 30 giay...</h1>" > ./app_offline.htm
-
-      - name: Put app offline on Somee
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.SOMEE_FTP_SERVER }}
-          username: ${{ secrets.SOMEE_FTP_USERNAME }}
-          password: ${{ secrets.SOMEE_FTP_PASSWORD }}
-          local-dir: ./
-          include: |
-            app_offline.htm
+        run: dotnet publish -c Release --self-contained true -r win-x86 -o ./publish
 
       - name: Upload published files to Somee
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -38,18 +25,7 @@ jobs:
           server: ${{ secrets.SOMEE_FTP_SERVER }}
           username: ${{ secrets.SOMEE_FTP_USERNAME }}
           password: ${{ secrets.SOMEE_FTP_PASSWORD }}
+          protocol: ftp
+          security: loose
           local-dir: ./publish/
-          exclude: |
-            **/.git*
-            **/.git*/**
-
-      - name: Bring app back online (remove app_offline.htm)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.SOMEE_FTP_SERVER }}
-          username: ${{ secrets.SOMEE_FTP_USERNAME }}
-          password: ${{ secrets.SOMEE_FTP_PASSWORD }}
-          local-dir: ./publish/
-          include: |
-            non-existent-file-to-trigger-clean
-          dangerous-clean-slate: false
+          server-dir: /www.quanlycuahanghoa.somee.com/
