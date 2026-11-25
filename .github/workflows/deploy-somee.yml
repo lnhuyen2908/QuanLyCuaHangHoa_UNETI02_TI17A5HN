@@ -16,8 +16,21 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - name: Publish project
-        run: dotnet publish -c Release --self-contained true -r win-x86 -o ./publish
+      - name: Publish project (Trimmed & Optimized)
+        run: |
+          dotnet publish -c Release -r win-x86 --self-contained true \
+            /p:PublishTrimmed=true \
+            /p:DebugType=None \
+            /p:DebugSymbols=false \
+            -o ./publish
+
+          # Xóa các file PDB thừa nếu còn sót
+          find ./publish -name "*.pdb" -type f -delete
+
+          # Xóa các thư mục đa ngôn ngữ không dùng đến (tiết kiệm ~15-20MB)
+          for lang in cs de es fr it ja ko pl pt-BR ru tr zh-Hans zh-Hant; do
+            rm -rf ./publish/$lang
+          done
 
       - name: Upload published files to Somee
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
