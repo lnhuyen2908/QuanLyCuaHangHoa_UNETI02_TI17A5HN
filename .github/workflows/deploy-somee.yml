@@ -16,11 +16,9 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - name: Publish project (SingleFile Compressed)
+      - name: Publish project (Self-Contained, IIS Compatible, <150MB)
         run: |
           dotnet publish -c Release -r win-x86 --self-contained true \
-            /p:PublishSingleFile=true \
-            /p:EnableCompressionInSingleFile=true \
             /p:DebugType=None \
             /p:DebugSymbols=false \
             -o ./publish
@@ -28,10 +26,14 @@ jobs:
           # Xóa các file PDB thừa nếu còn sót
           find ./publish -name "*.pdb" -type f -delete
 
-          # Xóa các thư mục đa ngôn ngữ không dùng đến (tiết kiệm ~15-20MB)
+          # Xóa các thư mục đa ngôn ngữ không dùng đến
           for lang in cs de es fr it ja ko pl pt-BR ru tr zh-Hans zh-Hant; do
             rm -rf ./publish/$lang
           done
+
+          # Xóa source maps (.map), RTL CSS (.rtl.*) trong wwwroot và các file crash-dump debugger không cần thiết
+          find ./publish/wwwroot -type f \( -name "*.map" -o -name "*.rtl.*" \) -delete
+          rm -f ./publish/createdump.exe ./publish/mscordaccore*.dll ./publish/mscordbi.dll ./publish/Microsoft.DiaSymReader.Native.x86.dll
 
       - name: Upload published files to Somee
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
