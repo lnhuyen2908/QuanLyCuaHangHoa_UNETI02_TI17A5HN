@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Data;
 using QuanLyCuaHangHoa_UNETI02_TI17A5HN.Helpers;
@@ -50,6 +51,15 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN
 
             // Migrate + seed (tài khoản admin/nhanvien01/... mật khẩu 123456)
             await SeedData.InitializeAsync(app.Services);
+
+            var forwardedHeaderOptions = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            forwardedHeaderOptions.KnownIPNetworks.Clear();
+            forwardedHeaderOptions.KnownProxies.Clear();
+
+            app.UseForwardedHeaders(forwardedHeaderOptions);
 
             if (!app.Environment.IsDevelopment())
             {
