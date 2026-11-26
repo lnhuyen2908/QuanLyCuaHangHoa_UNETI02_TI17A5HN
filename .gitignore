@@ -48,6 +48,9 @@ $RECYCLE.BIN/
 *.tmp
 *.bak
 
+# 7. Cấu hình chứa secret cục bộ (không push lên GitHub public)
+**/appsettings.Development.json
+
 # =========================================================================
 # QUY ĐỊNH CHO TEAM:
 # - Các thành viên tải về chỉ cần mở solution trong Visual Studio

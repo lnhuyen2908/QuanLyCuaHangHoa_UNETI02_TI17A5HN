@@ -1,6 +1,10 @@
 @model QuanLyCuaHangHoa_UNETI02_TI17A5HN.Models.ViewModels.LoginViewModel
 @{
     ViewData["Title"] = "Đăng nhập thành viên - Web quản lý hoa tươi";
+    var currentHost = Context.Request.Host.Host;
+    var isZaloMaintenance = !Context.Request.IsHttps
+        && !string.Equals(currentHost, "localhost", StringComparison.OrdinalIgnoreCase)
+        && !string.Equals(currentHost, "127.0.0.1", StringComparison.OrdinalIgnoreCase);
 }
 
 <div class="relative w-full py-space-xl lg:py-margin-desktop overflow-hidden flex items-center justify-center">
@@ -159,9 +163,9 @@
                                 <span>Gmail / Google</span>
                             </a>
                             <a asp-area="User" asp-controller="TaiKhoan" asp-action="LoginZalo" asp-route-returnUrl="@Model.ReturnUrl"
-                               class="py-2.5 px-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-title-sm text-title-sm transition-all duration-200 flex items-center justify-center gap-space-xs shadow-sm hover:ring-1 hover:ring-[#0068FF]/40">
+                               class="py-2.5 px-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-title-sm text-title-sm transition-all duration-200 flex items-center justify-center gap-space-xs shadow-sm hover:ring-1 hover:ring-[#0068FF]/40 @(isZaloMaintenance ? "opacity-70" : "")">
                                 <span class="w-4 h-4 rounded-full bg-[#0068FF] text-white font-label-md text-[10px] flex items-center justify-center font-bold">Z</span>
-                                <span>Zalo</span>
+                                <span>@(isZaloMaintenance ? "Zalo (Đang bảo trì)" : "Zalo")</span>
                             </a>
                         </div>
                     </div>

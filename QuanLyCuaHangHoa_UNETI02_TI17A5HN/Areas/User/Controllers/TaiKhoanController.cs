@@ -111,9 +111,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
         }
 
         // ===================== ĐĂNG NHẬP GMAIL (GOOGLE) =====================
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult LoginGoogle(string? returnUrl = null)
+        private IActionResult StartGoogleOAuth(string? returnUrl, bool isRegister)
         {
             var clientId = _configuration["Authentication:Google:ClientId"];
             var clientSecret = _configuration["Authentication:Google:ClientSecret"];
@@ -121,7 +119,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
             // Nếu chưa cấu hình Google OAuth trong appsettings.json, chuyển sang trang chọn tài khoản Google giả lập (Demo / Dev Mode)
             if (string.IsNullOrWhiteSpace(clientId) || string.IsNullOrWhiteSpace(clientSecret))
             {
-                return RedirectToAction(nameof(SocialDemo), new { provider = "Google", returnUrl });
+                return RedirectToAction(nameof(SocialDemo), new { provider = "Google", returnUrl, isRegister });
             }
 
             var redirectUri = Url.Action(nameof(GoogleCallback), "TaiKhoan", new { area = "User" }, Request.Scheme);
@@ -136,6 +134,10 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 
             return Redirect(googleAuthUrl);
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult LoginGoogle(string? returnUrl = null) => StartGoogleOAuth(returnUrl, isRegister: false);
 
         [AllowAnonymous]
         [HttpGet]
@@ -223,17 +225,37 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
         }
 
         // ===================== ĐĂNG NHẬP ZALO =====================
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult LoginZalo(string? returnUrl = null)
+        /// <summary>
+        /// Zalo OAuth yêu cầu HTTPS; trên hosting HTTP công khai (như Somee bản miễn phí) sẽ tạm báo bảo trì.
+        /// </summary>
+        private bool IsZaloMaintenance()
         {
+            var host = Request.Host.Host;
+            var isLocalHost = string.Equals(host, "localhost", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(host, "127.0.0.1", StringComparison.OrdinalIgnoreCase);
+
+            return !Request.IsHttps && !isLocalHost;
+        }
+
+        private IActionResult StartZaloOAuth(string? returnUrl, bool isRegister)
+        {
+            if (IsZaloMaintenance())
+            {
+                TempData["Loi"] = isRegister
+                    ? "Chức năng đăng ký bằng Zalo hiện đang bảo trì. Vui lòng đăng ký bằng biểu mẫu hoặc Google."
+                    : "Chức năng đăng nhập bằng Zalo hiện đang bảo trì. Vui lòng sử dụng tài khoản thường hoặc Google.";
+                return isRegister
+                    ? RedirectToAction(nameof(Register))
+                    : RedirectToAction(nameof(Login), new { returnUrl });
+            }
+
             var appId = _configuration["Authentication:Zalo:AppId"];
             var appSecret = _configuration["Authentication:Zalo:AppSecret"];
 
             // Nếu chưa cấu hình Zalo OAuth trong appsettings.json, chuyển sang trang chọn tài khoản Zalo giả lập (Demo / Dev Mode)
             if (string.IsNullOrWhiteSpace(appId) || string.IsNullOrWhiteSpace(appSecret))
             {
-                return RedirectToAction(nameof(SocialDemo), new { provider = "Zalo", returnUrl });
+                return RedirectToAction(nameof(SocialDemo), new { provider = "Zalo", returnUrl, isRegister });
             }
 
             var redirectUri = Url.Action(nameof(ZaloCallback), "TaiKhoan", new { area = "User" }, Request.Scheme);
@@ -245,6 +267,10 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 
             return Redirect(zaloAuthUrl);
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult LoginZalo(string? returnUrl = null) => StartZaloOAuth(returnUrl, isRegister: false);
 
         [AllowAnonymous]
         [HttpGet]
@@ -394,51 +420,12 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
         // ===================== ĐĂNG KÝ QUA GMAIL (GOOGLE) =====================
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult RegisterGoogle(string? returnUrl = null)
-        {
-            var clientId = _configuration["Authentication:Google:ClientId"];
-            var clientSecret = _configuration["Authentication:Google:ClientSecret"];
-
-            if (string.IsNullOrWhiteSpace(clientId) || string.IsNullOrWhiteSpace(clientSecret))
-            {
-                return RedirectToAction(nameof(SocialDemo), new { provider = "Google", returnUrl, isRegister = true });
-            }
-
-            var redirectUri = Url.Action(nameof(GoogleCallback), "TaiKhoan", new { area = "User" }, Request.Scheme);
-            var state = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(returnUrl ?? "/"));
-            var googleAuthUrl = $"https://accounts.google.com/o/oauth2/v2/auth?" +
-                $"client_id={Uri.EscapeDataString(clientId)}" +
-                $"&redirect_uri={Uri.EscapeDataString(redirectUri ?? string.Empty)}" +
-                $"&response_type=code" +
-                $"&scope=openid%20profile%20email" +
-                $"&state={Uri.EscapeDataString(state)}" +
-                $"&prompt=select_account";
-
-            return Redirect(googleAuthUrl);
-        }
+        public IActionResult RegisterGoogle(string? returnUrl = null) => StartGoogleOAuth(returnUrl, isRegister: true);
 
         // ===================== ĐĂNG KÝ QUA ZALO =====================
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult RegisterZalo(string? returnUrl = null)
-        {
-            var appId = _configuration["Authentication:Zalo:AppId"];
-            var appSecret = _configuration["Authentication:Zalo:AppSecret"];
-
-            if (string.IsNullOrWhiteSpace(appId) || string.IsNullOrWhiteSpace(appSecret))
-            {
-                return RedirectToAction(nameof(SocialDemo), new { provider = "Zalo", returnUrl, isRegister = true });
-            }
-
-            var redirectUri = Url.Action(nameof(ZaloCallback), "TaiKhoan", new { area = "User" }, Request.Scheme);
-            var state = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(returnUrl ?? "/"));
-            var zaloAuthUrl = $"https://oauth.zaloapp.com/v4/permission?" +
-                $"app_id={Uri.EscapeDataString(appId)}" +
-                $"&redirect_uri={Uri.EscapeDataString(redirectUri ?? string.Empty)}" +
-                $"&state={Uri.EscapeDataString(state)}";
-
-            return Redirect(zaloAuthUrl);
-        }
+        public IActionResult RegisterZalo(string? returnUrl = null) => StartZaloOAuth(returnUrl, isRegister: true);
 
         // ===================== ĐĂNG XUẤT =====================
         [HttpPost]

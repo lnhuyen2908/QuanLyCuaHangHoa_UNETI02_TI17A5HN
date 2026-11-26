@@ -119,6 +119,12 @@
                         </span>
                     </div>
                     <!-- Fast Social Signups -->
+                    @{
+                        var currentHost = Context.Request.Host.Host;
+                        var isZaloMaintenance = !Context.Request.IsHttps
+                            && !string.Equals(currentHost, "localhost", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(currentHost, "127.0.0.1", StringComparison.OrdinalIgnoreCase);
+                    }
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                         <a asp-area="User" asp-controller="TaiKhoan" asp-action="RegisterGoogle" class="flex items-center justify-center gap-3 py-2.5 px-4 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high hover:ring-1 hover:ring-[#EA4335]/40 transition-all font-title-sm text-title-sm shadow-sm group">
                             <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
@@ -129,9 +135,9 @@
                             </svg>
                             <span class="group-hover:text-primary transition-colors">Đăng ký bằng Google</span>
                         </a>
-                        <a asp-area="User" asp-controller="TaiKhoan" asp-action="RegisterZalo" class="flex items-center justify-center gap-3 py-2.5 px-4 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high hover:ring-1 hover:ring-[#0068FF]/40 transition-all font-title-sm text-title-sm shadow-sm group">
+                        <a asp-area="User" asp-controller="TaiKhoan" asp-action="RegisterZalo" class="flex items-center justify-center gap-3 py-2.5 px-4 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high hover:ring-1 hover:ring-[#0068FF]/40 transition-all font-title-sm text-title-sm shadow-sm group @(isZaloMaintenance ? "opacity-70" : "")">
                             <div class="w-5 h-5 rounded-full bg-[#0068FF] text-white flex items-center justify-center font-bold text-[10px]">Z</div>
-                            <span class="group-hover:text-primary transition-colors">Đăng ký bằng Zalo</span>
+                            <span class="group-hover:text-primary transition-colors">@(isZaloMaintenance ? "Zalo (Đang bảo trì)" : "Đăng ký bằng Zalo")</span>
                         </a>
                     </div>
                     <!-- Divider with Text -->
