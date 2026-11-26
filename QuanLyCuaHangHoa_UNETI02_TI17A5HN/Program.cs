@@ -32,6 +32,22 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN
 
             var app = builder.Build();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    // Thay TenDbContextCuaBan bằng tên lớp DbContext thực tế của dự án
+                    var context = services.GetRequiredService<AppDbContext>();
+                    context.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Lỗi tự động cập nhật Database khi khởi động.");
+                }
+            }
+
             // Migrate + seed (tài khoản admin/nhanvien01/... mật khẩu 123456)
             await SeedData.InitializeAsync(app.Services);
 
