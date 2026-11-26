@@ -52,6 +52,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                             m.DipSuDung != null &&
                             m.DipSuDung.TrangThai);
 
+            //tkiem
             if (!string.IsNullOrWhiteSpace(tuKhoa))
             {
                 tuKhoa = tuKhoa.Trim();
@@ -115,6 +116,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                     break;
             }
 
+            //phân trang
             var danhSachMau = await PagedList<MauSanPham>.CreateAsync(query, page, PageSize);
 
             var danhSachDip = await _context.DipSuDungs
@@ -128,14 +130,20 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
                 })
                 .ToListAsync();
 
-            var danhSachKieu = new List<SelectListItem>
-            {
-                new() { Text = "Bó hoa", Value = "Bó hoa" },
-                new() { Text = "Giỏ hoa", Value = "Giỏ hoa" },
-                new() { Text = "Hộp hoa", Value = "Hộp hoa" },
-                new() { Text = "Kệ hoa", Value = "Kệ hoa" },
-                new() { Text = "Mẫu khác", Value = "Mẫu khác" }
-            };
+            var danhSachKieu = await _context.MauSanPhams
+                .AsNoTracking()
+                .Where(m => m.TrangThai &&
+                            m.KieuSanPham != null &&
+                            m.KieuSanPham != "")
+                .Select(m => m.KieuSanPham)
+                .Distinct()
+                .OrderBy(k => k)
+                .Select(k => new SelectListItem
+                {
+                    Text = k,
+                    Value = k
+                })
+                .ToListAsync();
 
             ViewBag.TenLoaiHoaDangLoc = maLoaiHoa.HasValue
                 ? await _context.LoaiHoas
@@ -182,6 +190,7 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.User.Controllers
 
             if (model == null) return NotFound();
 
+            //lấy thêm mâu liên quan
             var mauLienQuan = await _context.MauSanPhams
                 .AsNoTracking()
                 .Where(m => m.TrangThai
