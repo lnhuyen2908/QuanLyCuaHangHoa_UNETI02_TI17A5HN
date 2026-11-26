@@ -1,6 +1,6 @@
 // Họ và tên: Nguyễn Thị Phương Anh
 // Mã sinh viên: 23103100267
-// Nội dung thực hiện: Quản lý hoa tươi, tìm kiếm, lọc, sắp xếp, phân trang và kiểm tra dữ liệu khi thêm, sửa, xóa
+// Nội dung thực hiện: Quản lý hoa tươi, tìm kiếm, lọc, sắp xếp, phân trang và kiểm tra dữ liệu khi thêm, sửa, xóa,xuất excel
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -476,56 +476,32 @@ namespace QuanLyCuaHangHoa_UNETI02_TI17A5HN.Areas.Admin.Controllers
         }
 
         // ================================================================
-        // POST: /Admin/HoaTuoi/Delete - Xóa hoa tươi
+        // POST: /Admin/HoaTuoi/Delete - Xóa(mềm) hoa tươi
         // ================================================================
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var hoa = await _context.HoaTuois
-                .FirstOrDefaultAsync(h => h.MaHoa == id);
+            // Bước 1: Tìm mẫu sản phẩm cần ngừng bán
+            var mauSanPham = await _context.MauSanPhams
+                .FirstOrDefaultAsync(m => m.MaMau == id);
 
-            if (hoa == null)
+            // Bước 2: Kiểm tra mẫu sản phẩm có tồn tại không
+            if (mauSanPham == null)
             {
-                TempData["Error"] = "Không tìm thấy hoa tươi cần xóa.";
+                TempData["Error"] = "Không tìm thấy mẫu sản phẩm cần ngừng bán.";
                 return RedirectToAction(nameof(Index));
             }
 
-            // Kiểm tra hoa có đang được mẫu hoa sử dụng không
-            bool coMauHoaThamChieu = await _context.ChiTietMaus
-                .AnyAsync(ct => ct.MaHoa == id);
+            // Bước 3: Cập nhật trạng thái sang ngừng bán
+            mauSanPham.TrangThai = false;
 
-            if (coMauHoaThamChieu)
-            {
-                TempData["Error"] =
-                    $"Không thể xóa hoa \"{hoa.TenHoa}\" (mã HT-{hoa.MaHoa:D3}) " +
-                    "vì hoa đang được sử dụng trong mẫu hoa. " +
-                    "Vui lòng kiểm tra các mẫu hoa liên quan.";
+            // Bước 4: Lưu thay đổi vào Database
+            await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
-            }
-
-            // Thử xóa hoa nếu không có mẫu hoa tham chiếu
-            _context.HoaTuois.Remove(hoa);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-
-                TempData["Success"] =
-                    $"Đã xóa hoa \"{hoa.TenHoa}\" (mã HT-{hoa.MaHoa:D3}) thành công.";
-            }
-            catch (DbUpdateException)
-            {
-                // Database từ chối xóa do còn dữ liệu liên quan
-                // Không tự động xóa các bản ghi ở bảng khác
-                TempData["Error"] =
-                    $"Không thể xóa hoa \"{hoa.TenHoa}\" (mã HT-{hoa.MaHoa:D3}) " +
-                    "vì vẫn còn dữ liệu ở bảng khác đang tham chiếu đến hoa hoặc mẫu hoa. " +
-                    "Dữ liệu hiện tại được giữ nguyên.";
-            }
+            TempData["Success"] =
+                $"Đã ngừng bán mẫu sản phẩm '{mauSanPham.TenMau}' thành công.";
 
             return RedirectToAction(nameof(Index));
         }

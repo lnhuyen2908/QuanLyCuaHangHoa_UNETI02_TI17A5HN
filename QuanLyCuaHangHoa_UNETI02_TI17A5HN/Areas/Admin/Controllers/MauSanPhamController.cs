@@ -44,11 +44,13 @@ public class MauSanPhamController : Controller
         ViewBag.TamNgung = tamNgung;
         ViewBag.SoDipSuDung = soDipSuDung;
 
+        //lấy ds mẫu sp
         var query = _context.MauSanPhams.AsNoTracking()
             .Include(m => m.DipSuDung)
             .Include(m => m.ChiTietMaus).ThenInclude(c => c.HoaTuoi)
             .AsQueryable();
 
+        //tkiem
         if (!string.IsNullOrWhiteSpace(tuKhoa))
         {
             var key = tuKhoa.Trim();
@@ -58,6 +60,8 @@ public class MauSanPhamController : Controller
                 m.KieuSanPham.Contains(key) ||
                 m.ChiTietMaus.Any(c => c.HoaTuoi.TenHoa.Contains(key) ||  c.HoaTuoi.MauSac.Contains(key)));
         }
+
+        //lọc 
         if (maDip.HasValue) query = query.Where(m => m.MaDip == maDip.Value);
         if (loaiHoaId.HasValue)
             query = query.Where(m => m.ChiTietMaus.Any(c => c.HoaTuoi.MaLoaiHoa == loaiHoaId.Value));
@@ -67,6 +71,7 @@ public class MauSanPhamController : Controller
         if (trangThai == "true") query = query.Where(m => m.TrangThai);
         else if (trangThai == "false") query = query.Where(m => !m.TrangThai);
 
+        //sxep
         query = sapXep switch
         {
             "ten_asc" => query.OrderBy(m => m.TenMau),
@@ -78,10 +83,13 @@ public class MauSanPhamController : Controller
             _ => query.OrderBy(m => m.MaMau)
         };
 
+        //phân trang
         var count = await query.CountAsync();
         var totalPages = Math.Max(1, (int)Math.Ceiling(count / (double)PageSize));
         page = Math.Clamp(page, 1, totalPages);
         var items = await query.Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
+
+        //đưa dl vào viewmodel
         var model = new MauSanPhamListViewModel
         {
             DanhSachMau = new PagedList<MauSanPham>
@@ -105,6 +113,7 @@ public class MauSanPhamController : Controller
             DanhSachKieu = KieuMau.Select(k => new SelectListItem(k, k)).ToList()
         };
 
+        //bộ lọc chung cho giao diện
         ViewData["AdminFilter"] = new AdminFilterViewModel
         {
             Area = "Admin",
@@ -144,17 +153,18 @@ public class MauSanPhamController : Controller
             GiaDen = giaDen,
 
             DanhSachDip = await _context.DipSuDungs
-        .AsNoTracking()
-        .OrderBy(d => d.TenDip)
-        .Select(d => new SelectListItem(
-            d.TenDip, d.MaDip.ToString()))
-        .ToListAsync(),
+                .AsNoTracking()
+                .OrderBy(d => d.TenDip)
+                .Select(d => new SelectListItem(
+                    d.TenDip, d.MaDip.ToString()))
+                .ToListAsync(),
 
             DanhSachKieuSanPham = KieuMau
-        .Select(k => new SelectListItem(k, k))
-        .ToList()
+                .Select(k => new SelectListItem(k, k))
+                .ToList()
         };
 
+        //phân trang chung cho giao diện
         ViewData["Pagination"] = new PaginationViewModel
         {
             Area = "Admin",
@@ -215,10 +225,13 @@ public class MauSanPhamController : Controller
             }
         }
 
+        //gọi hàm ktra dl thành phần hoa
         await ValidateChiTietAsync(model);
 
+        //lưu nhiều ảnh phụ
         var dsAnhPhu = await LuuNhieuAnhAsync(model.DanhSachAnh, nameof(model.DanhSachAnh));
 
+        //lưu ảnh đại diện
         string? image = null;
         try
         {
@@ -317,7 +330,7 @@ public class MauSanPhamController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        // Kiểm tra dữ liệu một lần duy nhất
+        // Kiểm tra tphan hoa 
         await ValidateChiTietAsync(model);
 
         int soAnhConLai = entity.AnhMauSanPhams.Count(a => model.XoaAnhIds == null || !model.XoaAnhIds.Contains(a.MaAnh));
@@ -353,6 +366,7 @@ public class MauSanPhamController : Controller
             ModelState.AddModelError(nameof(model.TepAnh), "Vui lòng chọn ảnh đại diện cho mẫu sản phẩm.");
         }
 
+        //ktra toàn bộ dl
         if (!ModelState.IsValid)
         {
             var errors = ModelState
@@ -372,7 +386,7 @@ public class MauSanPhamController : Controller
         try
         {
             // Cập nhật thông tin mẫu
-            entity.TenMau =     model.TenMau.Trim();
+            entity.TenMau = model.TenMau.Trim();
             entity.MaDip = model.MaDip;
             entity.KieuSanPham = model.KieuSanPham;
             entity.GiaCoBan = model.GiaCoBan;
